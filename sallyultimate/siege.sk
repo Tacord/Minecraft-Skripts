@@ -1,0 +1,89 @@
+function siege(level:integer, wave:integer):
+	if {_level} is 1:
+		if {_wave} is 1:
+			broadcast "&eA level &a1 &esiege is about to start!"
+			broadcast "&7&l--- &r&lWAVE &c&l%{_wave}%&7&l ---"
+			set {siegecount} to 0
+			set {wave} to 1
+			set {level} to 1
+			loop all blocks in radius 30 of {siegelocation}:
+				{siegecount} < 15#0
+				block below loop-block is not air
+				block 2 below loop-block is not air
+				set {_e} to random integer between 1 and 30
+				if {_e} is 1:
+					spawn 1 of adult zombie at loop-block
+					set name of last spawned zombie to "&eSiege Minion"
+					equip last spawned zombie with leather helmet
+					equip last spawned zombie with leather chestplate
+					set {siegecount} to {siegecount} + 1
+		if {_wave} is 2:
+			broadcast "&7&l--- &r&lWAVE &c&l%{_wave}%&7&l ---"
+			set {siegecount} to 0
+			loop all blocks in radius 30 of {siegelocation}:
+				{siegecount} < 10#0
+				block below loop-block is not air
+				block 2 below loop-block is not air
+				set {_e} to random integer between 1 and 30
+				if {_e} is 1:
+					spawn 1 of adult zombie at loop-block
+					set name of last spawned zombie to "&eSiege Minion"
+					equip last spawned zombie with iron helmet
+					equip last spawned zombie with iron chestplate
+					apply speed 1 to last spawned zombie for 9999999 seconds
+					set last spawned zombie's held item to wooden sword of unbreaking 3
+					spawn 1 of husk at loop-block
+					set name of last spawned entity to "&eSiege Minion"
+					equip last spawned entity with iron helmet
+					equip last spawned entity with iron chestplate
+					apply speed 1 to last spawned entity for 9999999 seconds
+					set last spawned entity's held item to wooden sword of unbreaking 3
+					set {siegecount} to {siegecount} + 2
+		if {_wave} is 3:
+			broadcast "&7&l--- &r&lWAVE &c&l%{_wave}%&7&l ---"
+			set {siegecount} to 0
+			loop all blocks in radius 30 of {siegelocation}:
+				{siegecount} < 18#0
+				block below loop-block is not air
+				block 2 below loop-block is not air
+				set {_e} to random integer between 1 and 30
+				if {_e} is 1:
+					spawn 1 of adult zombie at loop-block
+					set name of last spawned entity to "&eSiege Minion"
+					equip last spawned entity with iron helmet of protection 3
+					equip last spawned entity with iron chestplate of protection 3
+					equip last spawned entity with iron leggings
+					equip last spawned entity with iron boots
+					apply slowness 2 to last spawned entity for 9999999 seconds
+					set last spawned entity's held item to iron sword of unbreaking 3
+					spawn 1 of adult husk at loop-block
+					set name of last spawned entity to "&eSiege Minion"
+					equip last spawned entity with iron helmet
+					equip last spawned entity with iron chestplate
+					apply speed 1 to last spawned entity for 9999999 seconds
+					set last spawned entity's held item to wooden sword of unbreaking 3
+					spawn 1 of skeleton at loop-block
+					set name of last spawned entity to "&eSiege Minion"
+					equip last spawned entity with iron helmet
+					equip last spawned entity with iron chestplate
+					apply speed 1 to last spawned entity for 9999999 seconds
+					set last spawned entity's held item to wooden sword of unbreaking 3
+					set {siegecount} to {siegecount} + 3
+
+command /siege <integer>:
+	permission: op 
+	trigger:
+		siege(arg-1, 1)
+
+command /setsiegeloc:
+	permission: op 
+	trigger:
+		set {siegelocation} to player's location
+
+on death:
+	if name of victim is "&eSiege Minion":
+		set {siegecount} to {siegecount} - 1
+		broadcast "Siege count: %{siegecount}%"
+		if {siegecount} is 0:
+			set {wave} to {wave} + 1
+			siege({level}, {wave})

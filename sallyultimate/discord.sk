@@ -1,0 +1,54 @@
+on load:
+    set {webhook} to "https://discord.com/api/webhooks/1228693584937484368/YasGb_BiM1pHYhTO39hQYapkZPqugq2R4NAFKxhTDLv_WMzyvkCguPkYeGuoI1h1YFfj"
+    send "Sally Ultimate has loaded successfully ✅" as webhook to {webhook}
+
+on chat:
+    send "**%player% » ** %message%" as webhook to {webhook}
+    
+on death:
+    death message exists
+    send "☠ %death message%" as webhook to {webhook}
+    
+on join:
+    create a new embed:
+        webhook: {webhook}
+ 
+        title: "%player% joined the game"
+        titleUrl: ""
+
+        description: ""
+        color: "##40ff73"
+
+        thumbnailUrl: ""
+        imageUrl: ""
+ 
+        footer: ""
+        footerIconUrl: ""
+
+        author: ""
+        authorUrl: ""
+        authorIconUrl: ""
+
+        timestamp: true
+
+on leave:
+    create a new embed:
+        webhook: {webhook}
+ 
+        title: "%player% left the game"
+        titleUrl: ""
+
+        description: ""
+        color: "##ff4040"
+
+        thumbnailUrl: ""
+        imageUrl: ""
+ 
+        footer: ""
+        footerIconUrl: ""
+
+        author: ""
+        authorUrl: ""
+        authorIconUrl: ""
+
+        timestamp: true

@@ -1,0 +1,241 @@
+# INIT VARIABLES
+on load:
+	if {id1} is not set:
+		set {id1} to 1000
+	if {id2} is not set:
+		set {id2} to 2000
+	set {normal_attack} to 1
+	set {normal_maxhealth} to 10
+	set {normal_critdmg} to 1
+	set {normal_defense} to 1
+
+command /equip <text>:
+	aliases: gearequip, equipgear
+	trigger:
+		if arg-1 is "Primary":
+			if line 1 of player's held item's lore contains "&0PRIMARY":
+				if {primarygear::%player's uuid%} is set:
+					set {_oldgear} to {primarygear::%player's uuid%}
+					set {primarygear::%player's uuid%} to player's held item
+					wait a tick
+					send "TRUE"
+					send "%{primarygear::%player's uuid%}%"
+					send ""
+					set player's held item to {_oldgear}
+					send "&cSuccessfully unequipped old gear!" to player
+				else if {primarygear::%player's uuid%} is not set:
+					set {primarygear::%player's uuid%} to player's held item
+					set player's held item to air
+					send "FALSE"
+					send "%{primarygear::%player's uuid%}%"
+					send ""
+				wait a tick
+				send "&aSuccessfully equipped gear!" to player
+				set {_id} to line 6 of {primarygear::%player's uuid%}'s lore
+				set {id1::%player's uuid%} to {_id}
+				send {_id}
+				wait a tick
+				set {attack::%player's uuid%} to {normal_attack} + ({attack::%{id1::%player's uuid%}%} / 100)
+				set {attack::%player's uuid%} to {attack::%player's uuid%} + ({attack::%{id2::%player's uuid%}%} / 100)
+				set {maxhealth::%player's uuid%} to {normal_maxhealth} + ({normal_maxhealth} * ({health::%{id1::%player's uuid%}%} / 100))
+				set {maxhealth::%player's uuid%} to {maxhealth::%player's uuid%} + ({normal_maxhealth} * ({health::%{id2::%player's uuid%}%} / 100))
+				set {atkspeed::%player's uuid%} to {normal_critdmg} + ({atkspeed::%{id1::%player's uuid%}%} / 100)
+				set {atkspeed::%player's uuid%} to {atkspeed::%player's uuid%} + ({atkspeed::%{id2::%player's uuid%}%} / 100)
+				set {defense::%player's uuid%} to {normal_defense} + ({defense::%{id1::%player's uuid%}%} / 100)
+				set {defense::%player's uuid%} to {defense::%player's uuid%} + ({defense::%{id2::%player's uuid%}%} / 100)
+				set player's max health to {maxhealth::%player's uuid%}
+				#refreshstats(player, "%{id1::%player's uuid%}%", "%{id2::%player's uuid%}%")
+			else:
+				send "&cInvalid gear"
+		if arg-1 is "Secondary":
+			if line 1 of player's held item's lore contains "&0SECONDARY":
+				if {secondarygear::%player's uuid%} is set:
+					set {_oldgear} to {secondarygear::%player's uuid%}
+					set {secondarygear::%player's uuid%} to player's held item
+					wait a tick
+					send "TRUE"
+					send "%{secondarygear::%player's uuid%}%"
+					send ""
+					set player's held item to {_oldgear}
+					send "&cSuccessfully unequipped old gear!" to player
+				else if {secondarygear::%player's uuid%} is not set:
+					set {secondarygear::%player's uuid%} to player's held item
+					set player's held item to air
+					send "FALSE"
+					send "%{secondarygear::%player's uuid%}%"
+					send ""
+				wait a tick
+				send "&aSuccessfully equipped gear!"
+				set {_id} to line 6 of {secondarygear::%player's uuid%}'s lore
+				set {id2::%player's uuid%} to {_id}
+				send {_id}
+				wait a tick
+				set {attack::%player's uuid%} to {normal_attack} + ({attack::%{id1::%player's uuid%}%} / 100)
+				set {attack::%player's uuid%} to {attack::%player's uuid%} + ({attack::%{id2::%player's uuid%}%} / 100)
+				set {maxhealth::%player's uuid%} to {normal_maxhealth} + ({normal_maxhealth} * ({health::%{id1::%player's uuid%}%} / 100))
+				set {maxhealth::%player's uuid%} to {maxhealth::%player's uuid%} + ({normal_maxhealth} * ({health::%{id2::%player's uuid%}%} / 100))
+				set {atkspeed::%player's uuid%} to {normal_critdmg} + ({atkspeed::%{id1::%player's uuid%}%} / 100)
+				set {atkspeed::%player's uuid%} to {atkspeed::%player's uuid%} + ({atkspeed::%{id2::%player's uuid%}%} / 100)
+				set {defense::%player's uuid%} to {normal_defense} + ({defense::%{id1::%player's uuid%}%} / 100)
+				set {defense::%player's uuid%} to {defense::%player's uuid%} + ({defense::%{id2::%player's uuid%}%} / 100)
+				set player's max health to {maxhealth::%player's uuid%}
+				#refreshstats(player, "%{id1::%player's uuid%}%", "%{id2::%player's uuid%}%")
+				send {id1::%player's uuid%}
+				send {id2::%player's uuid%}
+			else:
+				send "&cInvalid gear"
+		else if arg-1 is not "Primary" or "Secondary":
+			send "&cPlease choose &ePrimary &cor &eSecondary"
+
+on right click:
+	if line 1 of player's tool's lore contains "&0PRIMARY":
+		make player execute command "/equip primary"
+	if line 1 of player's tool's lore contains "&0SECONDARY":
+		make player execute command "/equip secondary"
+
+command /reset:
+	trigger:
+		set {id1} to 100000
+		set {id2} to 200000
+		clear {id1::%player's uuid%}
+		clear {id2::%player's uuid%}
+
+on death of zombie:
+	set {_loc} to location of victim
+	gear("Rotten Stomach", {_loc})
+
+function gear(name:string, loc:location):
+	if {_name} = "Rotten Stomach":
+		set {_e} to random integer between 1 and 2
+		set {_item} to rotten flesh
+		if {_e} is 1:
+			set {_type} to "&c&lPRIMARY"
+			set {_loretype} to "&0PRIMARY"
+			set {_decide} to random integer between 15 and 30
+			set {_health} to {_decide}
+			set {_decide} to random integer between 15 and 30
+			set {_atk} to {_decide}
+			set {_decide} to random integer between 15 and 30
+			set {_def} to {_decide}
+			set {_decide} to random integer between 15 and 30
+			set {_crit} to {_decide}
+			set {id1} to {id1} + 1
+			set {_id} to {id1}
+		else:
+			set {_type} to "&b&lSECONDARY"
+			set {_loretype} to "&0SECONDARY"
+			set {_decide} to random integer between 5 and 20
+			set {_health} to {_decide}
+			set {_decide} to random integer between 5 and 20
+			set {_atk} to {_decide}
+			set {_decide} to random integer between 5 and 20
+			set {_def} to {_decide}
+			set {_decide} to random integer between 5 and 20
+			set {_crit} to {_decide}
+			set {id2} to {id2} + 1
+			set {_id} to {id2}
+		set {gearname::%{_id}%} to {_name}
+	set {health::%{_id}%} to {_health}
+	set {attack::%{_id}%} to {_atk}
+	set {atkspeed::%{_id}%} to {_crit}
+	set {defense::%{_id}%} to {_def}
+	set {_e} to random integer between 1 and 4
+	if {_e} is 1:
+		set {_health} to 0
+		set {health::%{_id}%} to {_health}
+	if {_e} is 2:
+		set {_atk} to 0
+		set {attack::%{_id}%} to {_atk}
+	if {_e} is 3:
+		set {_crit} to 0
+		set {atkspeed::%{_id}%} to {_crit}
+	if {_e} is 4:
+		set {_def} to 0
+		set {defense::%{_id}%} to {_def}
+	set {_total} to ({_health} + {_atk} + {_crit} + {_def})
+	set name of {_item} to "%{_type}% &8|| &f%{_name}%"
+	set line 6 of {_item}'s lore to "%{_id}%"
+	set line 1 of {_item}'s lore to "&8-- &aHealth: &7+%{_health}%%%%{_loretype}%"
+	set line 2 of {_item}'s lore to "&8-- &cAttack: &7+%{_atk}%%%"
+	set line 3 of {_item}'s lore to "&8-- &6Defense: &7+%{_def}%%%"
+	set line 4 of {_item}'s lore to "&8-- &bATK Speed: &7+%{_crit}%%%"
+	set line 5 of {_item}'s lore to "&8-- &eTotal: &7+%{_total}%%%"
+	drop 1 of {_item} at {_loc}
+
+command /gear:
+	trigger:
+
+command /givegear [<player>] <text>:
+	trigger:
+		set {_loc} to location of arg-1
+		gear(arg-2, {_loc})
+
+function refreshstats(p:player, id:string, idd:string):
+	send {_id} to {_p}
+	send {_idd} to {_p}
+	set {attack::%{_p}'s uuid%} to {normal_attack} + ({attack::%{_id}%} / 100) + ({attack::%{_idd}%} / 100)
+	set {maxhealth::%{_p}'s uuid%} to {normal_maxhealth} + ({normal_maxhealth} * ({health::%{_id}%} / 100)) + ({normal_maxhealth} * ({health::%{_idd}%} / 100))
+	set {atkspeed::%{_p}'s uuid%} to {normal_critdmg} + ({atkspeed::%{_id}%} / 100) + ({atkspeed::%{_idd}%} / 100)
+	set {defense::%{_p}'s uuid%} to {normal_defense} + ({defense::%{_id}%} / 100) + ({defense::%{_idd}%} / 100)
+	set {_p}'s max health to {maxhealth::%{_p}'s uuid%}
+
+on connect:
+	if {maxhealth::%player's uuid%} is not set:
+		set {maxhealth::%player's uuid%} to 10
+	if {attack::%player's uuid%} is not set:
+		set {attack::%player's uuid%} to 1
+	if {atkspeed::%player's uuid%} is not set:
+		set {atkspeed::%player's uuid%} to 1
+	if {defense::%player's uuid%} is not set:
+		set {defense::%player's uuid%} to 1
+
+command /unequip:
+	trigger:
+		set {attack::%player's uuid%} to {normal_attack}
+		set {maxhealth::%player's uuid%} to {normal_maxhealth}
+		set {atkspeed::%player's uuid%} to {normal_critdmg}
+		set {defense::%player's uuid%} to {normal_defense}
+		set player's max health to {maxhealth::%player's uuid%}
+		drop 1 of {secondarygear::%player's uuid%} at player
+		drop 1 of {primarygear::%player's uuid%} at player
+		clear {primarygear::%player's uuid%}
+		clear {secondarygear::%player's uuid%}
+
+command /stats:
+	trigger:
+		send "  &6&l%player%'s Stats"
+		set {_def} to {defense::%player's uuid%} * 100
+		set {_dmg} to {attack::%player's uuid%} * 100
+		set {_crit} to {atkspeed::%player's uuid%} * 100
+		send "  &eMax Health: &7%{maxhealth::%player's uuid%}%❤"
+		send "  &eDefense: &7%{_def}%%%"
+		send "  &eAttack Damage: &7%{_dmg}%%%"
+		send "  &eATK Speed: &7%{_crit}%%%"
+
+command /primary <text>:
+	trigger:
+		set {primary::%player's uuid%} to arg-1
+		send arg-1
+
+# ROTTEN STOMACH
+
+on hunger bar change:
+	if {gearname::%{id1::%player's uuid%}%} is "Rotten Stomach":
+		if player's hunger meter < 6:
+			cancel event
+	if {gearname::%{id2::%player's uuid%}%} is "Rotten Stomach":
+		if player's hunger meter < 6:
+			cancel event
+
+every second:
+	loop all players:
+		if {gearname::%{id1::%loop-player's uuid%}%} is "Rotten Stomach":
+			if {gearname::%{id2::%loop-player's uuid%}%} is "Rotten Stomach":
+			set {maxhealth::%loop-player's uuid%} to {normal_maxhealth} + ({normal_maxhealth} * ({health::%{id1::%loop-player's uuid%}%} / 100))
+			set {maxhealth::%loop-player's uuid%} to {maxhealth::%loop-player's uuid%} + ({normal_maxhealth} * ({health::%{id2::%loop-player's uuid%}%} / 100)) + 2
+
+on damage:
+	if attacker is a player:
+		set damage to damage * {attack::%attacker's uuid%}
+	if victim is a player:
+		set damage to damage / {defense::%victim's uuid%}

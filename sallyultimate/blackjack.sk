@@ -1,0 +1,258 @@
+command /blackjack <player> <integer>:
+	aliases: bj, gamble
+	trigger:
+		arg-2 > -1
+		arg-2 < 5001
+		if {coins::%player's uuid%} > arg-2:
+			if {coins::%arg-1's uuid%} > arg-2:
+				if {invtime} is 0:
+					{bj} is not set
+					set {wager} to arg-2
+					set {p1} to player
+					set {p2} to arg-1
+					send "" to arg-1
+					send "&b%player% &fwants to play blackjack with you!" to arg-1
+					send "&fType &a/accept &fto accept the invite!" to arg-1
+					send "&eWager: &6%arg-2%⛁" to arg-1
+					send "" to arg-1
+					send "" to player
+					send "&7This invite will expire in 10 seconds!" to arg-1 and player
+					send "&aSuccessfully sent invite! &7The invite will expire in 10 seconds"
+					send "" to player
+					set {invtime} to 10
+				else:
+					send "&cThe wager must be less than you and your opponent's balance!"
+			else:
+				send "&cThe wager must be less than you and your opponent's balance!"
+		else:
+			send "&cSomeone is already in (or requesting) a blackjack game!"
+
+command /accept:
+	trigger:
+		if player is {p2}:
+			set {bj} to true
+			make {p2} execute command "/bjstart"
+			make {p1} execute command "/bjstart"
+
+command /bjstart:
+	trigger:
+		if player is {p2}:
+			if {p2count} is 1:
+				{p23} is "?"
+				set {p23} to random integer between 1 and 10
+			if {p2count} is 2:
+				{p24} is "?"
+				set {p24} to random integer between 1 and 10
+			if {p2count} is 3:
+				set {p25} to random integer between 1 and 10
+				set {p2stay} to true
+			if {p21} is not set:
+				set {p21} to random integer between 1 and 10
+			if {p22} is not set:
+				set {p22} to random integer between 1 and 10
+			if {p23} is "?":
+				set {p23} to 0
+			if {p24} is "?":
+				set {p24} to 0
+			if {p25} is "?":
+				set {p25} to 0
+			set {p2total} to {p21} + {p22} + {p23} + {p24} + {p25}
+			if {p23} is 0:
+				set {p23} to "?"
+			if {p24} is 0:
+				set {p24} to "?"
+			if {p25} is 0:
+				set {p25} to "?"
+			if {p2total} > 21:
+				send "&cYour total exceeded 21! &6You lost!" to {p2}
+				make console execute command "/bjend"
+				stop
+			if {p2stay} is true:
+				send ""
+				send "&eFinal deck:" to {p2}
+				send "&6&l%{p21}% | %{p22}% | %{p23}% | %{p24}% | %{p25}%" to {p2}
+				send "&7Total: &a&l%{p2total}%" to {p2}
+				send ""
+				send "&7Please wait for your opponent..."
+				if {p1stay} is true:
+					make console execute command "/bjend"
+				stop
+			send "&eYour cards:" to {p2}
+			send "&f%{p21}% | %{p22}% | %{p23}% | %{p24}% | %{p25}%" to {p2}
+			send "&7Total: %{p2total}%" to {p2}
+			send "&aType &eh &ato hit or type &es &ato stay" to {p2}
+			send "" to {p2}
+		else if player is {p1}:
+			if {p1count} is 1:
+				{p13} is "?"
+				set {p13} to random integer between 1 and 10
+			if {p1count} is 2:
+				{p14} is "?"
+				set {p14} to random integer between 1 and 10
+			if {p1count} is 3:
+				set {p15} to random integer between 1 and 10
+				set {p1stay} to true
+			if {p11} is not set:			
+				set {p11} to random integer between 1 and 10
+			if {p12} is not set:
+				set {p12} to random integer between 1 and 10
+			if {p13} is "?":
+				set {p13} to 0
+			if {p14} is "?":
+				set {p14} to 0
+			if {p15} is "?":
+				set {p15} to 0
+			set {p1total} to {p11} + {p12} + {p13} + {p14} + {p15}
+			if {p13} is 0:
+				set {p13} to "?"
+			if {p14} is 0:
+				set {p14} to "?"
+			if {p15} is 0:
+				set {p15} to "?"
+			if {p1total} > 21:
+				send "&cYour total exceeded 21! &6You lost!"
+				make console execute command "/bjend"
+				stop
+			if {p1stay} is true:
+				send ""
+				send "&eFinal deck:" to {p1}
+				send "&6&l%{p11}% | %{p12}% | %{p13}% | %{p14}% | %{p15}%" to {p1}
+				send "&7Total: &a&l%{p1total}%" to {p1}
+				send "" to {p1}
+				send "&7Please wait for your opponent..." to {p1}
+				if {p2stay} is true:
+					make console execute command "/bjend"
+				stop
+			send "&eYour cards:" to {p1}
+			send "&f%{p11}% | %{p12}% | %{p13}% | %{p14}% | %{p15}%" to {p1}
+			send "&7Total: %{p1total}%" to {p1}
+			send "&aType &eh &ato hit or type &es &ato stay" to {p1}
+			send "" to {p1}
+
+command /bjend:
+	permission: op
+	trigger:
+		{bjend} is not set
+		set {bjend} to true
+		broadcast ""
+		broadcast "&7-- &6&lBLACKJACK &7--"
+		broadcast "&e%{p1}%'s total: &7%{p1total}%"
+		broadcast "&e%{p2}%'s total: &7%{p2total}%"
+		broadcast ""
+		if {p1total} > {p2total}:
+			if {p1total} > 21:
+				broadcast "&a%{p2}% wins!"
+				broadcast "%{p2}% gained &e%{wager}%⛁"
+				broadcast "%{p1}% lost &c%{wager}%⛁"
+				if {coins::%{p1}'s uuid%} < {wager}:
+					broadcast "&cExploit detected! Canceling game wager."
+					stop
+				if {coins::%{p2}'s uuid%} < {wager}:
+					broadcast "&cExploit detected! Canceling game wager."
+					stop
+				set {coins::%{p2}'s uuid%} to {coins::%{p2}'s uuid%} + {wager}
+				set {coins::%{p1}'s uuid%} to {coins::%{p1}'s uuid%} - {wager}
+				make console execute command "/bjreset"
+				stop
+			broadcast "&a%{p1}% wins!"
+			broadcast "%{p1}% gained &e%{wager}%⛁"
+			broadcast "%{p2}% lost &c%{wager}%⛁"
+			if {coins::%{p1}'s uuid%} < {wager}:
+				broadcast "&cExploit detected! Canceling game wager."
+				stop
+			if {coins::%{p2}'s uuid%} < {wager}:
+				broadcast "&cExploit detected! Canceling game wager."
+				stop
+			set {coins::%{p1}'s uuid%} to {coins::%{p1}'s uuid%} + {wager}
+			set {coins::%{p2}'s uuid%} to {coins::%{p2}'s uuid%} - {wager}
+			make console execute command "/bjreset"
+			stop
+		if {p2total} > {p1total}:
+			if {p2total} > 21:
+				broadcast "&a%{p1}% wins!"
+				broadcast "%{p1}% gained &e%{wager}%⛁"
+				broadcast "%{p2}% lost &c%{wager}%⛁"
+				if {coins::%{p1}'s uuid%} < {wager}:
+					broadcast "&cExploit detected! Canceling game wager."
+					stop
+				if {coins::%{p2}'s uuid%} < {wager}:
+					broadcast "&cExploit detected! Canceling game wager."
+					stop
+				set {coins::%{p1}'s uuid%} to {coins::%{p1}'s uuid%} + {wager}
+				set {coins::%{p2}'s uuid%} to {coins::%{p2}'s uuid%} - {wager}
+				make console execute command "/bjreset"
+				stop
+			broadcast "&a%{p2}% wins!"
+			broadcast "%{p2}% gained &e%{wager}%⛁"
+			broadcast "%{p1}% lost &c%{wager}%⛁"
+			if {coins::%{p1}'s uuid%} < {wager}:
+				broadcast "&cExploit detected! Canceling game wager."
+				stop
+			if {coins::%{p2}'s uuid%} < {wager}:
+				broadcast "&cExploit detected! Canceling game wager."
+				stop
+			set {coins::%{p2}'s uuid%} to {coins::%{p2}'s uuid%} + {wager}
+			set {coins::%{p1}'s uuid%} to {coins::%{p1}'s uuid%} - {wager}
+			make console execute command "/bjreset"
+			stop
+		else:
+			broadcast "&a%{p1}% and %{p2}% tied!"
+			broadcast "%{p2}% gained &60⛁"
+			broadcast "%{p1}% gained &60⛁"
+		make console execute command "/bjreset"
+
+on chat:
+	if player is {p1}:
+		{p1stay} is not true
+		if message is "h":
+			cancel event
+			set {p1count} to {p1count} + 1
+			make player execute command "/bjstart"
+		else if message is "s":
+			cancel event
+			set {p1stay} to true
+			send "&aStayed! &7Waiting for opponent..."
+			make player execute command "/bjstart"
+			if {p2stay} is true:
+				make console execute command "/bjend"
+	if player is {p2}:
+		{p2stay} is not true
+		if message is "h":
+			cancel event
+			set {p2count} to {p2count} + 1
+			make player execute command "/bjstart"
+		else if message is "s":
+			cancel event
+			set {p2stay} to true
+			send "&aStayed! &7Waiting for opponent..."
+			make player execute command "/bjstart"
+			if {p1stay} is true:
+				make console execute command "/bjend"
+
+command /bjreset:
+	permission: op
+	trigger:
+		set {invtime} to 0
+		set {p2count} to 0
+		set {p1count} to 0
+		clear {p11}
+		clear {p12}
+		set {p13} to "?"
+		set {p14} to "?"
+		set {p15} to "?"
+		clear {p21}
+		clear {p22}
+		set {p23} to "?"
+		set {p24} to "?"
+		set {p25} to "?"
+		clear {p1}
+		clear {p2}
+		clear {bj}
+		clear {p1stay}
+		clear {p2stay}
+		clear {p1total}
+		clear {p2total}
+		clear {bjend}
+every second:
+	if {invtime} > 0:
+		set {invtime} to {invtime} - 1

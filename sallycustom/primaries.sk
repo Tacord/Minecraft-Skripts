@@ -1,0 +1,555 @@
+on right click with honeycomb:
+	cancel event
+	if {cd1::%player%} is 0:
+		if {ability::%player%} is "Fast Forward":
+			set {cd1::%player%} to 7
+			teleport player to player
+			wait for 0.1 seconds
+			push player forward at speed 1.333
+			apply slow falling to player for 1.5 seconds
+			sound(player, "entity.blaze.shoot", 10, 1, 1)
+			loop 5 times:
+				make 10 of flame at player
+				wait for 0.1 seconds
+		if {ability::%player%} is "Gun":
+			set {cd1::%player%} to 5
+			loop 3 times:
+				shoot a small fireball at speed 6
+				sound(player, "block.anvil.place", 10, 0.3, 1)
+				wait for 0.1 seconds
+				
+				
+		if {ability::%player%} is "Explosive Waters":
+			set {cd1::%player%} to 12
+			set {death Explosive Waters::%player%} to true
+			sound(player, "entity.evoker.prepare_summon", 10, 1, 1)
+			apply slowness 4 to player for 1 second
+			wait for 1 second
+			set {_dmg} to player's health * 2.1
+			damage(player, 7, {_dmg})
+			loop all blocks in radius 5 of player:
+				block below loop-block is not air
+				loop 3 times:
+					show water splash at loop-block
+				show water bubble at loop-block
+			loop all entities in radius 5 of player:
+				loop-entity is not player
+				apply slowness 3 to loop-entity for 2 seconds
+			clear {death Explosive Waters::%player%}
+			sound(player, "entity.player.splash.high_speed", 10, 1, 1)
+	
+	
+		if {ability::%player%} is "Fire Hazard":
+			set {cd1::%player%} to 14
+			show mob spawner flames at player
+			set {firehazard::%player%} to true
+			sound(player, "block.fire.extinguish", 10, 1, 0.5)
+			wait for 7 seconds
+			set {firehazard::%player%} to false
+			sound(player, "block.fire.extinguish", 10, 1, 2)
+			
+			
+		if {ability::%player%} is "Explosion":
+			set {cd1::%player%} to 10
+			set {death Explosion::%player%} to true
+			apply slowness 2 to player for 0.5 seconds
+			apply weakness 10 to player for 0.5 seconds
+			apply blindness 10 to player for 0.7 seconds
+			wait for 0.5 seconds
+			damage(player, 6, 12)
+			show large explosion at block above player
+			sound(player, "entity.generic.explode", 16, 1, 1)
+			clear {death Explosion::%player%}
+			wait 0.1 seconds
+			loop all entities in radius 6 of player:
+				set {_vector} to vector between player and loop-entity
+				push loop-entity {_vector} at speed 1.5
+				push loop-entity upwards at speed 0.5
+				
+				
+		if {ability::%player%} is "Ice Throw":
+			set {cd1::%player%} to 9
+			play sound "block.glass.break" at volume 0.5 and pitch 1 for player
+			send title "Noot!" to player
+			play sound "block.note_block.flute" at volume 1 and pitch 0.875 for player
+			wait for 0.45 seconds
+			play sound "block.note_block.flute" at volume 1 and pitch 0.81 for player
+			send title "Noot noot!" to player
+			spawn "falling packed ice" parsed as entity type at block above player
+			push last spawned entity in direction of player at speed 2.2
+			loop 10 times:
+				clear {_c}
+				loop all entities in radius 5 of last spawned entity:
+					loop-entity is not player
+					loop-entity is not last spawned entity
+					if {_c} is not set:
+						set {_c} to true
+						make last spawned entity home towards block above loop-entity normally
+					remove mining fatigue from loop-entity
+					apply mining fatigue 4 to loop-entity for 5 seconds
+				wait for 0.1 seconds
+			kill last spawned entity
+			set {_e} to location of last spawned entity
+			loop all blocks in radius 1 of {_e}:
+				if loop-block is air:
+					set loop-block to packed ice
+			play sound "entity.player.hurt_freeze" at volume 2 and pitch 0.5 for player
+			wait for 0.15 seconds
+			loop all blocks in radius 2 of {_e}:
+				if loop-block is air:
+					set loop-block to packed ice
+			play sound "entity.player.hurt_freeze" at volume 2 and pitch 0.5 for player
+			wait for 0.15 seconds
+			loop all blocks in radius 3 of {_e}:
+				if loop-block is air:
+					set loop-block to packed ice
+			play sound "entity.player.hurt_freeze" at volume 2 and pitch 0.5 for player
+			wait for 0.15 seconds
+			loop all blocks in radius 4 of {_e}:
+				if loop-block is air:
+					set loop-block to packed ice
+			play sound "entity.player.hurt_freeze" at volume 2 and pitch 1 for player
+			wait for 4 seconds
+			loop all blocks in radius 7 of {_e}:
+				if loop-block is packed ice:
+					set loop-block to air
+			play sound "entity.player.hurt_freeze" at volume 2 and pitch 2 for player
+		
+		
+		if {ability::%player%} is "Frosty":
+			set {cd1::%player%} to 8
+			set {death Frosty::%player%} to true
+			sound(player, "entity.player.hurt_freeze", 10, 1.5, 1.5)
+			spawn "falling snow block" parsed as entity type at block above player
+			push last spawned entity in direction of player at speed 0.45
+			set {_e} to last spawned entity
+			apply invisibility to last spawned entity for 3 seconds
+			loop 40 times:
+				push last spawned entity upwards at speed 0.08
+				push last spawned entity in direction of player at speed 0.07
+				clear {_c}
+				damageblock({_e}, 2.5, 1.5, player)
+				loop all entities in radius 2.5 of last spawned entity:
+					loop-entity is not player
+					loop-entity is not last spawned entity
+					push loop-entity backwards at speed 0.05
+					apply weakness 1 to loop-entity for 0.4 seconds
+				loop all entities in radius 5 of last spawned entity:
+					loop-entity is not player
+					loop-entity is not last spawned entity
+					if {_c} is not set:
+						set {_c} to true
+						make last spawned entity home towards block above loop-entity normally
+				loop all blocks in radius 2 of last spawned entity:
+					show snowflake at loop-block
+				if block at last spawned entity is snow block:
+					set block at last spawned entity to air
+					stop
+				wait for 0.1 seconds
+			kill last spawned entity
+			clear {death Frosty::%player%}
+			
+		
+		if {ability::%player%} is "Aurorus Blaze":
+			set {cd1::%player%} to 10
+			teleport player to location of player
+			wait a tick
+			push player upwards at speed 1
+			apply slow falling to player for 4 seconds
+			wait for 1 second
+			set {death Aurorus Blaze::%player%} to true
+			sound(player, "entity.firework_rocket.launch", 10, 2, 1)
+			show firework explosion at player
+			loop all blocks in radius 7 of player:
+				set {_decider} to random integer between 1 and 14
+				{_decider} is 1
+				spawn arrow at loop-block
+				set last spawned entity on fire
+				set shooter of last spawned arrow to player
+				push last spawned arrow in direction of player at speed (random number between 1.5 and 2.5)
+			wait for 0.7 seconds
+			sound(player, "entity.firework_rocket.launch", 10, 2, 1)
+			push player downwards at speed 0.5
+			wait for 0.7 seconds
+			sound(player, "entity.firework_rocket.launch", 10, 2, 1)
+			wait for 1 second
+			clear {death Aurorus Blaze::%player%}
+
+
+		if {ability::%player%} is "Tamer":
+			set {cd1::%player%} to 2
+			clicked entity exists
+			set {cd1::%player%} to 10
+			make player ride clicked entity
+			loop 6 times:
+				push clicked entity in direction of player at speed 1
+				wait for 1 seconds
+			teleport player to player
+
+		if {ability::%player%} is "Susinator":
+			clicked entity exists
+			set {cd1::%player%} to 8
+			sound(player, "item.goat_horn.sound.2", 10, 1, 2)
+			send "%player%: &7%clicked entity% is sus" to player and clicked entity
+			sound(player, "entity.chicken.egg", 10, 1, 2)
+			show mob spawner flames at clicked entity
+			wait for 1 second
+			loop all entities in radius 10 of clicked entity:
+				loop-entity is not player
+				loop-entity is not clicked entity
+				loop-entity is not an item
+				show red wool breaking at loop-entity
+				set loop-entity's target to clicked entity
+				wait for 0.1 seconds
+				sound(player, "entity.chicken.egg", 10, 1, 2)
+				send "%loop-entity%: &7sus" to player and clicked entity
+
+		
+		if {ability::%player%} is "Impulse Magnet":
+			set {cd1::%player%} to 8
+			sound(player, "entity.enderman.teleport", 10, 1, 0.5)
+			spawn "falling end stone brick wall" parsed as entity type at block above player
+			push last spawned entity in direction of player at speed -0.2
+			loop 40 times:
+				push last spawned entity upwards at speed 0.04
+				if player's facing is not up:
+					push last spawned entity in direction of player at speed 0.04
+				loop all entities in radius 4.5 of last spawned entity:
+					loop-entity is not player or last spawned entity
+					make loop-entity ride last spawned entity
+					make loop-entity home towards last spawned entity normally
+					sound(last spawned entity, "entity.enderman.teleport", 10, 0.5, 2) 
+				loop all blocks in radius 3 of last spawned entity:
+					show purple dust at loop-block
+				wait for 0.05 seconds
+			show large explosion at block above last spawned entity
+			loop all entities in radius 5 of last spawned entity:
+				loop-entity is not player or last spawned entity
+				teleport loop-entity to loop-entity
+				set {_v} to vector between loop-entity and last spawned entity
+				push loop-entity {_v} at speed -0.5
+				push loop-entity upwards at speed 0.5
+			loop all blocks in radius 5 of last spawned entity:
+				show purple dust at loop-block
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for player
+			kill last spawned entity
+			if block at last spawned entity is end stone brick wall:
+				set block at last spawned entity to air
+		
+
+		if {ability::%player%} is "Technoblade":
+			clicked entity exists
+			set {death Technoblade} to true
+			set {cd1::%player%} to 14
+			spawn a pig at location of player
+			set name of last spawned entity to "Technoblade"
+			send "&eTechnoblade joined the game" to player and clicked entity
+			send "&fTechnoblade: &7whats up nerds" to player and clicked entity
+			loop 25 times:
+				{death Technoblade} is true
+				damageblock(last spawned pig, 2, 2, player)
+				set clicked entity's target to last spawned pig
+				sound(last spawned pig, "entity.pig.hurt", 10, 1, 0.5)
+				show explosion at clicked entity
+				set {_v} to vector between last spawned entity and clicked entity
+				push last spawned entity {_v} at speed 0.7
+				wait for 0.3 seconds
+			kill last spawned entity
+			send "&fTechnoblade: &7cya" to player and clicked entity
+			send "&eTechnoblade left the game" to player and clicked entity
+			clear {death Technoblade}
+
+
+		
+		if {ability::%player%} is "Spirit Soother":
+			set {cd1::%player%} to 14
+			set {_e} to 1
+			set {death Spirit Soother::%player%} to true
+			sound(player, "block.lava.extinguish", 10, 1, 0.5)
+			loop all blocks in radius 5 of player:
+				block below loop-block is not air
+				show lava pop at loop-block
+				set {_e} to {_e} + 1
+			sound(player, "block.lava.pop", 10, 1, 1)
+			if player's health is less than 5:
+				damage(player, 5, 20)
+				loop all entities in radius 5 of player:
+					loop-entity is not player
+					ignite loop-entity for 4 seconds
+			else:
+				damage(player, 5, 8)
+			loop all entities in radius 5 of player:
+				loop-entity is not player
+				ignite loop-entity for 2 seconds
+			sound(player, "entity.player.hurt_on_fire", 10, 1, 1)
+			clear {death Spirit Soother::%player%}
+
+
+		if {ability::%player%} is "Slam Dunk":
+			if clicked entity does not exist:
+				sound(player, "block.note_block.chime", 10, 1, 0.5)
+			clicked entity exists
+			set {cd1::%player%} to 7
+			sound(player, "block.note_block.bell", 10, 1, 0.5)
+			teleport clicked entity to player
+			teleport player to player
+			wait a tick
+			push clicked entity and player upwards at speed 1.5
+			apply slow falling to player for 4.5 seconds
+			apply slow falling to clicked entity for 1 seconds
+			wait for 1 seconds
+			sound(player, "entity.player.attack.sweep", 10, 1, 0.5)
+			make player damage clicked entity by 1
+			player's facing is not up:
+				push clicked entity in direction of player at speed 2
+			wait for 0.5 second
+			sound(player, "entity.firework_rocket.launch", 10, 1, 1)
+			loop 5 times:
+				sound(player, "entity.villager.celebrate", 10, 1, (random number between 0.7 and 1.3))
+				wait for 0.15 seconds
+			sound(player, "entity.firework_rocket.launch", 10, 1, 1)
+			loop 5 times:
+				sound(player, "entity.villager.celebrate", 10, 1, (random number between 0.7 and 1.3))
+				wait for 0.15 seconds
+			sound(player, "entity.firework_rocket.launch", 10, 1, 1)
+			
+
+
+		if {ability::%player%} is "Smart Bomb":
+			if {landmineset::%player%} is true:
+				set {cd1::%player%} to 7
+				set {death Landmine::%player%} to true 
+				loop all blocks in radius 4 of last spawned entity:
+					show smoke at loop-block
+				sound(player, "entity.generic.explode", 15, 1, 0.5)
+				damageloc({landminelocation::%player%}, 4, 12, player)
+				clear {landmineset::%player%}
+				clear {death Landmine::%player%}
+				stop
+			set {cd1::%player%} to 2
+			sound(player, "block.grass.break", 10, 1, 1)
+			spawn "falling heavy weighted pressure plate" parsed as entity type at block above player
+			push last spawned entity in direction of player at speed 1
+			sound(player, "entity.blaze.shoot", 10, 0.6, 2)
+			wait for 1 seconds
+			set {landmineset::%player%} to true
+			set {landminelocation::%player%} to location of last spawned entity
+			kill last spawned entity
+			if block at last spawned entity is heavy weighted pressure plate:
+				set block at last spawned entity to air
+
+
+		if {ability::%player%} is "Orbital Strike":
+			if player's y-coordinate > 61: 
+				set {cd1::%player%} to 45
+				set {_target_countdown} to 5
+				set {_orbitalpos} to location(player's x-coordinate, player's y-coordinate + 20, player's z-coordinate)
+				send "&2[JIBOT ORBITAL STRIKE SYSTEM v0.6.0 ALPHA]" to player
+				send "&2[INITIALIZING MODULES]" to player
+				teleport player to {_orbitalpos}
+				apply levitation 1 to the player for 10 seconds
+				apply slowness 25 to the player for 10 seconds
+				apply night vision 1 to the player for 10 seconds
+				wait 1 second
+				loop 5 times:
+					send "&2[Launching at player crosshair in %{_target_countdown}% seconds]" to player
+					wait 1 second
+					set {_target_countdown} to {_target_countdown} - 1
+
+				set {_player_yaw} to yaw of player
+				set {_player_pitch} to pitch of player
+				set {_target_vector} to vector from yaw {_player_yaw} and pitch {_player_pitch}
+				set {_target_ray} to ray trace from location of player along {_target_vector} with max distance 2048
+				set {_targeted_location} to ray trace hit location of {_target_ray}
+				set {_targeted_entity} to ray trace hit entity of {_target_ray}
+				set {_target_countdown} to 50
+				
+				
+				set {_locationentity} to location of {_targeted_entity}
+				set {_locationlocation} to location of {_targeted_location}
+				send "%{_locationentity}'s y position%" to player
+				set {_offsetvector} to vector -6, 0, -16
+				set {death Orbital Strike::%player%} to true
+				if {_locationentity}'s y position > 10:
+					strike lightning at {_targeted_entity}
+					send "&2[TARGET: %{_targeted_entity}% at %{_locationentity}%]" to player
+					set {_loc} to location of player
+					loop 40 times:
+						loop all blocks in radius 16 of player:
+							set {_decider} to random integer between 1 and 200
+							if {_decider} is 1:
+								spawn snowball at loop-block
+								push last spawned projectile in direction of player at speed 4
+								set shooter of last spawned snowball to player
+						wait 0.1 seconds
+				else:
+					strike lightning at {_targeted_location}
+					send "&2[TARGET: Location at %{_locationlocation}%]" to player
+					loop 40 times:
+						loop all blocks in radius 16 of player:
+							set {_decider} to random integer between 1 and 200
+							if {_decider} is 1:
+								spawn snowball at loop-block
+								push last spawned projectile in direction of player at speed 4
+								set shooter of last spawned snowball to player
+						wait 0.1 seconds
+					wait for 1 second
+				push player downwards at speed 1
+				wait for 0.3 seconds
+				apply slow falling to player for 1 seconds
+				clear {death Orbital Strike::%player%}
+
+
+
+		if {ability::%player%} is "Rain of Fire":
+			if player's y-coordinate > 61: 
+				set {cd1::%player%} to 20
+				set {_target_countdown} to 5
+				set {_orbitalpos} to location(player's x-coordinate, player's y-coordinate + 20, player's z-coordinate)
+				teleport player to {_orbitalpos}
+				apply levitation 1 to the player for 10 seconds
+				apply slowness 25 to the player for 10 seconds
+				apply night vision 1 to the player for 10 seconds
+				wait 3 second
+				loop 5 times:
+					send "&6Launching fireballs at crosshair in %{_target_countdown}% seconds" to player
+					wait 1 second
+					set {_target_countdown} to {_target_countdown} - 1
+
+				set {_player_yaw} to yaw of player
+				set {_player_pitch} to pitch of player
+				set {_target_vector} to vector from yaw {_player_yaw} and pitch {_player_pitch}
+				set {_target_ray} to ray trace from location of player along {_target_vector} with max distance 2048
+				set {_targeted_location} to ray trace hit location of {_target_ray}
+				set {_targeted_entity} to ray trace hit entity of {_target_ray}
+				set {_target_countdown} to 50
+				
+				
+				set {_locationentity} to location of {_targeted_entity}
+				set {_locationlocation} to location of {_targeted_location}
+				send "%{_locationentity}'s y position%" to player
+				set {_offsetvector_y} to 0
+				set {_offsetvector} to vector -6, {_offsetvector_y}, -16
+				if {_locationentity}'s y position > 10:
+					strike lightning at {_targeted_entity}
+					send "&6Target: %{_targeted_entity}% at %{_locationentity}%" to player
+					loop 56 times:
+						set {_shootdirectionstart} to the location at ({_targeted_entity}'s x position + a random number between 0 and 12, {_targeted_entity}'s y position + 70, {_targeted_entity}'s z position + a random number between 0 and 12)
+						shoot fireball from {_shootdirectionstart} ~ {_offsetvector} at speed 6 downwards
+						wait 0.05 seconds
+				else:
+					strike lightning at {_targeted_location}
+					send "&6Target: Location at %{_locationlocation}%" to player
+					loop 56 times:
+						set {_shootdirectionstart} to the location at ({_targeted_entity}'s x position + a random number between 0 and 12, {_targeted_entity}'s y position + 70, {_targeted_entity}'s z position + a random number between 0 and 12)
+						shoot fireball from {_shootdirectionstart} ~ {_offsetvector} at speed 6 downwards
+						wait 0.05 seconds
+
+				wait 0.2 seconds
+				apply levitation 1 to the player for 0.5 seconds
+				apply slow falling 2 to the player for 10 seconds
+			else:
+				send "&6You must be above sea level (y>62) to use Rain of Fire" to player
+
+
+
+
+
+		if {ability::%player%} is "Strip":
+			clicked entity exists
+			set {cd1::%player%} to 6
+			sound(player, "entity.fox.screech", 10, 2, 2)
+			sound(player, "entity.fox.screech", 10, 2, 2)
+			set {_e} to random integer between 1 and 4
+			if {_e} is 1:
+				set {_arm} to clicked entity's helmet
+				clicked entity has enough space for 1 of {_arm}
+				set clicked entity's helmet to air
+				give 1 of {_arm} to clicked entity
+			if {_e} is 2:
+				set {_arm} to clicked entity's leggings
+				clicked entity has enough space for 1 of {_arm}
+				set clicked entity's leggings to air
+				give 1 of {_arm} to clicked entity
+			if {_e} is 3:
+				set {_arm} to clicked entity's chestplate
+				clicked entity has enough space for 1 of {_arm}
+				set clicked entity's chestplate to air
+				give 1 of {_arm} to clicked entity
+			if {_e} is 4:
+				set {_arm} to clicked entity's boots
+				clicked entity has enough space for 1 of {_arm}
+				set clicked entity's boots to air
+				give 1 of {_arm} to clicked entity
+			loop 30 times:
+				teleport clicked entity to clicked entity
+				wait for 0.05 seconds
+				loop all blocks in radius 2 of player:
+					show snow block breaking at loop-block
+				loop all blocks in radius 2 of clicked entity:
+					show red wool breaking at loop-block
+
+
+
+		if {ability::%player%} is "Smoke Bomb":
+			make 500 of spit using 1 above player
+			sound(player, "entity.allay.death", 10, 1, 0.5)
+			set {cd1::%player%} to 10
+			apply invisibility to player for 6 seconds
+			apply speed 2 to player for 6 seconds
+			apply strength to player for 6 seconds
+
+
+
+
+
+
+
+
+
+
+
+			
+	else:
+		set {_cd1} to {cd1::%player%}
+		set {_cd2} to {cd2::%player%}
+		if {cd1::%player%} = 0:
+			set {_cd1} to "&a(Ready) &70"
+		if {cd2::%player%} = 0:
+			set {_cd2} to "&a(Ready) &70"
+		send action bar "&f%{ability::%player%}%: &c%{_cd1}%s &8&l| &f%{ability2::%player%}%: &c%{_cd2}%s &8&l| &f%{ability3::%player%}%" to player
+
+on projectile hit:
+	if projectile is snowball:
+		{death Orbital Strike::%shooter%} is true
+		victim is not shooter
+		show explosion at projectile
+		set {_p} to projectile 
+		damageblock({_p}, 3, 4, shooter)
+		loop all entities in radius 30 of projectile:
+			play sound "entity.generic.explode" at volume 0.1 and pitch 2 for loop-entity
+
+on any move:
+	if {stun::%event-entity%} is true:
+		cancel event
+	
+on death:
+	if victim is "falling end stone brick wall" parsed as entity type:
+		clear drops
+	if name of victim is "Technoblade":
+		clear {death Technoblade}
+		clear drops
+	if name of attacker is "Technoblade":
+		clear {death Technoblade}
+		kill attacker
+
+on break of ice:
+	cancel event
+	set event-block to air
+	drop ice
+	
+on damage:
+	if {firehazard::%attacker%} is true:
+		set damage to damage + damage * 0.2
+		ignite victim for 4 seconds
+		sound(attacker, "entity.blaze.hurt", 10, 0.5, 1)

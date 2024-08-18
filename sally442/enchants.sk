@@ -1,0 +1,71 @@
+command /enchlist:
+	trigger:
+		send "&d&lList of Enchants"
+		send "&e10 lvls &bImpede &7Slows down victim for 1 second &3III"
+		send "&e15 lvls &bFloatation &7Applies levitation to victim &3II"
+		send "&e15 lvls &bHasty &7Gives haste if held &3I"
+		send "&e5 lvls &bNocturnal &7Gives night vision if held &3I"
+
+command /ench <text>:
+	trigger:
+		if arg-1 is "Impede":
+			if player's tool is diamond sword or wooden sword or iron sword or gold sword or netherite sword or stone sword:
+				if player's level is greater than 10:
+					set line 1 of lore of player's tool to "&7Impede I"
+					if line 1 of player's tool's lore is "&7Impede I":
+						set line 1 of lore of player's tool to "&7Impede II"
+					make console execute command "/xp add %player% -10 levels"
+					send "&aYour tool has gained an enchantment!"
+				else:
+					send "&cNot enough levels!"
+			else:
+				send "&cPlease hold a valid item"
+		if arg-1 is "Floatation":
+			if player's tool is diamond sword or wooden sword or iron sword or gold sword or netherite sword or stone sword:
+				if player's level is greater than 15:
+					make console execute command "/xp add %player% -15 levels"
+					send "&aYour tool has gained an enchantment!"
+					set line 2 of lore of player's tool to "&7Floatation I"
+				else:
+					send "&cNot enough levels!"
+			else:
+				send "&cPlease hold a valid item"
+		if arg-1 is "Hasty":
+			if player's tool is diamond pickaxe or netherite pickaxe:
+				if player's level is greater than 15:
+					make console execute command "/xp add %player% -15 levels"
+					send "&aYour tool has gained an enchantment!"
+					set line 2 of lore of player's tool to "&7Hasty I"
+				else:
+					send "&cNot enough levels!"
+			else:
+				send "&cPlease hold a valid item"
+		if arg-1 is "Nocturnal":
+			if player's tool is diamond shovel or netherite shovel:
+				if player's level is greater than 5:
+					make console execute command "/xp add %player% -5 levels"
+					send "&aYour tool has gained an enchantment!"
+					set line 1 of lore of player's tool to "&7Nocturnal I"
+				else:
+					send "&cNot enough levels!"
+			else:
+				send "&cPlease hold a valid item"
+				
+on tab complete of "/ench":
+	set tab completions for position 1 to "Impede", "Floatation", "Hasty" and "Nocturnal"
+
+on right click:
+	if line 2 of player's tool's lore is "&7Hasty I":
+		apply haste 1 to player for 10 second
+	if line 1 of player's tool's lore is "&7Nocturnal I":
+		apply night vision 1 to player for 10 second
+
+on damage:
+	if line 1 of attacker's tool's lore is "&7Impede I":
+		apply slowness 2 to victim for 1 second
+	if line 1 of attacker's tool's lore is "&7Impede II":
+		apply slowness 2 to victim for 1.6 second
+	if line 2 of attacker's tool's lore is "&7Floatation I":
+		apply levitation 1 to victim for 0.5 second
+	if line 2 of attacker's tool's lore is "&7Floatation II":
+		apply levitation 1 to victim for 0.9 second

@@ -1,0 +1,946 @@
+function sound(p:entity, sound:text, range:number, volume:number, pitch:number):
+	loop all entities in radius {_range} of {_p}:
+		play sound "%{_sound}%" at volume {_volume} and pitch {_pitch} for loop-entity
+
+function damage(p:entity, radius:number, damage:number):
+	loop all entities in radius {_radius} of {_p}:
+		if helmet of loop-entity is iron helmet or gold helmet:
+			set {_damage} to {_damage} * 0.985
+		if helmet of loop-entity is diamond helmet or netherite helmet:
+			set {_damage} to {_damage} * 0.96
+		if boots of loop-entity is iron boots or gold boots:
+			set {_damage} to {_damage} * 0.99
+		if boots of loop-entity is diamond boots or netherite boots:
+			set {_damage} to {_damage} * 0.97
+		if chestplate of loop-entity is iron chestplate or gold chestplate:
+			set {_damage} to {_damage} * 0.93
+		if chestplate of loop-entity is diamond chestplate or netherite chestplate:
+			set {_damage} to {_damage} * 0.9
+		if leggings of loop-entity is iron leggings or gold leggings:
+			set {_damage} to {_damage} * 0.955
+		if leggings of loop-entity is diamond leggings or netherite leggings:
+			set {_damage} to {_damage} * 0.92
+		loop-entity is not {_p}
+		make {_p} damage loop-entity by {_damage}
+
+function damageblock(p:entity, radius:number, damage:number, attacker:player):
+	loop all entities in radius {_radius} of {_p}:
+		if helmet of loop-entity is iron helmet or gold helmet:
+			set {_damage} to {_damage} * 0.985
+		if helmet of loop-entity is diamond helmet or netherite helmet:
+			set {_damage} to {_damage} * 0.96
+		if boots of loop-entity is iron boots or gold boots:
+			set {_damage} to {_damage} * 0.99
+		if boots of loop-entity is diamond boots or netherite boots:
+			set {_damage} to {_damage} * 0.97
+		if chestplate of loop-entity is iron chestplate or gold chestplate:
+			set {_damage} to {_damage} * 0.93
+		if chestplate of loop-entity is diamond chestplate or netherite chestplate:
+			set {_damage} to {_damage} * 0.9
+		if leggings of loop-entity is iron leggings or gold leggings:
+			set {_damage} to {_damage} * 0.955
+		if leggings of loop-entity is diamond leggings or netherite leggings:
+			set {_damage} to {_damage} * 0.92
+		loop-entity is not {_p} or {_attacker}
+		make {_attacker} damage loop-entity by {_damage}
+
+function damageloc(p:location, radius:number, damage:number, attacker:entity):
+	loop all entities in radius {_radius} of {_p}:
+		if helmet of loop-entity is iron helmet or gold helmet:
+			set {_damage} to {_damage} * 0.985
+		if helmet of loop-entity is diamond helmet or netherite helmet:
+			set {_damage} to {_damage} * 0.96
+		if boots of loop-entity is iron boots or gold boots:
+			set {_damage} to {_damage} * 0.99
+		if boots of loop-entity is diamond boots or netherite boots:
+			set {_damage} to {_damage} * 0.97
+		if chestplate of loop-entity is iron chestplate or gold chestplate:
+			set {_damage} to {_damage} * 0.93
+		if chestplate of loop-entity is diamond chestplate or netherite chestplate:
+			set {_damage} to {_damage} * 0.9
+		if leggings of loop-entity is iron leggings or gold leggings:
+			set {_damage} to {_damage} * 0.955
+		if leggings of loop-entity is diamond leggings or netherite leggings:
+			set {_damage} to {_damage} * 0.92
+		loop-entity is not {_attacker}
+		make {_attacker} damage loop-entity by {_damage}
+
+on connect:
+	if {abilitycount::%player's uuid%} is not set:
+		set {abilitycount::%player's uuid%} to 0
+	if {RRRcd::%player's uuid%} is not set:
+		set {RRRcd::%player's uuid%} to 0
+	if {RRLcd::%player's uuid%} is not set:
+		set {RRLcd::%player's uuid%} to 0
+	if {RLLcd::%player's uuid%} is not set:
+		set {RLLcd::%player's uuid%} to 0
+	if {RLRcd::%player's uuid%} is not set:
+		set {RLRcd::%player's uuid%} to 0
+
+command /zombie:
+	permission: op
+	trigger:
+		loop 10 times:
+			spawn an adult zombie at player
+			equip last spawned zombie with leather helmet
+
+command /setslot [<integer>]:
+	trigger:
+		set {_a} to arg-1
+		set {_e} to ({_a} - 1)
+		set {slot::%player's uuid%} to {_e}
+		send "&eSet ability slot to &f%arg-1%"
+		send "&7Make sure you're on this slot when using your ability!"
+
+on right click:
+	{slot::%player's uuid%} is a number
+	set {_slot} to slot {slot::%player's uuid%} of player's inventory
+	if player's held item is {_slot}:
+		rightclick(player)
+
+on sneak toggle:
+	if player is sneaking:
+		set {abilitycount::%player's uuid%} to 0
+		send title "" with subtitle "&7" to player for 1 seconds
+
+command /classes:
+	aliases: abilities
+	trigger:
+		set {_gui} to a new chest inventory with 5 row with name "&lClass Select"
+		set slot (integers from 0 to 100) of {_gui} to gray stained glass pane named " "
+		set slot (integers from 10 to 16) of {_gui} to barrier named "&8Coming Soon"
+		set slot (integers from 19 to 25) of {_gui} to barrier named "&8Coming Soon"
+		set slot (integers from 28 to 34) of {_gui} to barrier named "&8Coming Soon"
+		set slot 10 of {_gui} to stick named "&eAdventurer" with lore "&aRRR: &fThe user dashes forward slightly", "&7CD: 6s", "&aRRL: &fThe user gains a shield, blocking","&f50%% damage for 3 seconds ", "&7CD: 8s", "&aRLL: &fThe user uses a sword to slash", "&fa wide area around themselves", "&7DMG: 6 * atk | CD: 10s", "&aRLR: &fThe user throws a smoke bomb,", "&fbecoming invisible for 3 seconds", "&7CD: 10s", "", "&7An all-rounded class that specializes in", "&7close-range combat. With simple abilities that", "&7provide the user with mobility, defense, and", "&7attack, this makes it a great starting ", "&7ability to use." and "%{adventurerlocked::%player's uuid%}%"
+		set slot 11 of {_gui} to blaze rod named "&eMagician" with lore "&aRRR: &fThe user teleports 7 blocks in", "&ffront of themselves", "&7CD: 8s", "&aRRL: &fFor the next 2 seconds, the next incoming", "&fattack the user takes causes the user to", "&fteleport behind the attacker and deal the damage taken;", "&fuser is immune to the damage", "&7CD: 12s", "&aRLL: &fThe user casts 3 fireballs, dealing AOE damage", "&7DMG 4x3 * atk | CD: 8s", "&aRLR: &fThe user shoots a beam of fire,", "&figniting all entities in range for 3 seconds", "&7CD: 10s", "", "&7With its high-damage output and long-ranged attacks,", "&7this class is both aggressive and safe to use.", "&7Despite lacking support skills and struggling to keep up ", "&7in close-range combat, the Magician class provides the", "&7user versatile abilities that excel in long-ranged offense." and "%{magicianlocked::%player's uuid%}%"
+		set slot 12 of {_gui} to white wool named "&eWind" with lore "&aRRR: &fThe user bends wind, allowing the ", "&fuser to fly for 3 seconds", "&7CD: 12s", "&aRRL: &fPushes away all entities and projectiles ", "&faround the user; user gets launched upwards", "&7CD: 10s", "&aRLL: &fThe user creates a wind vortex, pulling ", "&fall entities towards the center", "&7CD: 12s", "&aRLR: &fThe user creates a radius around themselves, ", "&fincreasing jump height and attack damage ", "&ffor allies in range for 6 seconds", "&7BUFFS: +30%% atk, +150%% jump height | CD: 16s", "", "&7Although the Wind class lacks damage and struggles with ", "&7single-target enemies, its excellent utility and support ", "&7skills make up for this drawback. This class is defensive ", "&7and specializes in crowd control, with the ability to both push ", "&7enemies away and pull them closer to each other." and "%{windlocked::%player's uuid%}%"
+		set slot 13 of {_gui} to water bucket named "&eOrca" with lore "&aRRR: &fThe user rides a wave, allowing the user ", "&fto quickly travel in a diagonal range", "&7CD: 14s", "&aRRL: &fThe user creates a levitating water bubble, ", "&fshielding all incoming attacks by 75%% for 5 seconds", "&7CD: 15s", "&aRLL: &fCreates a large wave that surrounds the user, ", "&fdamaging nearby entities based on max health", "&7DMG: 7 * max health | CD: 16s", "&aRLR: &fThe user shoots a water beam, trapping all enemies ", "&fthat get hit in a water bubble, dealing damage when ", "&fpopped (after 3 seconds)", "&7DMG: 5 * max health | CD: 16s", "", "&7Despite having long cooldown times, this class includes skills ", "&7that counter swarms and provide the user with powerful ", "&7shields to increase survivability" and "%{orcalocked::%player's uuid%}%"
+		set slot 14 of {_gui} to iron sword named "&eBandit" with lore "&aRRR: &fThe user uses a grappling hook to swing towards blocks", "&7CD: 6s", "&aRRL: &fSwiftly dashes through entities, becoming ", "&fimmune to all incoming damage for a brief moment", "&7CD: 5s", "&aRLL: &fThe user gets a huge speed boost for 3 seconds, ", "&fmarking enemies around the user with a charm. ", "&fThe charms expire after 6 seconds", "&7CD: 12s", "&aRLR: &fThe user explodes all enemies marked with a ", "&fcharm, dealing AOE damage to each marked enemy", "&7DMG: 10 | CD: 2s", "", "&7The Bandit class specializes in both mobility and damage. ", "&7Despite being a riskier close-ranged option, the ", "&7Bandit can deal high damage to bosses and swarms ", "&7while maintaining excellent speed." and "%{banditlocked::%player's uuid%}%"
+		set slot 15 of {_gui} to tnt named "&eKim Jong Un" with lore "&aRRR: &fRides a missile-powered jetpack for ", "&f4 seconds. Sneak to go down", "&7CD: 14s", "&aRRL: &fSummons three North Korean soldiers ", "&fto defend the user for 10 seconds", "&7CD: 15s", "&aRLL: &fSummons a time detonated missile, ", "&fdealing damage after 3 seconds", "&7DMG: 10 | CD: 12s", "&aRLR: &fThe user explodes, killing themselves ", "&fand dealing huge damage to nearby entities", "&7DMG: 24 | CD: 10s", "", "&7Despite lacking defensive capabilities, The KJU ", "&7class highly specializes in brute force attacks, ", "&7providing skills that deals with multiple targets ", "&7at a time. 충성!" and "%{kjulocked::%player's uuid%}%"
+		set slot 16 of {_gui} to water bottle named "&ePharmacist" with lore "&aRRR: &fThe user consumes an anabolic steroid,", "&fincreasing strength, speed and jump height for 5 seconds. *", "&7CD: 2s | Overdose: +slowness +nausea", "&aRRL: &fThe user provides allies with aspirin pills, ", "&fdecreasing damage by 70%% and causing no knockback ", "&fand damage indicators to be shown for 5 seconds. *", "&7CD: 2s | Overdose: +poison +nausea", "&aRLL: &fThe user creates a field of liquid antibiotics, ", "&fproviding regeneration to all allies for 5 seconds. *", "&7CD: 2s | Overdose: +withering +blindness", "&aRLR: &fFor 5 seconds, all attacks from the ", "&fuser heal the victim and user instead", "&7HEAL: 10%% of max health | CD: 20s", "", "&8* The user can refresh existing effects but has a ", "&833%% chance to overdose and gain a de-buff ", "&8when consumed repeatedly, then a 16s CD", "&7The pharmacist class specializes in healing, being", "&7able to provide healing and defensive bonuses ", "&7to allies makes this class excellent at support." and "%{pharmacistlocked::%player's uuid%}%"
+		set slot 19 of {_gui} to flint named "&eMelee" with lore "&aRRR: &fThe next 3 attacks thrusts player forward, ", "&fdealing damage to nearby enemies *", "&7CD: 14s", "&aRRL: &fAll physical attacks are AOE ", "&fand have a wider range for 10 seconds *", "&7CD: 18s", "&aRLL: &fAll physical attacks spawn fangs at ", "&fthe enemy for 6 seconds *", "&7CD: 20s", "&aRLR: &fUser slashes rapidly, causing enemies and ", "&fthe user to rise *", "&7CD: 14s", "", "&8* The user gains hunger II", "&7The Melee class is a braindead, high-damage, ", "&7low defense class that offers many close-ranged ", "&7attack buffs, making it perfect for those ", "&7in particular who love Terraria." and "%{meleelocked::%player's uuid%}%"
+		open {_gui} for player
+
+on inventory click:
+	if name of event-inventory is "&lClass Select":
+		cancel event
+		if index of event-slot = 10:
+			make player execute command "/classchoose Adventurer"
+		if index of event-slot = 11:
+			make player execute command "/classchoose Magician"
+		if index of event-slot = 12:
+			make player execute command "/classchoose Wind"
+		if index of event-slot = 13:
+			make player execute command "/classchoose Orca"
+		if index of event-slot = 14:
+			make player execute command "/classchoose Bandit"
+		if index of event-slot = 15:
+			make player execute command "/classchoose Kim Jong Un"
+		if index of event-slot = 16:
+			make player execute command "/classchoose Pharmacist"
+		if index of event-slot = 19:
+			make player execute command "/classchoose Melee"
+
+function RRR(p:player):
+	if {RRRcd::%{_p}'s uuid%} > 0:
+		send title "&cYou are on cooldown!" with subtitle "&7[ &a🠊🠊🠊&7 ]" to {_p} for 1 seconds
+	{RRRcd::%{_p}'s uuid%} = 0
+	if {ability::%{_p}'s uuid%} is "Adventurer":
+		set {RRRcd::%{_p}'s uuid%} to 6 # COOLDOWN
+		teleport {_p} to {_p}
+		make 50 of spit using 1 at {_p}
+		wait a tick
+		push {_p} upwards at speed 0.5
+		push {_p} forwards at speed 1
+		apply slow falling to {_p} for 1.3 second
+	if {ability::%{_p}'s uuid%} is "Magician":
+		set {_count} to 1
+		loop all blocks in front of {_p}:
+			add 1 to {_count}
+			{_count} is not greater than 7
+			if loop-block is not air or glass or glass pane or white stained glass or white stained glass pane or grass or tall grass or water:
+				show red dust at loop-block
+				sound({_p}, "entity.illusioner.death", 10, 0.5, 2)
+				stop
+			show purple dust at loop-block
+		set {RRRcd::%{_p}'s uuid%} to 8 # COOLDOWN
+		set {_tp} to location of block 7 in front of {_p}
+		set {_tp2} to location of block 5 in front of {_p}
+		show ender signal at block 7 in front of {_p} 
+		teleport {_p} to {_p}
+		apply levitation to {_p} for 0.5 seconds
+		set {_yaw} to {_p}'s yaw
+		set {_pitch} to {_p}'s pitch
+		set yaw of {_tp} to {_yaw}
+		set pitch of {_tp} to {_pitch}
+		set yaw of {_tp2} to {_yaw}
+		set pitch of {_tp2} to {_pitch}
+		wait a tick
+		teleport {_p} to {_tp2}
+		wait for 0.05 seconds
+		teleport {_p} to {_tp}
+		sound({_p}, "entity.illusioner.prepare_mirror", 10, 2, 1.5)
+		push {_p} forwards at speed 0.1
+		apply slow falling to {_p} for 1 seconds
+	if {ability::%{_p}'s uuid%} is "Wind":
+		set {RRRcd::%{_p}'s uuid%} to 12 # COOLDOWN
+		wait a tick
+		apply levitation to {_p} for 3 seconds
+		loop 30 times:
+			show cloud at {_p}
+			push {_p} downwards at speed 0.005
+			push {_p} forwards at speed 0.15
+			if {_p}'s facing is up:
+				push {_p} upwards at speed 0.05
+			wait for 0.1 seconds
+	if {ability::%{_p}'s uuid%} is "Rice Farmer":
+		set {RRRcd::%{_p}'s uuid%} to 12 # COOLDOWN
+		wait a tick
+		apply levitation to {_p} for 5.2 seconds
+		spawn a chicken at {_p}
+		set {_chicken} to last spawned chicken
+		set name of {_chicken} to "&7Bird"
+		make {_chicken} ride {_p}
+		loop 50 times:
+			if {_chicken} exists:
+				set yaw of {_p} to {_yaw}
+				set pitch of {_p} to {_pitch}
+				set yaw of {_chicken} to {_yaw}
+				set pitch of {_chicken} to {_pitch}
+				show brown wool breaking at {_chicken}
+				push {_p} downwards at speed 0.005
+				push {_p} forwards at speed 0.05
+				wait for 0.1 seconds
+			else:
+				remove levitation from {_p}
+		set {_l} to location of {_p}
+		add -100000 to y-loc of {_l}
+		teleport {_chicken} to {_l}
+		kill {_chicken}
+	if {ability::%{_p}'s uuid%} is "Orca":
+		set {RRRcd::%{_p}'s uuid%} to 10 # COOLDOWN
+		teleport {_p} to {_p}
+		wait a tick
+		push {_p} upwards at speed 1
+		push {_p} forwards at speed 1
+		apply slow falling to {_p} for 2.5 second
+		sound({_p}, "entity.player.splash.high_speed", 20, 1, 0.5)
+		loop 25 times:
+			loop all blocks in radius 3 of {_p}:
+				show water drop at loop-block
+			wait for 0.1 seconds
+	if {ability::%{_p}'s uuid%} is "Bandit":
+		set {RRRcd::%{_p}'s uuid%} to 5 # COOLDOWN
+		spawn a chicken at {_p}
+		set name of last spawned chicken to "&8GRAPPLE"
+		apply invisibility to last spawned chicken for 100000 seconds
+		push last spawned chicken in direction of {_p} at speed 1.8
+		push last spawned chicken upwards at speed 0.35
+		make {_p} leash last spawned chicken
+		loop 8 times:
+			show lava drip at last spawned chicken
+			wait for 0.05 seconds
+		teleport {_p} to {_p}
+		wait a tick
+		set {_v} to vector between {_p} and last spawned chicken
+		push {_p} {_v} at speed 1.5
+		show mob spawner flames at last spawned chicken
+		set {_l} to location of {_p}
+		add -100000 to y-loc of {_l}
+		teleport last spawned chicken to {_l} 
+		kill last spawned chicken
+	if {ability::%{_p}'s uuid%} is "Kim Jong Un":
+		set {RRRcd::%{_p}'s uuid%} to 14 # COOLDOWN
+		wait a tick
+		loop 40 times:
+			if {_p} is not sneaking:
+				apply levitation to {_p} for 1 seconds
+				make 4 of smoke using 1 at {_p}
+				make 4 of flame using 1 at {_p}
+				push {_p} upwards at speed 0.09
+				push {_p} forwards at speed 0.05
+				sound({_p}, "entity.generic.extinguish_fire", 20, 0.1, 1)
+			if {_p} is sneaking:
+				remove levitation from {_p}
+				push {_p} forwards at speed 0.05
+			wait for 0.1 seconds
+			remove levitation from {_p}
+	if {ability::%{_p}'s uuid%} is "Pharmacist":
+		set {RRRcd::%{_p}'s uuid%} to 2 # COOLDOWN
+		if {steroid::%{_p}'s uuid%} > 0:
+			set {_e} to random integer between 1 and 3
+			if {_e} is 1:
+				set {RRRcd::%{_p}'s uuid%} to 18
+				remove speed from {_p}
+				remove jump boost from {_p}
+				remove strength from {_p}
+				apply slowness 3 to {_p} for 5 seconds
+				apply blindness to {_p} for 1 second
+				apply nausea 100 to {_p} for 7 seconds
+				apply weakness 2 to {_p} for 5 seconds
+				sound({_p}, "entity.elder_guardian.curse", 20, 0.7, 0.5)
+				stop
+		set {steroid::%{_p}'s uuid%} to {steroid::%{_p}'s uuid%} + 10
+		if {steroid::%{_p}'s uuid%} is not set:
+			set {steroid::%{_p}'s uuid%} to 10
+		sound({_p}, "entity.allay.ambient_with_item", 20, 2, 0.8)
+		apply speed 2 to {_p} for 5 seconds
+		apply jump boost 4 to {_p} for 5 seconds
+		apply strength 1 to {_p} for 5 seconds
+	if {ability::%{_p}'s uuid%} is "Melee":
+		set {RRRcd::%{_p}'s uuid%} to 14 # COOLDOWN
+		set {melee1::%{_p}'s uuid%} to 3
+		make 100 of witch using 1 at {_p}
+		apply hunger 2 to {_p} for 6 seconds
+		sound({_p}, "item.axe.wax_off", 30, 2, 1)
+		sound({_p}, "item.axe.wax_off", 30, 2, 2)
+		wait for 10 seconds
+		clear {melee1::%{_p}'s uuid%}
+
+
+function RRL(p:player):
+	if {RRLcd::%{_p}'s uuid%} > 0:
+		send title "&cYou are on cooldown!" with subtitle "&7[ &a🠊🠊&2🠈&7 ]" to {_p} for 1 seconds
+	{RRLcd::%{_p}'s uuid%} = 0
+	if {ability::%{_p}'s uuid%} is "Adventurer":
+		set {RRLcd::%{_p}'s uuid%} to 8 # COOLDOWN
+		set {adventurershield::%{_p}'s uuid%} to 3
+		sound({_p}, "sfx.adventurer2", 20, 0.5, 1)
+		loop 12 times:
+			loop all blocks in radius 3 of {_p}:
+				make 1 of totem of undying using 1 at loop-block
+			wait for 0.25 seconds
+	{RRLcd::%{_p}'s uuid%} = 0
+	if {ability::%{_p}'s uuid%} is "Magician":
+		set {RRLcd::%{_p}'s uuid%} to 8 # COOLDOWN
+		set {magicianshield::%{_p}'s uuid%} to 2
+		loop 8 times:
+			loop all blocks in radius 2 of {_p}:
+				show smoke at loop-block
+			wait for 0.25 seconds
+	if {ability::%{_p}'s uuid%} is "Wind":
+		set {RRLcd::%{_p}'s uuid%} to 10 # COOLDOWN
+		teleport {_p} to {_p}
+		wait a tick
+		make 400 of spit using 1 at {_p}
+		loop all entities in radius 7 of {_p}:
+			set {_v} to vector between {_p} and loop-entity
+			push loop-entity {_v} at speed 1.5
+			push loop-entity upwards at speed 0.75
+		push {_p} upwards at speed 0.4
+		apply slow falling to {_p} for 3 seconds
+	if {ability::%{_p}'s uuid%} is "Rice Farmer":
+		set {RRLcd::%{_p}'s uuid%} to 11 # COOLDOWN
+		spawn a chicken at {_p}
+		set {_chicken2} to last spawned chicken
+		set maximum health of {_chicken2} to 1000
+		heal {_chicken2}
+		apply speed 3 to {_chicken2} for 4 seconds
+		loop 4 times:
+			loop all entities in radius 20 of {_chicken2}:
+				set loop-entity's target to {_chicken2}
+				show angry villager at loop-entity
+			push {_chicken2} upwards at speed 0.5
+			wait for 1 second
+		set {_l} to location of {_chicken2}
+		add -100000 to y-loc of {_l}
+		teleport {_chicken2} to {_l}
+		kill {_chicken2}
+	if {ability::%{_p}'s uuid%} is "Orca":
+		set {RRLcd::%{_p}'s uuid%} to 15 # COOLDOWN
+		wait a tick
+		set {orcashield::%{_p}'s uuid%} to true
+		apply levitation to {_p} for 5 seconds
+		sound({_p}, "entity.dolphin.play", 20, 1, 0.5)
+		loop 50 times:
+			loop all blocks in radius 3 of {_p}:
+				show water bubble at loop-block
+				show water splash at loop-block
+			push {_p} forwards at speed 0.05
+			wait for 0.1 seconds
+		clear {orcashield::%{_p}'s uuid%}
+	if {ability::%{_p}'s uuid%} is "Bandit":
+		set {RRLcd::%{_p}'s uuid%} to 5 # COOLDOWN
+		teleport {_p} to {_p}
+		wait a tick
+		push {_p} forwards at speed 4
+		set {_h} to {_p}'s health
+		loop 4 times:
+			if {_p}'s health != {_h}:
+				set {_p}'s health to {_h}
+		wait for 0.2 seconds
+		teleport {_p} to {_p}
+	if {ability::%{_p}'s uuid%} is "Kim Jong Un":
+		set {RRLcd::%{_p}'s uuid%} to 15 # COOLDOWN
+		loop all entities in radius 50 of {_p}:
+			send "<%{_p}%> 충성!! (Lets unite)" to loop-entity
+		loop 3 times:
+			make 50 of poof using 1 at block 4 above {_p}
+			spawn skeleton at block 4 above {_p}
+			set name of last spawned skeleton to "&eSupreme Leader's Soldier"
+			set last spawned entity's max health to 6
+			apply wither to last spawned entity for 999999 seconds
+			equip last spawned skeleton with leather helmet of unbreaking 3
+			equip last spawned skeleton with leather chestplate of unbreaking 3
+			wait for 0.5 seconds
+	if {ability::%{_p}'s uuid%} is "Pharmacist":
+		set {RRLcd::%{_p}'s uuid%} to 2 # COOLDOWN
+		loop all blocks in radius 5 of {_p}:
+			show spell at loop-block
+		if {opioid::%{_p}'s uuid%} > 0:
+			set {_e} to random integer between 1 and 3
+			if {_e} is 1:
+				set {RRLcd::%{_p}'s uuid%} to 18
+				loop all players in radius 5 of {_p}:
+					apply poison 3 to loop-player for 6 seconds
+					apply blindness to loop-player for 6 second
+					set {opioid::%loop-player's uuid%} to 0
+				sound({_p}, "entity.elder_guardian.curse", 20, 0.7, 0.5)
+				stop
+		loop all players in radius 5 of {_p}:
+			set {opioid::%loop-player's uuid%} to 9 + {opioid::%loop-player's uuid%}
+			if {opioid::%loop-player's uuid%} is not set:
+				set {opioid::%loop-player's uuid%} to 9
+		sound({_p}, "entity.allay.ambient_with_item", 20, 2, 0.8)
+	if {ability::%{_p}'s uuid%} is "Melee":
+		set {RRLcd::%{_p}'s uuid%} to 18 # COOLDOWN
+		set {melee2::%{_p}'s uuid%} to true
+		set {melee2refresh::%{_p}'s uuid%} to true
+		apply hunger 2 to {_p} for 6 seconds
+		wait for 10 seconds
+		clear {melee2refresh::%{_p}'s uuid%}
+		clear {melee2::%{_p}'s uuid%}
+		make 50 of smoke using 1 at {_p}
+
+function RLL(p:player):
+	if {RLLcd::%{_p}'s uuid%} > 0:
+		send title "&cYou are on cooldown!" with subtitle "&7[ &a🠊&2🠈🠈&7 ]" to {_p} for 1 seconds
+	{RLLcd::%{_p}'s uuid%} = 0
+	if {ability::%{_p}'s uuid%} is "Adventurer":
+		set {RLLcd::%{_p}'s uuid%} to 10 # COOLDOWN
+		set {_loc} to location of {_p}
+		damage({_p}, 4, 6)
+		loop 2 times:
+			loop all blocks in radius 4 of {_p}:
+				set {_e} to random integer between 1 and 10
+				if {_e} is 1:
+					show sweep attack at loop-block
+			sound({_p}, "entity.player.attack.sweep", 20, 1, 1.5)
+			wait for 0.1 seconds
+		damage({_p}, 6, 6)
+		loop all blocks in radius 6 of {_p}:
+			set {_e} to random integer between 1 and 10
+			if {_e} is 1:
+				show sweep attack at loop-block
+		sound({_p}, "entity.player.attack.sweep", 20, 1, 0.75)
+	if {ability::%{_p}'s uuid%} is "Magician":
+		set {RLLcd::%{_p}'s uuid%} to 10 # COOLDOWN
+		loop 3 times:
+			make {_p} shoot fireball at speed 1.5
+			wait for 0.65 seconds
+	if {ability::%{_p}'s uuid%} is "Wind":
+		set {RLLcd::%{_p}'s uuid%} to 12 # COOLDOWN
+		set {_loc} to {_p}'s location
+		loop 15 times:
+			loop all entities in radius 7 of {_loc}:
+				loop-entity is not {_p}
+				set {_v} to vector between {_loc} and loop-entity
+				push loop-entity {_v} at speed -0.275
+			loop all blocks in radius 7 of {_loc}:
+				if block below loop-block is not air:
+					show cloud at loop-block
+			wait for 0.2 seconds
+	if {ability::%{_p}'s uuid%} is "Orca":
+		set {RLLcd::%{_p}'s uuid%} to 16 # COOLDOWN
+		set {_loc} to {_p}'s location
+		apply slowness 3 to {_p} for 1.5 second
+		sound({_p}, "sfx.orca3", 20, 0.7, 1)
+		wait for 1.5 second
+		damage({_p}, 10, 7 * ({maxhealth::%{_p}'s uuid%}/10))
+		loop all blocks in radius 10 of {_p}:
+			show water splash at loop-block
+			show water bubble at loop-block
+	if {ability::%{_p}'s uuid%} is "Bandit":
+		set {RLLcd::%{_p}'s uuid%} to 16 # COOLDOWN
+		apply speed 5 to {_p} for 3 seconds
+		loop 30 times:
+			make 20 of firework using 1 at {_p}
+			wait for 0.1 seconds
+			loop all entities in radius 3 of {_p}:
+				loop-entity is not {_p}
+				make 1 of flash using 1 at loop-entity
+				set {banditcharm::%loop-entity%} to 6
+	if {ability::%{_p}'s uuid%} is "Kim Jong Un":
+		set {RLLcd::%{_p}'s uuid%} to 14 # COOLDOWN
+		spawn chicken at {_p}
+		set {_c} to last spawned chicken
+		apply invisibility to {_c} for 9999 seconds
+		apply slowness 100 to {_c} for 9999 seconds
+		set name of {_c} to "&7Bird"
+		push {_c} in direction of {_p} at speed 1
+		push {_c} upwards at speed 0.5
+		loop 15 times:
+			make 5 of firework using 1 at {_c}
+			make 5 of flame using 1 at {_c}
+			show mob spawner flames at {_c}
+			push {_c} downwards at speed 0.1
+			wait for 0.1 seconds
+		loop 15 times:
+			make 5 of firework using 1 at {_c}
+			make 5 of flame using 1 at {_c}
+			push {_c} downwards at speed 0.1
+			show mob spawner flames at {_c}
+			wait for 0.1 seconds
+		set {_loc} to location of {_c}
+		damageloc({_loc}, 8, 10, {_p})
+		sound({_p}, "entity.generic.explode", 30, 1, 0.5)
+		make 100 of smoke using 1 at {_c}
+		make 100 of flame using 1 at {_c}
+		make 3 of explosion emitter using 1 at {_c}
+		make 10 of flash using 1 at {_c}
+		loop all blocks in radius 8 of {_c}:
+			set {_e} to random integer between 1 and 10
+			if {_e} is 1:
+				show smoke at loop-block
+		kill {_c}
+
+	if {ability::%{_p}'s uuid%} is "Pharmacist":
+		set {RLLcd::%{_p}'s uuid%} to 2 # COOLDOWN
+		loop all blocks in radius 7 of {_p}:
+			show spell at loop-block
+		if {antibiotic::%{_p}'s uuid%} > 0:
+			set {_e} to random integer between 1 and 3
+			if {_e} is 1:
+				set {RLLcd::%{_p}'s uuid%} to 18
+				loop all players in radius 5 of {_p}:
+					apply wither 3 to loop-player for 5 seconds
+					apply blindness to loop-player for 5 second
+					remove regeneration from loop-player
+					set {antibiotic::%loop-player's uuid%} to 0
+				sound({_p}, "entity.elder_guardian.curse", 20, 0.7, 0.5)
+				stop
+		loop all players in radius 5 of {_p}:
+			set {antibiotic::%loop-player's uuid%} to 9 + {antibiotic::%loop-player's uuid%}
+			if {antibiotic::%loop-player's uuid%} is not set:
+				set {antibiotic::%loop-player's uuid%} to 9
+			apply regeneration 2 to loop-player for 5 seconds
+		sound({_p}, "entity.allay.ambient_with_item", 20, 2, 0.8)
+
+	if {ability::%{_p}'s uuid%} is "Melee":
+		set {RLLcd::%{_p}'s uuid%} to 20 # COOLDOWN
+		set {melee3::%{_p}'s uuid%} to true 
+		set {melee3refresh::%{_p}'s uuid%} to true
+		apply slowness to {_p} for 6 seconds
+		sound({_p}, "entity.guardian.death", 20, 1, 2)
+		make 50 of lava using 1 at {_p}
+		apply hunger 2 to {_p} for 6 seconds
+		wait for 6 seconds
+		clear {melee3refresh::%{_p}'s uuid%}
+		clear {melee3::%{_p}'s uuid%}
+		sound({_p}, "entity.guardian.death", 20, 1, 0.5)
+
+
+
+function RLR(p:player):
+	if {RLRcd::%{_p}'s uuid%} > 0:
+		send title "&cYou are on cooldown!" with subtitle "&7[ &a🠊&2🠈&a🠊&7 ]" to {_p} for 1 seconds
+	{RLRcd::%{_p}'s uuid%} = 0
+	if {ability::%{_p}'s uuid%} is "Adventurer":
+		set {RLRcd::%{_p}'s uuid%} to 10 # COOLDOWN
+		loop all blocks in radius 3 of {_p}:
+			show spit at loop-block
+		apply invisibility to {_p} for 3 seconds
+		apply speed to {_p} for 3 seconds
+		loop all entities in radius 40 of {_p}:
+			if loop-entity's target is {_p}:
+				reset loop-entity's target
+
+	if {ability::%{_p}'s uuid%} is "Magician":
+		set {RLRcd::%{_p}'s uuid%} to 10 # COOLDOWN
+		loop all blocks in front of {_p}:
+			add 1 to {_count}
+			if {_count} is not greater than 16:
+				show mob spawner flames at block 1 above loop-block
+				sound({_p}, "block.lava.extinguish", 16, 0.5, 2)
+				loop all entities in radius 2 of loop-block:
+					loop-entity is not {_p}
+					ignite loop-entity for 4 seconds
+				wait for 0.05 seconds
+
+	if {ability::%{_p}'s uuid%} is "Wind":
+		set {RLRcd::%{_p}'s uuid%} to 16 # COOLDOWN
+		set {_loc} to {_p}'s location
+		loop 30 times:
+			loop all players in radius 6 of {_loc}:
+				apply jump boost 2 to loop-player for 0.2 seconds
+				apply strength to loop-player for 0.2 seconds
+			loop all blocks in radius 6 of {_loc}:
+				block below loop-block is not air
+				show white wool breaking at loop-block
+			wait for 0.2 seconds
+	if {ability::%{_p}'s uuid%} is "Orca":
+		set {RLRcd::%{_p}'s uuid%} to 10 # COOLDOWN
+		set {_loc} to {_p}'s location
+		sound({_p}, "sfx.orca4", 20, 0.7, 1)
+		loop all blocks in front of {_p}:
+			add 1 to {_count}
+			if {_count} is not greater than 10:
+				loop all blocks in radius 2 of loop-block:
+					show blue dust at loop-block-2
+				sound({_p}, "block.lava.extinguish", 16, 0.5, 2)
+				loop all entities in radius 3 of loop-block:
+					loop-entity is not {_p}
+					set {_loc} to loop-entity's location
+					loop 30 times:
+						loop all entities in radius 3 of loop-entity:
+							loop-entity-2 is not {_p}
+							teleport loop-entity-2 to {_loc}
+							show water bubble at loop-entity-2
+						loop all blocks in radius 3 of loop-entity-1:
+							show water drip at loop-block-2
+							show blue dust at loop-block-2
+							show light blue dust at loop-block-2
+						wait for 0.1 seconds
+					damageloc({_loc}, 4, 4, {_p})
+					if loop-entity exists:
+						loop-entity is not {_p}
+						stop
+				wait for 0.05 seconds
+	if {ability::%{_p}'s uuid%} is "Bandit":
+		set {RLRcd::%{_p}'s uuid%} to 2 # COOLDOWN
+		sound({_p}, "sfx.bandit4", 20, 0.7, 1)
+		loop all entities:
+			if {banditcharm::%loop-entity%} > 0:
+				set {banditcharm::%loop-entity%} to 3
+				make 2 of flash using 1 at {_p}
+				apply slowness 3 to loop-entity for 1 second
+		make 2 of flash using 1 at {_p}
+		wait for 1 second
+		make 1 of flash using 1 at {_p}
+		loop all entities:
+			if {banditcharm::%loop-entity%} > 0:
+				set {_loc} to location of loop-entity
+				damageloc({_loc}, 3, 10, {_p})
+				make 1 of explosion using 1 at {_loc}
+				set {banditcharm::%loop-entity%} to 0
+	if {ability::%{_p}'s uuid%} is "Kim Jong Un":
+		set {RLRcd::%{_p}'s uuid%} to 10 # COOLDOWN
+		wait a tick
+		send title "&cSneak to cancel suicide" with subtitle "&7[ &a🠊&2🠈&a🠊&7 ]" to {_p} for 1 seconds
+		apply slowness 2 to {_p} for 3 seconds
+		apply resistance 4 to {_p} for 3 seconds
+		sound({_p}, "entity.creeper.primed", 50, 2, 1)
+		loop 30 times:
+			make 5 of flame using 1 at {_p}
+			make 10 of smoke using 1 at {_p}
+			sound({_p}, "entity.allay.item_taken", 50, 0.7, 1)
+			if {_p} is sneaking:
+				stop
+			wait for 0.1 seconds
+		make 5 of explosion emitter using 1 at {_p}
+		damage({_p}, 10, 24)
+		loop all blocks in radius 10 of {_p}:
+			set {_e} to random integer between 1 and 10
+			if {_e} is 1:
+				show smoke at loop-block
+			if {_e} is 2:
+				show explosion at loop-block
+		kill {_p}
+		sound({_p}, "entity.generic.explode", 50, 1, 1)
+
+	if {ability::%{_p}'s uuid%} is "Pharmacist":
+		set {RLRcd::%{_p}'s uuid%} to 20 # COOLDOWN
+		sound({_p}, "entity.allay.ambient_with_item", 20, 2, 1)
+		make 200 of entity effect using 1 at {_p}
+		set {healattack::%{_p}'s uuid%} to true
+		loop 12 times:
+			set {healattackcd::%{_p}'s uuid%} to true
+			make 100 of electric spark using 1 at {_p}
+			wait for 0.5 second
+		clear {healattack::%{_p}'s uuid%}
+
+	if {ability::%{_p}'s uuid%} is "Melee":
+		set {RLRcd::%{_p}'s uuid%} to 14 # COOLDOWN
+		set {_loc} to location of {_p}
+		damage({_p}, 4, 2)
+		apply hunger 2 to {_p} for 3 seconds
+		loop 6 times:
+			loop all blocks in radius 4 of {_p}:
+				set {_e} to random integer between 1 and 10
+				if {_e} is 1:
+					show sweep attack at loop-block
+					show flame at loop-block
+			sound({_p}, "entity.player.attack.sweep", 20, 1, (random number between 1 and 2))
+			loop all entities in radius 4 of {_p}:
+				push loop-entity upwards at speed 0.22
+			wait for 0.1 seconds
+		damage({_p}, 6, 2)
+
+on target:
+	if name of event-entity is "&eSupreme Leader's Soldier":
+		loop all players:
+			if {ability::%loop-player's uuid%} is "Kim Jong Un":
+				cancel event
+
+on damage:
+	if {ability::%attacker's uuid%} is "Kim Jong Un":
+		loop all skeletons:
+			if name of loop-skeleton is "&eSupreme Leader's Soldier":
+				set loop-skeleton's target to victim
+	if {ability::%victim's uuid%} is "Kim Jong Un":
+		loop all skeletons:
+			if name of loop-skeleton is "&eSupreme Leader's Soldier":
+				set loop-skeleton's target to attacker
+
+on damage:
+	if {adventurershield::%victim's uuid%} > 0:
+		set damage to damage * 0.5
+	if {orcashield::%victim's uuid%} = true:
+		set damage to damage * 0.25
+	if {magicianshield::%victim's uuid%} > 0:
+		set {_e} to damage
+		set damage to 0
+		teleport victim to attacker
+		wait a tick
+		push victim backwards at speed 0.5
+		damage(victim,3,{_e})
+		set {magicianshield::%victim's uuid%} to 0
+	if {healattack::%attacker's uuid%} = true:
+		cancel event
+		{healattackcd::%attacker's uuid%} is true
+		set {_d} to attacker's max health * 0.1
+		set victim's health to victim's health + {_d}
+		set attacker's health to attacker's health + {_d}
+		make 50 of happy villager at victim with offset vector(1, 1, 1)
+		send victim's health to attacker
+		sound(attacker, "entity.experience_orb.pickup", 20, 0.7, 0.5)
+		clear {healattackcd::%attacker's uuid%}
+
+on death:
+	if name of victim is "&7Bird":
+		clear drops
+
+function rightclick(p:player):
+	set {activatetime::%{_p}'s uuid%} to 3
+	set {abilitycount::%{_p}'s uuid%} to {abilitycount::%{_p}'s uuid%} + 1
+	if {lasthit::%{_p}'s uuid%} is not set:
+		set {lasthit::%{_p}'s uuid%} to "r"
+	if {abilitycount::%{_p}'s uuid%} is 1:
+		send title "" with subtitle "&7[ &e🠊&7⬤⬤&7 ]" to {_p} for 1 seconds
+	if {abilitycount::%{_p}'s uuid%} is 2:
+		send title "" with subtitle "&7[ &e🠊🠊&7⬤&7 ]" to {_p} for 1 seconds
+	if {abilitycount::%{_p}'s uuid%} is 3:
+		set {abilitycount::%{_p}'s uuid%} to 0
+		set {activatetime::%{_p}'s uuid%} to 0
+		if {lasthit::%{_p}'s uuid%} is "r":
+			send title "" with subtitle "&7[ &a🠊🠊🠊&7 ]" to {_p} for 1 seconds
+			RRR({_p})
+		if {lasthit::%{_p}'s uuid%} is "l":
+			send title "" with subtitle "&7[ &a🠊&2🠈&a🠊&7 ]" to {_p} for 1 seconds
+			RLR({_p})
+	set {lasthit::%{_p}'s uuid%} to "r"
+
+on left click:
+	{slot::%player's uuid%} is a number
+	set {_slot} to slot {slot::%player's uuid%} of player's inventory
+	if player's held item is {_slot}:
+		leftclick(player)
+
+on left click:
+	if {melee1::%player's uuid%} > 0:
+		teleport player to player
+		wait a tick
+		push player forwards at speed 0.8
+		push player upwards at speed 0.3
+		loop 4 times:
+			loop all entities in radius 3 of player:
+				loop-entity is not player
+				push loop-entity in direction of player at speed 0.3
+			damage(player, 3, 2)
+			make 50 of flame using 1 at player
+			wait for 0.1 seconds
+		set {melee1::%player's uuid%} to {melee1::%player's uuid%} - 1
+	if {melee2::%player's uuid%} is true:
+		clear {melee2::%player's uuid%}
+		wait a tick
+		damage(player, 5, 2)
+		loop all blocks in radius 4 of player:
+			set {_e} to random integer between 1 and 10
+			if {_e} is 1:
+				show sweep attack at loop-block
+				show crit at loop-block
+		sound(player, "entity.player.attack.sweep", 20, 1, 2)
+		wait for 0.5 seconds
+		if {melee2refresh::%player's uuid%} is true:
+			set {melee2::%player's uuid%} to true
+
+on damage:
+	if {melee2::%attacker's uuid%} is true:
+		clear {melee2::%attacker's uuid%}
+		wait a tick
+		damage(attacker, 5, (damage / 2))
+		loop all blocks in radius 4 of attacker:
+			set {_e} to random integer between 1 and 10
+			if {_e} is 1:
+				show sweep attack at loop-block
+				show crit at loop-block
+		sound(attacker, "entity.player.attack.sweep", 20, 1, 2)
+		wait for 0.5 seconds
+		if {melee2refresh::%attacker's uuid%} is true:
+			set {melee2::%attacker's uuid%} to true
+	if {melee3::%attacker's uuid%} is true:
+		clear {melee3::%attacker's uuid%}
+		wait a tick
+		sound(attacker, "entity.zombie_villager.converted", 20, 0.8, 2)
+		set {_e} to block 4 above victim
+		wait for 0.5 seconds
+		loop all blocks in radius 2 of victim:
+			spawn evoker fangs at loop-block
+			show flame at loop-block
+		wait for 1 seconds
+		if {melee3refresh::%attacker's uuid%} is true:
+			set {melee3::%attacker's uuid%} to true
+
+on damage:
+	{slot::%attacker's uuid%} is a number
+	set {_slot} to slot {slot::%attacker's uuid%} of attacker's inventory
+	if attacker's held item is {_slot}:
+		if {abilitycount::%attacker's uuid%} > 0:
+			leftclick(attacker)
+
+on damage:
+	if {opioid::%victim's uuid%} > 3:
+		set damage to damage * 0.3
+		if victim's health > damage:
+			cancel event
+			set victim's health to victim's health - damage
+
+
+function leftclick(p:player):
+	if {abilitycount::%{_p}'s uuid%} is 2:
+		set {abilitycount::%{_p}'s uuid%} to 0
+		set {activatetime::%{_p}'s uuid%} to 0
+		if {lasthit::%{_p}'s uuid%} is "l":
+			send title "" with subtitle "&7[ &a🠊&2🠈🠈&7 ]" to {_p} for 1 seconds
+			RLL({_p})
+		if {lasthit::%{_p}'s uuid%} is "r":
+			send title "" with subtitle "&7[ &a🠊🠊&2🠈&7 ]" to {_p} for 1 seconds
+			RRL({_p})
+	if {abilitycount::%{_p}'s uuid%} is 1:
+		send title "" with subtitle "&7[ &e🠊&6🠈&7⬤&7 ]" to {_p} for 1 seconds
+		set {abilitycount::%{_p}'s uuid%} to 2
+		set {activatetime::%{_p}'s uuid%} to 3
+		set {lasthit::%{_p}'s uuid%} to "l"
+
+command /abilityset [<player>] <text>:
+	permission: op
+	trigger:
+		set {ability::%arg-1's uuid%} to arg-2
+
+command /classchoose <text>:
+	trigger:
+		set {_arg} to arg-1
+		if {%{_arg}%::%player's uuid%} is "&aUnlocked":
+			set {ability::%player's uuid%} to arg-1
+			send "&aSuccessfully set class to &e%arg-1%"
+		if {%{_arg}%::%player's uuid%} is "&cLocked &6[500⛁] &fClick to buy":
+			if {coins::%player's uuid%} > 499:
+				set {ability::%player's uuid%} to arg-1
+				set {%{_arg}%::%player's uuid%} to "&aUnlocked"
+				send "&aSuccessfully purchased &e%arg-1%"
+			else:
+				send "&cYou don't have enough coins to purchase this class"
+		else:
+			send "&cThis class does not exist"
+
+command /resetclass:
+	permission: op
+	trigger:
+		clear {adventurerlocked::%player's uuid%}
+		clear {magicianlocked::%player's uuid%}
+		clear {windlocked::%player's uuid%}
+		clear {orcalocked::%player's uuid%}
+		clear {kjulocked::%player's uuid%}
+		clear {banditlocked::%player's uuid%}
+		clear {pharmacistlocked::%player's uuid%}
+		clear {meleelocked::%player's uuid%}
+
+on join:
+	if {adventurerlocked::%player's uuid%} is not set:
+		set {adventurerlocked::%player's uuid%} to "&cLocked &6[500⛁] &fClick to buy"
+	if {magicianlocked::%player's uuid%} is not set:
+		set {magicianlocked::%player's uuid%} to "&cLocked &6[500⛁] &fClick to buy"
+	if {windlocked::%player's uuid%} is not set:
+		set {windlocked::%player's uuid%} to "&cLocked &6[500⛁] &fClick to buy"
+	if {orcalocked::%player's uuid%} is not set:
+		set {orcalocked::%player's uuid%} to "&cLocked &6[500⛁] &fClick to buy"
+	if {kjulocked::%player's uuid%} is not set:
+		set {kjulocked::%player's uuid%} to "&cLocked &6[500⛁] &fClick to buy"
+	if {banditlocked::%player's uuid%} is not set:
+		set {banditlocked::%player's uuid%} to "&cLocked &6[500⛁] &fClick to buy"
+	if {pharmacistlocked::%player's uuid%} is not set:
+		set {pharmacistlocked::%player's uuid%} to "&cLocked &6[500⛁] &fClick to buy"
+	if {meleelocked::%player's uuid%} is not set:
+		set {meleelocked::%player's uuid%} to "&cLocked &6[500⛁] &fClick to buy"
+
+every second:
+	loop all players:
+		if {activatetime::%loop-player's uuid%} > 0:
+			set {activatetime::%loop-player's uuid%} to {activatetime::%loop-player's uuid%} - 1
+		else:
+			set {abilitycount::%loop-player's uuid%} to 0
+
+		if {adventurershield::%loop-player's uuid%} > 0:
+			set {adventurershield::%loop-player's uuid%} to {adventurershield::%loop-player's uuid%} - 1
+		if {magicianshield::%loop-player's uuid%} > 0:
+			set {magicianshield::%loop-player's uuid%} to {magicianshield::%loop-player's uuid%} - 1
+
+		if {steroid::%loop-player's uuid%} > 0:
+			set {steroid::%loop-player's uuid%} to {steroid::%loop-player's uuid%} - 1
+		if {opioid::%loop-player's uuid%} > 0:
+			set {opioid::%loop-player's uuid%} to {opioid::%loop-player's uuid%} - 1
+		if {antibiotic::%loop-player's uuid%} > 0:
+			set {antibiotic::%loop-player's uuid%} to {antibiotic::%loop-player's uuid%} - 1
+	loop all entities:
+		if {banditcharm::%loop-entity%} > 0:
+			show mob spawner flames at loop-entity
+			set {banditcharm::%loop-entity%} to {banditcharm::%loop-entity%} - 1
+
+every 0.1 second:
+	loop all players:
+		if {RRRcd::%loop-player's uuid%} > 0:
+			set {RRRcd::%loop-player's uuid%} to {RRRcd::%loop-player's uuid%} - 0.1
+		if {RRLcd::%loop-player's uuid%} > 0:
+			set {RRLcd::%loop-player's uuid%} to {RRLcd::%loop-player's uuid%} - 0.1
+		if {RLLcd::%loop-player's uuid%} > 0:
+			set {RLLcd::%loop-player's uuid%} to {RLLcd::%loop-player's uuid%} - 0.1
+		if {RLRcd::%loop-player's uuid%} > 0:
+			set {RLRcd::%loop-player's uuid%} to {RLRcd::%loop-player's uuid%} - 0.1
+
+every 0.1 second:
+	loop all players:
+		set title of loop-player's scoreboard to "&7| &e&l%{ability::%loop-player's uuid%}% &7|"
+		wait a tick
+		if {RRRcd::%loop-player's uuid%} is 0:
+			set line 8 of loop-player's scoreboard to colored "&rRRR &8&l| &aReady"
+		else:
+			set line 8 of loop-player's scoreboard to colored "&rRRR &8&l| &c%{RRRcd::%loop-player's uuid%}%s"
+
+		if {RRLcd::%loop-player's uuid%} is 0:
+			set line 7 of loop-player's scoreboard to colored "&rRRL &8&l| &aReady"
+		else:
+			set line 7 of loop-player's scoreboard to colored "&rRRL &8&l| &c%{RRLcd::%loop-player's uuid%}%s"
+
+		if {RLLcd::%loop-player's uuid%} is 0:
+			set line 6 of loop-player's scoreboard to colored "&rRLL &8&l| &aReady"
+		else:
+			set line 6 of loop-player's scoreboard to colored "&rRLL &8&l| &c%{RLLcd::%loop-player's uuid%}%s"
+
+		if {RLRcd::%loop-player's uuid%} is 0:
+			set line 5 of loop-player's scoreboard to colored "&rRLR &8&l| &aReady"
+		else:
+			set line 5 of loop-player's scoreboard to colored "&rRLR &8&l| &c%{RLRcd::%loop-player's uuid%}%s"
+		set line 4 of loop-player's scoreboard to colored "                   "
+		set line 3 of loop-player's scoreboard to colored "&eCoins: &6%{coins::%loop-player's uuid%}%⛁"
+		#set line 2 of loop-player's scoreboard to colored "&6%{coins::%loop-player's uuid%}%⛁"
+		set line 1 of loop-player's scoreboard to colored ""

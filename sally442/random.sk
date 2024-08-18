@@ -1,0 +1,61 @@
+on player move:
+	if {random.%event-player%::afk} is greater than 339:
+		broadcast "* %event-player% is no longer &aAFK"
+	set {random.%event-player%::afk} to 0
+
+on join:
+	set {random.%event-player%::afk} to 0
+
+every 10 second:
+	loop all players:
+		set {random.%loop-player%::afk} to {random.%loop-player%::afk} + 10
+		if {random.%loop-player%::afk} is 340:
+			broadcast "* %loop-player% has gone &cAFK"
+		if {random.%loop-player%::afk} is 3600:
+			kick loop-player because "You have been AFK for too long"
+
+command /plugins:
+	permission: op
+	trigger:
+		send "&cThat would be nice, wouldn't it?"
+
+command /afktimer:
+	trigger:
+		send "&cTime before AFK message: &f%{random.%player%::afk}% / 340"
+		send "&cTime before AFK kick: &f%{random.%player%::afk}% / 3600"
+
+command /troyw <player> <text>:
+	permission: op
+	trigger:
+		send "&7&oItzTroy whispers to you: %arg-2%" to player and arg-1
+on damage:
+	victim is player
+	wait for 0.1 seconds
+	set {_health} to victim's health
+	set {_mhealth} to victim's max health
+	set {_health} to round({_health})
+	send "<##ABFD30>%victim% is on &c&l%{_health}%<##ABFD30>❤ / &c&l%{_mhealth}%<##ABFD30>❤!" to attacker
+
+command /rename <text>:
+	trigger:
+		set name of player's held item to colored arg-1
+
+on load:
+    wait for 23 hours
+    broadcast "&c&lSERVER RESTARTING IN &e&l1 HOUR"
+    wait for 30 minutes
+    broadcast "&c&lSERVER RESTARTING IN &e&l30 MINUTES"
+    wait for 20 minutes
+    broadcast "&c&lSERVER RESTARTING IN &e&l10 MINUTES"
+    wait for 5 minutes
+    broadcast "&c&lSERVER RESTARTING IN &e&l5 MINUTES"
+    wait for 3 minutes
+    broadcast "&c&lSERVER RESTARTING IN &e&l2 MINUTES"
+    wait for 1 minutes
+    broadcast "&c&lSERVER RESTARTING IN &e&l1 MINUTE"
+    wait for 30 seconds
+    broadcast "&c&lSERVER RESTARTING IN &e&l30 SECONDS"
+    wait for 20 seconds
+    broadcast "&c&lSERVER RESTARTING IN &e&l10 SECONDS"
+    wait for 10 seconds
+    make console execute command "/restart"

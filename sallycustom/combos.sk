@@ -1,0 +1,39 @@
+every second:
+	loop all players:
+		if {ability::%loop-player%} is "Fast Forward":
+			{ability2::%loop-player%} is "Chicken"
+			remove speed from loop-player
+			apply speed to loop-player for 1.01 seconds
+		if {ability::%loop-player%} is "Explosive Waters":
+			{ability2::%loop-player%} is "Whirling Steps"
+			set loop-player's max health to 12
+		else:
+			set loop-player's max health to 10
+
+every 0.2 second:
+	loop all players:
+		if {ability::%loop-player%} is "Smoke Bomb":
+			{ability2::%loop-player%} is "Substitute"
+			loop-player is sneaking
+			remove invisibility from loop-player
+			apply invisibility to loop-player for 0.5 second
+			apply speed 2 to loop-player for 0.21 seconds
+			set {_p} to loop-player
+			loop-player's held item is air
+			loop all entities in radius 10 of {_p}:
+				loop-entity-2's target is {_p}
+				clear loop-entity-2's target
+on damage:
+	victim is player
+	if {ability2::%victim%} is "Queen Bee":
+		{ability3::%victim%} is "Honeycomb"
+		spawn a bee at victim
+		set last spawned bee's target to attacker
+		apply wither 5 to last spawned bee for 9999 seconds
+
+on sneak toggle:
+	{ability3::%player%} is "Suicide Bomber"
+	{ability2::%player%} is "Poop Bomb"
+	player is sneaking
+	push player upwards at speed 0.1
+	sound(player, "entity.piglin.hurt", 10, 1.5, 0.5)

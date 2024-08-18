@@ -1,0 +1,992 @@
+command /alliances:
+	trigger:
+		send ""
+		send "&4Ordered by foundation date"
+		send "&a&lCabbage &2&lCorp"
+		send "&7Jiboot, apollo_alt"
+		send "<##FFABFE>&lSylveon <##ABFFF5>&lAgency"
+		send "&7ashpopcorn, Tacord, JacWarrior01, SirPuffiny"
+		send "<##DCFFAB>&lEMS Clan"
+		send "&7IBeGood, Epikx, Portcell, masterbolt9999"
+		send "&6&lJ&c&lJ"
+		send "&7taiju0, ponga1, IHasFeet1020, +6 others"
+		send "&e&lSuccess"
+		send "&7Elliot210507, Reaper31408, _mistral"
+		send "&3&lNick Nation"
+		send "&7AwsomMC"
+		send ""
+
+command /s <text>:
+   trigger:
+      broadcast "&f[&7Notch&f] &4&lOwner &rServer&7&l >> &c%arg-1%"
+
+on join:
+	loop all players:
+		if {passive.%loop-player%::color} is not set:
+			set {passive.%loop-player%::color} to "&f"
+
+command /sudo <player> <text>:
+	permission: op
+	trigger:
+		make arg-1 execute command arg-2
+		send "&fsudo-ing complete!"
+
+command /color <text>:
+	trigger:
+		if arg-1 is "red":
+			set {passive.%player%::color} to "&c"
+			send "%{passive.%player%::color}%Changed your chat color to %arg-1%"
+		if arg-1 is "aqua":
+			set {passive.%player%::color} to "&b"
+			send "%{passive.%player%::color}%Changed your chat color to %arg-1%"
+		if arg-1 is "lime":
+			set {passive.%player%::color} to "&a"
+			send "%{passive.%player%::color}%Changed your chat color to %arg-1%"
+		if arg-1 is "yellow":
+			set {passive.%player%::color} to "&e"
+			send "%{passive.%player%::color}%Changed your chat color to %arg-1%"
+		if arg-1 is "pink":
+			set {passive.%player%::color} to "&d"
+			send "%{passive.%player%::color}%Changed your chat color to %arg-1%"
+		if arg-1 is "white":
+			set {passive.%player%::color} to "&f"
+			send "%{passive.%player%::color}%Changed your chat color to %arg-1%"
+		if arg-1 is "gold":
+			set {passive.%player%::color} to "&6"
+			send "%{passive.%player%::color}%Changed your chat color to %arg-1%"
+		if arg-1 is "gray":
+			set {passive.%player%::color} to "&7"
+			send "%{passive.%player%::color}%Changed your chat color to %arg-1%"
+		if arg-1 is "darkred":
+			set {passive.%player%::color} to "&4"
+			send "%{passive.%player%::color}%Changed your chat color to %arg-1%"
+
+on tab complete of "/color":
+	set tab completions for position 1 to "red", "aqua", "lime", "gold", "white", "gray", "pink", "darkred" and "yellow"
+
+every second:
+	loop all players:
+		set loop-player's tablist name to "&f[&7%{passive.%loop-player%::passive}%&f] %{passive.%loop-player%::color}%%loop-player's display name%"
+on chat:
+	if player is "Tacord":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] <##8CFFE9>&lSod<##8CDCFF>&lium %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "apollo_alt":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &3&lAnonymous %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "FrostWasMelted":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &f&lFrosty %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "portcell":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &6&lNitrogen %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "epikx":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &4&lN<##B34242>&lu&4&lt<##B34242>&lz %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "ibegood":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] <##00C044>&lSh<##74E700>&lov<##B1F600>&lel %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "ponga1":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &6&lMonke %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "Jiboot":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &b&lBOT %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is ".ashpopcorn":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] <##FF00E9>&lM<##AD00FF>&le<##003CFF>&lo<##00FFF0>&lw %{passive.%player%::color}%ashpopcorn&7&l >> &f%coloured message%"
+	if player is ".jacwarrior01":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] <##E9CCAC>&lBarbarian %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "awsommc":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &a&lNick %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "Glex411":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &6&lBee %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "masterbolt9999":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &d&lM&b&le&e&ll&a&lo&6&ln %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "taiju0":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &d&lOnlyMom %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "_mistral":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &1&lCoool %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "Elliot210507":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &2&lNice %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "Reaper31408":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &1&lGrim %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is "ihasfeet1020":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &7&lFoot %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+	if player is ".sirpuffiny":
+		set the chat format to "&f[&7%{passive.%player%::passive}%&f] &d&lPuf&f&lfy! %{passive.%player%::color}%%player's display name%&7&l >> &f%coloured message%"
+		
+on right click:
+	set {_e} to paper
+	enchant {_e} with mending
+	if player's held item is {_e} named "&6&lThis is not supposed to happen. Spirit":
+		set player's max health to 0.5
+		kick player because "You have been banned from this server! <none>"
+		set {passive.%player%::passive} to "..."
+		send "&4&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&e&lWesley Spirit":
+		set {passive.%player%::passive} to "Wesley"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&e&lRyan Spirit":
+		set {passive.%player%::passive} to "Ryan"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&e&lPepsi Man Spirit":
+		set {passive.%player%::passive} to "Pepsi"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lAndrew Spirit":
+		set {passive.%player%::passive} to "Andrew"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&a&lMs. Smith Spirit":
+		set {passive.%player%::passive} to "Smith"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&5&lSeowon Spirit":
+		set {passive.%player%::passive} to "Seowon"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&a&lLydia Spirit":
+		set {passive.%player%::passive} to "Lydia"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lIsabel Spirit":
+		set {passive.%player%::passive} to "Isabel"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&5&lMicah Spirit":
+		set {passive.%player%::passive} to "Micah"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lSebL Spirit":
+		set {passive.%player%::passive} to "Seb"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lShing Yuen Spirit":
+		set {passive.%player%::passive} to "Shing"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&6&lAudrey Spirit":
+		set {passive.%player%::passive} to "Audrey"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lAngad Spirit":
+		set {passive.%player%::passive} to "Angad"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&c&lTiya Spirit":
+		set {passive.%player%::passive} to "Tiya"
+		send "&e&lSwitched Spirits"
+	if player's held item is {_e} named "&c&lLenna Spirit":
+		set {passive.%player%::passive} to "Lenna"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&a&lElliot Spirit":
+		set {passive.%player%::passive} to "Elliot"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&a&lFimi Spirit":
+		set {passive.%player%::passive} to "Fimi"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lAdriel Spirit":
+		set {passive.%player%::passive} to "Adriel"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lNatasha Spirit":
+		set {passive.%player%::passive} to "Natasha"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&5&lRiley Spirit":
+		set {passive.%player%::passive} to "Riley"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&a&lEdyn Spirit":
+		set {passive.%player%::passive} to "Edyn"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lKanissha Spirit":
+		set {passive.%player%::passive} to "Kanissha"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+
+	if player's held item is {_e} named "&6&lDug Spirit":
+		set {passive.%player%::passive} to "Dug"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lJacob Spirit":
+		set {passive.%player%::passive} to "Jacob"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&5&lAdit Spirit":
+		set {passive.%player%::passive} to "Adit"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&5&lMr. Hannah Spirit":
+		set {passive.%player%::passive} to "Hannah"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&5&lMrs. Dalgarno Spirit":
+		set {passive.%player%::passive} to "Dalgarno"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&6&lJavi Spirit":
+		set {passive.%player%::passive} to "Javi"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&a&lTom Spirit":
+		set {passive.%player%::passive} to "Tom"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lJayden Spirit":
+		set {passive.%player%::passive} to "Jayden"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&6&lKarel Spirit":
+		set {passive.%player%::passive} to "Karel"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&a&lPhil Swift Spirit":
+		set {passive.%player%::passive} to "Phil"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&5&lTerrorist Spirit":
+		set {passive.%player%::passive} to "Terrorist"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lJustin Spirit":
+		set {passive.%player%::passive} to "Justin"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&5&lPhantom Spirit":
+		set {passive.%player%::passive} to "Phantom"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&c&lSans Spirit":
+		set {passive.%player%::passive} to "Sans"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&b&lDracula Spirit":
+		set {passive.%player%::passive} to "Dracula"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+	if player's held item is {_e} named "&5&lDeadpool Spirit":
+		set {passive.%player%::passive} to "Deadpool"
+		send "&e&lSwitched Spirits"
+		play sound "block.note_block.bell" at volume 1 and pitch 1 for player
+
+every 10 seconds:
+	loop all players:
+		if {passive.%loop-entity%::passive} is "shing":
+			apply saturation to loop-entity for 0.2 second
+			
+every 120 seconds:
+	loop all players:
+		if {passive.%loop-entity%::passive} is "audrey":
+			give 1 of gold ingot to loop-entity
+			give 1 of iron ingot to loop-entity
+
+on death:
+	if {passive.%victim%::passive} is "sans":
+		set death message to "%victim% was overwhelmed by fatigue"
+
+on damage:
+	if {passive.%victim%::passive} is "sans":
+		if victim's food level is not 0:
+			if damage cause is attack:
+				cancel event
+				teleport victim to block 2 behind block 0.5 above attacker
+				apply invisibility 1 to victim for 0.5 seconds
+				apply speed 4 to victim for 0.5 seconds
+				apply strength 1 to victim for 0.5 seconds
+				set victim's food level to victim's food level - 2.5
+				play sound "block.note_block.bit" at volume 2 and pitch 1 for victim and attacker
+				play sound "entity.phantom.hurt" at volume 2 and pitch 0.5 for victim and attacker
+			if damage cause is not attack:
+				cancel event
+				teleport victim to block 1 behind victim
+				play sound "block.note_block.bit" at volume 2 and pitch 1 for victim and attacker
+				play sound "entity.phantom.hurt" at volume 2 and pitch 0.5 for victim and attacker
+				set victim's food level to victim's food level - 2.5
+				wait for 0.25 seconds
+				teleport victim to {_loc}
+
+every second:
+	loop all players:
+		if {passive.%loop-entity%::passive} is "wesley":
+			apply speed 1 to loop-entity for 1 second
+			apply jump boost 1 to loop-entity for 1 second
+			set loop-entity's max health to 7
+		if {passive.%loop-entity%::passive} is "...":
+			set loop-entity's max health to 0.5
+		if {passive.%loop-entity%::passive} is "ryan":
+			apply strength 1 to loop-entity for 1 second
+			set loop-entity's max health to 9
+		if {passive.%loop-entity%::passive} is "pepsi":
+			apply speed 3 to loop-entity for 1 second
+			apply hunger 1 to loop-entity for 1 second
+			set loop-entity's max health to 10
+		if {passive.%loop-entity%::passive} is "andrew":
+			apply haste 1 to loop-entity for 1 second
+			apply slow falling 1 to loop-entity for 0.5 second
+			apply weakness 1 to loop-entity for 1 second
+			set loop-entity's max health to 10
+		if {passive.%loop-entity%::passive} is "smith":
+			apply slowness 3 to loop-entity for 1 second
+			set loop-entity's max health to 12
+		if {passive.%loop-entity%::passive} is "seowon":
+			remove night vision from loop-entity
+			apply night vision to loop-entity for 20 second
+			apply regeneration 1 to loop-entity for 2 second
+			set loop-entity's max health to 7
+		if {passive.%loop-entity%::passive} is "lydia":
+			apply water breathing to loop-entity for 1 second
+			set loop-entity's max health to 8
+		if {passive.%loop-entity%::passive} is "isabel":
+			apply water breathing to loop-entity for 1 second
+			apply dolphin's grace to loop-entity for 1 second
+			apply weakness to loop-entity for 1 second
+			set loop-entity's max health to 9
+		if {passive.%loop-entity%::passive} is "micah":
+			apply slowness 2 to loop-entity for 1 second
+			apply unluck to loop-entity for 1 second
+			set loop-entity's max health to 14
+		if {passive.%loop-entity%::passive} is "seb":
+			apply speed 1 to loop-entity for 1 second
+			apply jump boost 2 to loop-entity for 1 second
+			apply weakness 2 to loop-entity for 1 second
+			set loop-entity's max health to 7
+		if {passive.%loop-entity%::passive} is "shing":
+			apply slowness to loop-entity for 1 second
+			set loop-entity's max health to 10
+		if {passive.%loop-entity%::passive} is "angad":
+			apply strength 3 to loop-entity for 1 second
+			apply nausea 1 to loop-entity for 2 second
+			apply hunger 1 to loop-entity for 1 second
+			set loop-entity's max health to 12
+		if {passive.%loop-entity%::passive} is "tiya":
+			apply haste 2 to loop-entity for 1 second
+			apply hunger 1 to loop-entity for 1 second
+			set loop-entity's max health to 10
+		if {passive.%loop-entity%::passive} is "lenna":
+			apply strength 3 to loop-entity for 1 second
+			apply speed 3 to loop-entity for 1 second
+			set loop-entity's max health to 5
+		if {passive.%loop-entity%::passive} is "audrey":
+			set loop-entity's max health to 6
+		if {passive.%loop-entity%::passive} is "elliot":
+			apply luck 1 to loop-entity for 1 second
+			apply slowness 1 to loop-entity for 1 second
+			set loop-entity's max health to 10
+		if {passive.%loop-entity%::passive} is "fimi":
+			apply strength 1 to loop-entity for 1 second
+			set loop-entity's max health to 10
+		if {passive.%loop-entity%::passive} is "natasha":
+			set loop-entity's max health to 8
+		if {passive.%loop-entity%::passive} is "adriel":
+			set loop-entity's max health to 8
+		if {passive.%loop-entity%::passive} is "edyn":
+			set loop-entity's max health to 20
+			apply slowness 2 to loop-entity for 1 second
+			apply weakness 4 to loop-entity for 1 second
+		if {passive.%loop-entity%::passive} is "kanissha":
+			set loop-entity's max health to 10
+			apply fire resistance 1 to loop-entity for 1 second
+			apply weakness 1 to loop-entity for 1 second
+		if {passive.%loop-entity%::passive} is "riley":
+			set loop-entity's max health to 8
+			apply jump boost 4 to loop-entity for 1 second
+			apply weakness 1 to loop-entity for 1 second
+		if {passive.%loop-entity%::passive} is "adit":
+			set loop-entity's max health to 4
+			remove invisibility from loop-entity
+			apply invisibility to loop-entity for 2 second
+			apply hunger 2 to loop-entity for 1 second
+		if {passive.%loop-entity%::passive} is "dug":
+			remove jump boost from loop-entity
+			set loop-entity's max health to 1.5
+			apply speed 7 to loop-entity for 1 second
+			apply jump boost 4 to loop-entity for 1 second
+		if {passive.%loop-entity%::passive} is "jacob":
+			set loop-entity's max health to 12
+			apply glowing to loop-entity for 1 second
+		if {passive.%loop-entity%::passive} is "hannah":
+			set loop-entity's max health to 0.5
+			apply hero of the village to loop-entity for 1 second
+		if {passive.%loop-entity%::passive} is "dalgarno":
+			set loop-entity's max health to 14
+			apply blindness to loop-entity for 1 second
+		if {passive.%loop-entity%::passive} is "javi":
+			set loop-entity's max health to 6
+		if {passive.%loop-entity%::passive} is "tom":
+			set loop-entity's max health to 10
+		if {passive.%loop-entity%::passive} is "jayden":
+			set loop-entity's max health to 4
+		if {passive.%loop-entity%::passive} is "karel":
+			set loop-entity's max health to 10
+		if {passive.%loop-entity%::passive} is "phil":
+			set loop-entity's max health to 9
+			apply slowness 1 to loop-entity for 1 second
+		if {passive.%loop-entity%::passive} is "terrorist":
+			set loop-entity's max health to 7
+		if {passive.%loop-entity%::passive} is "justin":
+			set loop-entity's max health to 7
+			apply strength 2 to loop-entity for 1 second
+			apply speed 2 to loop-entity for 1 second
+			apply jump boost 2 to loop-entity for 1 second
+			apply glowing 5 to loop-entity for 1 second
+			apply mining fatigue 5 to loop-entity for 1 second
+		if {passive.%loop-entity%::passive} is "phantom":
+			set loop-entity's max health to 7
+		if {passive.%loop-entity%::passive} is "sans":
+			set loop-entity's max health to 0.5
+			apply weakness to loop-entity for 1.5 second
+		if {passive.%loop-entity%::passive} is "dracula":
+			set loop-entity's max health to 10
+		if {passive.%loop-entity%::passive} is "deadpool":
+			set loop-entity's max health to 5.5
+
+on death:
+	if {passive.%event-entity%::passive} is "terrorist":
+		show huge explosion at event-entity
+		loop all entities in radius 15 of event-entity:
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-entity
+		loop all entities in radius 5 of event-entity:
+			damage loop-entity by 7
+			ignite loop-entity for 9 seconds
+
+command /terrorist:
+	permission: op
+	trigger:
+		show huge explosion at player
+		loop all entities in radius 15 of event-entity:
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-entity
+		loop all entities in radius 5 of event-entity:
+			damage loop-entity by 7
+			ignite loop-entity for 9 seconds
+
+on damage:
+	if {passive.%victim%::passive} is "deadpool":
+		if damage is greater than victim's health:
+			if victim's food level is 10:
+				set victim's health to 1
+				damage victim by 0.5
+				cancel event
+				set victim's food level to 0.5
+				apply resistance 5 to victim for 4 seconds
+				apply regeneration 3 to victim for 4 seconds
+				apply speed 8 to victim for 4 seconds
+				apply invisibility 8 to victim for 4 seconds
+				play sound "item.totem.use" at volume 1 and pitch 1 for attacker and victim
+on damage:
+	if {passive.%victim%::passive} is "javi":
+		set {_aew} to random integer between 1 and 3
+		if {_aew} is 1:
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+			cancel event
+	if {passive.%attacker%::passive} is "dracula":
+		set victim's health to victim's health - 1
+		set attacker's health to attacker's health + 1
+		play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+	if {passive.%victim%::passive} is "dracula":
+		set victim's health to victim's health - 1
+		set attacker's health to attacker's health + 1
+		play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+	if {passive.%victim%::passive} is "phil":
+		apply slowness 10 to attacker for 0.5 seconds
+	if {passive.%victim%::passive} is "phantom":
+		play sound "entity.phantom.bite" at volume 1 and pitch 1 for attacker and victim
+		remove speed from victim
+		remove weakness from victim
+		remove invisibility from victim
+		apply speed 2 to victim for 4 seconds
+		apply weakness 2 to victim for 4 seconds
+		apply invisibility 2 to victim for 4 seconds
+	if {passive.%attacker%::passive} is "jayden":
+		play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+		apply saturation to attacker for 0.05 second
+		set victim's food level to victim's food level - 0.5
+	if {passive.%attacker%::passive} is "karel":
+		if victim is player:
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+			set {_e} to {passive.%attacker%::passive}
+			set {passive.%attacker%::passive} to {passive.%victim%::passive}
+			wait for 8 seconds
+			set {passive.%attacker%::passive} to {_e}
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+		if victim is zombie:
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+			set {_e} to {passive.%attacker%::passive}
+			set {passive.%attacker%::passive} to "Ryan"
+			wait for 8 seconds
+			set {passive.%attacker%::passive} to {_e}
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+		if victim is skeleton:
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+			set {_e} to {passive.%attacker%::passive}
+			set {passive.%attacker%::passive} to "Pepsi"
+			wait for 8 seconds
+			set {passive.%attacker%::passive} to {_e}
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+		if victim is enderman:
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+			set {_e} to {passive.%attacker%::passive}
+			set {passive.%attacker%::passive} to "Adit"
+			wait for 8 seconds
+			set {passive.%attacker%::passive} to {_e}
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+		if victim is spider:
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+			set {_e} to {passive.%attacker%::passive}
+			set {passive.%attacker%::passive} to "Wesley"
+			wait for 8 seconds
+			set {passive.%attacker%::passive} to {_e}
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+		if victim is wolf:
+			play sound "entity.wolf.death" at volume 1 and pitch 1 for attacker and victim
+			set {_e} to {passive.%attacker%::passive}
+			set {passive.%attacker%::passive} to "Dug"
+			wait for 20 seconds
+			set {passive.%attacker%::passive} to {_e}
+			play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for attacker and victim
+
+every 5 seconds:
+	loop all players:
+		if {passive.%loop-entity%::passive} is "fimi":
+			set {passive.lag.%loop-entity%} to loop-entity's location
+			wait 0.5 seconds
+			teleport loop-entity to {passive.lag.%loop-entity%}
+
+on damage:
+	if {passive.%attacker%::passive} is "adriel":
+		remove poison from victim
+		apply poison 2 to victim for 2 seconds
+		if victim is zombie:
+			apply wither 2 to victim for 2 seconds
+	if {passive.%victim%::passive} is "natasha":
+		remove poison from attacker
+		apply poison 2 to attacker for 3 seconds
+		if attacker is zombie:
+			apply wither 2 to attacker for 2 seconds
+
+command /egg:
+	trigger:
+		if player's level is greater than 9:
+			set {_key} to ghast spawn egg
+			enchant {_key} with mending
+			give player 1 of {_key} named "&f&lSpirit &7&lEgg"
+			set player's level to player's level - 10
+			broadcast "&e&l%player% &bjust bought a spirit egg"
+
+command /eggd:
+	permission: op
+	trigger:
+		set {_key} to ghast spawn egg
+		enchant {_key} with mending
+		give player 1 of {_key} named "&f&lSpirit &7&lEgg"
+
+command /spirits:
+	trigger:
+		set {_key} to lime wool
+		set {_rare} to light blue wool
+		set {_epic} to purple wool
+		set {_lg} to yellow wool
+		set {_li} to red wool
+		set {_gui} to a new chest inventory with 6 row with name "Spirit List"
+		set slot 0 of {_gui} to {_rare} named "&b&lWesley Spirit" with lore "&aSpeed I", "&aJump Boost I", "&c7 Hearts"
+		set slot 1 of {_gui} to {_key} named "&a&lRyan Spirit" with lore "&aStrength I", "&c9 Hearts"
+		set slot 2 of {_gui} to {_epic} named "&5&lPepsi Man Spirit" with lore "&aSpeed II", "&cHunger I"
+		set slot 3 of {_gui} to {_rare} named "&b&lAndrew Spirit" with lore "&aHaste I", "&eSlow Falling", "&cWeakness I"
+		set slot 4 of {_gui} to {_key} named "&a&lMs. Smith Spirit" with lore "&a12 Hearts", "&cSlowness III"
+		set slot 5 of {_gui} to {_rare} named "&b&lShing Yuen Spirit" with lore "&aSaturation every 10 seconds", "&cSlowness I"
+		set slot 6 of {_gui} to {_epic} named "&5&lSeowon Spirit" with lore "&aNight Vision", "&aRegeneration I", "&c7 Hearts"
+		set slot 7 of {_gui} to {_key} named "&a&lLydia Spirit" with lore "&aWater Breathing", "&c8 Hearts"
+		set slot 8 of {_gui} to {_lg} named "&6&lAudrey Spirit" with lore "&aStrength I", "&aIron every minute", "&c6 Hearts"
+		set slot 9 of {_gui} to {_rare} named "&b&lIsabel Spirit" with lore "&aWater Breathing", "&aDolphin's Grace", "&c9 Hearts", "&cWeakness I"
+		set slot 10 of {_gui} to {_rare} named "&b&lSebL Spirit" with lore "&aSpeed II", "&aJump Boost II", "&c7 Hearts", "&cWeakness II"
+		set slot 11 of {_gui} to {_epic} named "&5&lMicah Spirit" with lore "&a14 Hearts", "&cSlowness II", "&cUnluck"
+		set slot 12 of {_gui} to {_rare} named "&b&lAngad Spirit" with lore "&a13 Hearts", "&aStrength II", "&cNausea I", "&cHunger I"
+		set slot 13 of {_gui} to {_key} named "&a&lElliot Spirit" with lore "&aLuck", "&cSlowness I"
+		set slot 14 of {_gui} to {_epic} named "&5&lRiley Spirit" with lore "&aJump Boost IV", "&cWeakness I", "&c8.5 Hearts"
+		set slot 15 of {_gui} to {_rare} named "&b&lAdriel Spirit" with lore "&aPoison Fists", "&c8 Hearts"
+		set slot 16 of {_gui} to {_key} named "&a&lFimi Spirit" with lore "&aStrength II", "&cLag every 5 seconds"
+		set slot 17 of {_gui} to {_rare} named "&b&lNatasha Spirit" with lore "&aPoison Armor", "&c8 Hearts"
+		set slot 18 of {_gui} to {_rare} named "&b&lKanissha Spirit" with lore "&aFire Resistance", "&cWeakness I"
+		set slot 19 of {_gui} to {_key} named "&a&lEdyn Spirit" with lore "&a20 Hearts", "&cWeakness VI", "&cSlowness II"
+		set slot 20 of {_gui} to {_li} named "&c&lTiya Spirit" with lore "&3&lLIMITED: &7not available in the gacha!" and "&aHaste II", "&cHunger I"
+		set slot 21 of {_gui} to {_li} named "&c&lLenna Spirit" with lore "&3&lLIMITED: &7not available in the gacha!" and "&aSpeed III", "&aStrength II", "&c5 Hearts"
+		set slot 22 of {_gui} to {_epic} named "&5&lAdit Spirit" with lore "&aInvisibility", "&cHunger I", "&c6 Hearts"
+		set slot 23 of {_gui} to {_lg} named "&6&lDug Spirit" with lore "&aSpeed VII", "&aJump Boost IV", "&c2 Hearts"
+		set slot 24 of {_gui} to {_rare} named "&b&lJacob Spirit" with lore "&a12 Hearts", "&eGlowing"
+		set slot 25 of {_gui} to {_epic} named "&5&lMr. Hannah Spirit" with lore "&aHero of the Village I", "&c1 Heart"
+		set slot 26 of {_gui} to {_epic} named "&5&lMrs. Dalgarno Spirit" with lore "&a14 Hearts", "&cBlindness I"
+		set slot 27 of {_gui} to {_key} named "&a&lTom Spirit" with lore "&eNothing Special"
+		set slot 28 of {_gui} to {_lg} named "&6&lJavi Spirit" with lore "&aChance to negate damage", "&c5 Hearts"
+		set slot 29 of {_gui} to {_rare} named "&b&lJayden Spirit" with lore "&aDrains hunger on damage", "&c5 Hearts"
+		set slot 30 of {_gui} to white wool named "&5&l???" with lore "&aAlly buff within radius 6", "&cSlowness V", "&cWeakness II"
+		set slot 31 of {_gui} to white wool named "&a&l???" with lore "&aFloaty Jump", "&eSlow fall", "&cTakes more knockback", "&cSlowness I"
+		set slot 32 of {_gui} to {_lg} named "&6&lKarel Spirit" with lore "&aMimics victim abilities"
+		set slot 33 of {_gui} to {_key} named "&a&lPhil Swift Spirit" with lore "&aStuns attackers", "&cSlowness I", "&c9 Hearts"
+		set slot 34 of {_gui} to {_epic} named "&5&lTerrorist Spirit" with lore "&aExplodes when killed", "&c7 Hearts"
+		set slot 35 of {_gui} to {_rare} named "&b&lJustin Spirit" with lore "&aStrength II", "&aSpeed II", "&aJump Boost II", "&c7 Hearts", "&cMining Fatigue V", "&cGlowing"
+		set slot 36 of {_gui} to {_epic} named "&5&lPhantom Spirit" with lore "&7Base mode:","&c7 Hearts", "", "&7Retreat mode:", "&aActivates when damaged", "&aSpeed II", "&aInvisibility", "&cWeakness II"
+		set slot 37 of {_gui} to {_rare} named "&b&lDracula Spirit" with lore "&aLifesteal", "&aDeals 1 heart extra damage", "&cTakes 1 heart extra damage", "&cAttacker lifesteal"
+		set slot 38 of {_gui} to {_li} named "&c&lSans Spirit" with lore "&aNegates damage if not hungry", "&aBuff after dodging attack", "&c0.5 Hearts", "&cLoses hunger after dodging"
+		set slot 45 of {_gui} to red stained glass pane named "&e"
+		set slot 46 of {_gui} to red stained glass pane named "&e"
+		set slot 47 of {_gui} to red stained glass pane named "&e"
+		set slot 48 of {_gui} to red stained glass pane named "&e"
+		set slot 49 of {_gui} to nether star named "&e&lRARITIES" with lore "&a&lCommon", "&b&lRare", "&5&lEpic", "&6&lLegendary", "&c&lLimited"
+		set slot 50 of {_gui} to red stained glass pane named "&e"
+		set slot 51 of {_gui} to red stained glass pane named "&e"
+		set slot 52 of {_gui} to red stained glass pane named "&e"
+		set slot 53 of {_gui} to red stained glass pane named "&e"
+		open {_gui} to player
+
+command /toast:
+	permission: op
+	trigger:
+		spawn rabbit
+		set name of last spawned entity to "Toast"
+
+on join:
+	if {passive.%player%::passive} is not set:
+		set {passive.%player%::passive} to "Tom"
+
+on inventory click:
+	if name of event-inventory is "Spirit List":
+		if index of event-slot = 0:
+			cancel event
+		if index of event-slot = 1:
+			cancel event
+		if index of event-slot = 2:
+			cancel event
+		if index of event-slot = 3:
+			cancel event
+		if index of event-slot = 4:
+			cancel event
+		if index of event-slot = 5:
+			cancel event
+		if index of event-slot = 6:
+			cancel event
+		if index of event-slot = 7:
+			cancel event
+		if index of event-slot = 8:
+			cancel event
+		if index of event-slot = 9:
+			cancel event
+		if index of event-slot = 10:
+			cancel event
+		if index of event-slot = 11:
+			cancel event
+		if index of event-slot = 12:
+			cancel event
+		if index of event-slot = 13:
+			cancel event
+		if index of event-slot = 14:
+			cancel event
+		if index of event-slot = 15:
+			cancel event
+		if index of event-slot = 16:
+			cancel event
+		if index of event-slot = 17:
+			cancel event
+		if index of event-slot = 18:
+			cancel event
+		if index of event-slot = 19:
+			cancel event
+		if index of event-slot = 20:
+			cancel event
+		if index of event-slot = 21:
+			cancel event
+		if index of event-slot = 22:
+			cancel event
+		if index of event-slot = 23:
+			cancel event
+		if index of event-slot = 24:
+			cancel event
+		if index of event-slot = 25:
+			cancel event
+		if index of event-slot = 26:
+			cancel event
+		if index of event-slot = 27:
+			cancel event
+		if index of event-slot = 28:
+			cancel event
+		if index of event-slot = 29:
+			cancel event
+		if index of event-slot = 30:
+			cancel event
+		if index of event-slot = 31:
+			cancel event
+		if index of event-slot = 32:
+			cancel event
+		if index of event-slot = 33:
+			cancel event
+		if index of event-slot = 34:
+			cancel event
+		if index of event-slot = 35:
+			cancel event
+		if index of event-slot = 36:
+			cancel event
+		if index of event-slot = 37:
+			cancel event
+		if index of event-slot = 38:
+			cancel event
+		if index of event-slot = 39:
+			cancel event
+		if index of event-slot = 40:
+			cancel event
+		if index of event-slot = 41:
+			cancel event
+		if index of event-slot = 42:
+			cancel event
+		if index of event-slot = 43:
+			cancel event
+		if index of event-slot = 44:
+			cancel event
+		if index of event-slot = 45:
+			cancel event
+		if index of event-slot = 46:
+			cancel event
+		if index of event-slot = 47:
+			cancel event
+		if index of event-slot = 48:
+			cancel event
+		if index of event-slot = 49:
+			cancel event
+		if index of event-slot = 50:
+			cancel event
+		if index of event-slot = 51:
+			cancel event
+		if index of event-slot = 52:
+			cancel event
+		if index of event-slot = 53:
+			cancel event
+		if index of event-slot = 54:
+			cancel event
+		if index of event-slot = 55:
+			cancel event
+
+command /customtiya:
+	permission: op
+	trigger:
+		set {_e} to paper
+		enchant {_e} with mending
+		give 1 of {_e} named "&c&lTiya Spirit" with lore "&3&lLIMITED: &7not available in the gacha!" and "&aHaste II", "&cHunger I" to player
+
+command /customlenna:
+	permission: op
+	trigger:
+		set {_e} to paper
+		enchant {_e} with mending
+		give 1 of {_e} named "&c&lLenna Spirit" with lore "&3&lLIMITED: &7not available in the gacha!" and "&aStrength III", "&aSpeed III", "&c5 Hearts" to player
+
+on rightclick with ghast spawn egg:
+	if name of player's tool is "&f&lSpirit &7&lEgg":
+		cancel event
+		set {_key} to ghast spawn egg
+		enchant {_key} with mending
+		set {_e} to paper
+		enchant {_e} with mending
+		set {_spirit} to random integer between 1 and 35
+		play sound "entity.firework_rocket.launch" with volume 1 at all players
+		remove {_key} named "&f&lSpirit &7&lEgg" from player
+		if {_spirit} is 1:
+			broadcast "&l%player% unlocked &b&lRARE &e&lWesley Spirit"
+			give 1 of {_e} named "&e&lWesley Spirit" with lore "&aSpeed I", "&aJump Boost I", "&c7 Hearts" to player
+		if {_spirit} is 2:
+			broadcast "&l%player% unlocked &a&lCOMMON &e&lRyan Spirit"
+			give 1 of {_e} named "&e&lRyan Spirit" with lore "&aStrength I", "&c9 Hearts" to player
+		if {_spirit} is 3:
+			broadcast "&l%player% unlocked &a&lCOMMON &e&lRyan Spirit"
+			give 1 of {_e} named "&e&lRyan Spirit" with lore "&aStrength I", "&c9 Hearts" to player
+		if {_spirit} is 4:
+			broadcast "&l%player% unlocked &5&lEPIC &e&lPepsi Man Spirit"
+			give 1 of {_e} named "&e&lPepsi Man Spirit" with lore "&aSpeed II", "&cHunger I" to player
+		if {_spirit} is 5:
+			broadcast "&l%player% unlocked &b&lRARE &e&lAndrew Spirit"
+			give 1 of {_e} named "&b&lAndrew Spirit" with lore "&aHaste I", "&eSlow Falling", "&cWeakness I" to player
+		if {_spirit} is 6:
+			broadcast "&l%player% unlocked &a&lCOMMON &e&lMs. Smith Spirit"
+			give 1 of {_e} named "&a&lMs. Smith Spirit" with lore "&a12 Hearts", "&cSlowness III" to player
+		if {_spirit} is 7:
+			broadcast "&l%player% unlocked &5&lEPIC &e&lSeowon Spirit"
+			give 1 of {_e} named "&5&lSeowon Spirit" with lore "&aNight Vision", "&aRegeneration I", "&c7 Hearts" to player
+		if {_spirit} is 8:
+			broadcast "&l%player% unlocked &b&lRARE &e&lIsabel Spirit"
+			give 1 of {_e} named "&b&lIsabel Spirit" with lore "&aWater Breathing", "&aDolphin's Grace", "&c9 Hearts", "&cWeakness I" to player
+		if {_spirit} is 9:
+			broadcast "&l%player% unlocked &b&lRARE &e&lSebL Spirit"
+			give 1 of {_e} named "&b&lSebL Spirit" with lore "&aSpeed II", "&aJump Boost II", "&c7 Hearts", "&cWeakness II" to player
+		if {_spirit} is 10:
+			broadcast "&l%player% unlocked &5&lEPIC &e&lMicah Spirit"
+			give 1 of {_e} named "&5&lMicah Spirit" with lore "&a14 Hearts", "&cSlowness II", "&cUnluck" to player
+		if {_spirit} is 11:
+			broadcast "&l%player% unlocked &a&lCOMMON &e&lLydia Spirit"
+			give 1 of {_e} named "&a&lLydia Spirit" with lore "&aWater Breathing", "&c8 Hearts" to player
+		if {_spirit} is 12:
+			broadcast "&l%player% unlocked &b&lRARE &e&lShing Yuen Spirit"
+			give 1 of {_e} named "&b&lShing Yuen Spirit" with lore "&aSaturation every 10 seconds", "&cSlowness I" to player
+		if {_spirit} is 13:
+			broadcast "&6&l%player% unlocked a legendary..."
+			wait for 3 seconds
+			broadcast "&l%player% unlocked &6&lLEGENDARY &e&lAudrey Spirit"
+			give 1 of {_e} named "&6&lAudrey Spirit" with lore "&aIron & Gold every minute", "&c6 Hearts" to player
+			play sound "entity.ender_dragon.growl" with volume 0.5 at all players
+		if {_spirit} is 14:
+			broadcast "&l%player% unlocked &b&lRARE &e&lAngad Spirit"
+			give 1 of {_e} named "&b&lAngad Spirit" with lore "&a13 Hearts", "&aStrength II", "&cNausea I", "&cHunger I" to player
+		if {_spirit} is 15:
+			broadcast "&l%player% unlocked &5&lEPIC &e&lRiley Spirit"
+			give 1 of {_e} named "&5&lRiley Spirit" with lore "&aJump Boost IV", "&cWeakness I", "&c8.5 Hearts" to player
+		if {_spirit} is 16:
+			broadcast "&l%player% unlocked &b&lRARE &e&lAdriel Spirit"
+			give 1 of {_e} named "&b&lAdriel Spirit" with lore "&aPoison Fists", "&c8 Hearts" to player
+		if {_spirit} is 17:
+			broadcast "&l%player% unlocked &a&lCOMMON &e&lFimi Spirit"
+			give 1 of {_e} named "&a&lFimi Spirit" with lore "&aStrength II", "&cLag every 5 seconds" to player
+		if {_spirit} is 18:
+			broadcast "&l%player% unlocked &b&lRARE &e&lNatasha Spirit"
+			give 1 of {_e} named "&b&lNatasha Spirit" with lore "&aPoison Armor", "&c8 Hearts" to player
+		if {_spirit} is 19:
+			broadcast "&l%player% unlocked &a&lCOMMON &e&lElliot Spirit"
+			give 1 of {_e} named "&a&lElliot Spirit" with lore "&aLuck", "&cSlowness I" to player
+		if {_spirit} is 20:
+			broadcast "&l%player% unlocked &b&lRARE &e&lKanissha Spirit"
+			give 1 of {_e} named "&b&lKanissha Spirit" with lore "&aFire Resistance", "&cWeakness I" to player
+		if {_spirit} is 21:
+			broadcast "&l%player% unlocked &a&lCOMMON &e&lEdyn Spirit"
+			give 1 of {_e} named "&a&lEdyn Spirit" with lore "&a20 Hearts", "&cWeakness VI", "&cSlowness II" to player
+		if {_spirit} is 22:
+			broadcast "&l%player% unlocked &a&lCOMMON &e&lTom Spirit"
+			give 1 of {_e} named "&a&lTom Spirit" with lore "&eNothing special" to player
+		if {_spirit} is 23:
+			broadcast "&l%player% unlocked &5&lEPIC &e&lAdit Spirit"
+			give 1 of {_e} named "&5&lAdit Spirit" with lore "&aInvisibility", "&cHunger I", "&c6 Hearts" to player
+		if {_spirit} is 24:
+			broadcast "&l%player% unlocked &b&lRARE &e&lJacob Spirit"
+			give 1 of {_e} named "&b&lJacob Spirit" with lore "&a12 Hearts", "&eGlowing" to player
+		if {_spirit} is 25:
+			broadcast "&l%player% unlocked &5&lEPIC &e&lMr. Hannah Spirit"
+			give 1 of {_e} named "&5&lMr. Hannah Spirit" with lore "&aHero of the Village I", "&c1 Heart" to player
+		if {_spirit} is 26:
+			broadcast "&6&l%player% unlocked a legendary..."
+			wait for 3 seconds
+			broadcast "&l%player% unlocked &6&lLEGENDARY &e&lDug Spirit"
+			give 1 of {_e} named "&6&lDug Spirit" with lore "&aSpeed VII", "&aJump Boost IV", "&c2 Hearts" to player
+			play sound "entity.ender_dragon.growl" with volume 0.5 at all players
+		if {_spirit} is 27:
+			broadcast "&6&l%player% unlocked a legendary..."
+			wait for 3 seconds
+			broadcast "&l%player% unlocked &6&lLEGENDARY &e&lJavi Spirit"
+			give 1 of {_e} named "&6&lJavi Spirit" with lore "&aChance to negate damage", "&c5 Hearts" to player
+			play sound "entity.ender_dragon.growl" with volume 0.5 at all players
+		if {_spirit} is 28:
+			broadcast "&l%player% unlocked &b&lRARE &e&lJayden Spirit"
+			give 1 of {_e} named "&b&lJayden Spirit" with lore "&aDrains hunger on damage", "&c5 Hearts" to player
+		if {_spirit} is 29:
+			broadcast "&l%player% unlocked &5&lEPIC &e&lMrs. Dalgarno Spirit"
+			give 1 of {_e} named "&5&lMrs. Dalgarno Spirit" with lore "&a14 Hearts", "&cBlindness I" to player
+		if {_spirit} is 30:
+			broadcast "&6&l%player% unlocked a legendary..."
+			wait for 3 seconds
+			broadcast "&l%player% unlocked &6&lLEGENDARY &e&lKarel Spirit"
+			give 1 of {_e} named "&6&lKarel Spirit" with lore "&aMimics victim abilities" to player
+		if {_spirit} is 31:
+			broadcast "&l%player% unlocked &a&lCOMMON &e&lPhil Swift Spirit"
+			give 1 of {_e} named "&a&lPhil Swift Spirit" with lore "&aStuns attackers", "&cSlowness I", "&c9 Hearts" to player
+		if {_spirit} is 32:
+			broadcast "&l%player% unlocked &5&lEPIC &e&lTerrorist Spirit"
+			give 1 of {_e} named "&5&lTerrorist Spirit" with lore "&aExplodes when killed", "&c7 Hearts" to player
+		if {_spirit} is 33:
+			broadcast "&l%player% unlocked &b&lRARE &e&lJustin Spirit"
+			give 1 of {_e} named "&b&lJustin Spirit" with lore "&aStrength II", "&aSpeed II", "&aJump Boost II", "&c7 Hearts", "&cMining Fatigue V", "&cGlowing" to player
+		if {_spirit} is 34:
+			broadcast "&l%player% unlocked &5&lEPIC &e&lPhantom Spirit"
+			give 1 of {_e} named "&5&lPhantom Spirit" with lore "&7Base mode:","&c7 Hearts", "", "&7Retreat mode:", "&aActivates when damaged", "&aSpeed II", "&aInvisibility", "&cWeakness II" to player
+		if {_spirit} is 35:
+			broadcast "&l%player% unlocked &5&lRARE &e&lDracula Spirit"
+			give 1 of {_e} named "&b&lDracula Spirit" with lore "&aLifesteal", "&aDeals 1 heart extra damage", "&cTakes 1 heart extra damage", "&cAttacker lifesteal" to player
+
+
+on explode:
+	if event-entity is a large fireball:
+		show large explosion at event-entity
+		cancel event
+		loop all entities in radius 15 of event-entity:
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-entity
+
+on explode:
+	if event-entity is a creeper:
+		cancel event
+		show huge explosion at event-entity
+		loop all entities in radius 15 of event-entity:
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-entity
+
+on death:
+	victim is player
+	if {passive.%victim%::passive} is "Wesley":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cjust so you know, I slept with your bi- uhhh"
+	if {passive.%victim%::passive} is "Ryan":
+		broadcast "&f&l%{passive.%victim%::passive}%: &c%attacker%'s base is so rushed"
+	if {passive.%victim%::passive} is "Pepsi":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cRemember to drink pepsi, not coca cola"
+	if {passive.%victim%::passive} is "Andrew":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cAeuhghaughaughaghagha"
+	if {passive.%victim%::passive} is "Karel":
+		broadcast "&f&l%{passive.%victim%::passive}%: &ekarel.js has stopped working"
+	if {passive.%victim%::passive} is "Dug":
+		broadcast "&f&l%{passive.%victim%::passive}%: &ewoof woof woof (i will get my revenge)"
+	if {passive.%victim%::passive} is "Smith":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cGoodbye team! Remember to put away your liptops!"
+	if {passive.%victim%::passive} is "Shing":
+		broadcast "&f&l%{passive.%victim%::passive}%: &c..."
+	if {passive.%victim%::passive} is "Seowon":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cI am terrible at maths :<"
+	if {passive.%victim%::passive} is "Isabel":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cGIVE ME BACK MY WATER BOTTLE"
+	if {passive.%victim%::passive} is "Seb":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cOK BESTIE :skull:"
+	if {passive.%victim%::passive} is "Micah":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cBS"
+	if {passive.%victim%::passive} is "Angad":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cCan I borrow $10 pleaseee Jiwoo"
+	if {passive.%victim%::passive} is "Elliot":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cbroOOOoooOoo STOP"
+	if {passive.%victim%::passive} is "Riley":
+		broadcast "&f&l%{passive.%victim%::passive}%: &coh my gosh"
+	if {passive.%victim%::passive} is "Adriel":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cWhat the hell?"
+	if {passive.%victim%::passive} is "Fimi":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cLike, oh my god, like"
+	if {passive.%victim%::passive} is "lydia":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cOmg notslayyy quirky baddie"
+	if {passive.%victim%::passive} is "Audrey":
+		broadcast "&f&l%{passive.%victim%::passive}%: &eAnd also-"
+	if {passive.%victim%::passive} is "Natasha":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cWhat the heck?"
+	if {passive.%victim%::passive} is "Kanissha":
+		broadcast "&f&l%{passive.%victim%::passive}%: &c:crying-emoji:"
+	if {passive.%victim%::passive} is "Edyn":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cOk girl-"
+	if {passive.%victim%::passive} is "Tiya":
+		broadcast "&f&l%{passive.%victim%::passive}%: &4Oh"
+	if {passive.%victim%::passive} is "Lenna":
+		broadcast "&f&l%{passive.%victim%::passive}%: &4Nobody gives a shit %victim%"
+	if {passive.%victim%::passive} is "Adit":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cPlease go buy my adit merch!"
+	if {passive.%victim%::passive} is "Jacob":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cOh craikey!"
+	if {passive.%victim%::passive} is "Hannah":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cGo to the principal's office, NOW"
+	if {passive.%victim%::passive} is "Dalgarno":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cNAME ON THE BOARD, YOUNG MAN"
+	if {passive.%victim%::passive} is "Javi":
+		broadcast "&f&l%{passive.%victim%::passive}%: &eI haven't fulfilled my goal of becoming taller than Wesley"
+	if {passive.%victim%::passive} is "Jayden":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cno no no"
+	if {passive.%victim%::passive} is "Phil":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cNOW THATS A LOT OF DAMAGE"
+	if {passive.%victim%::passive} is "Terrorist":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cTeRrOrIsTs wIn... (dies)"
+	if {passive.%victim%::passive} is "Justin":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cOkay"
+	if {passive.%victim%::passive} is "Sans":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cpapyrus, do you want anything?"
+	if {passive.%victim%::passive} is "Dracula":
+		broadcast "&f&l%{passive.%victim%::passive}%: &cNOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"

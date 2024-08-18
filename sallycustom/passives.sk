@@ -1,0 +1,113 @@
+on damage:
+	if {ability3::%attacker%} is "Vengeance":
+		set damage to damage * 1.15
+		send action bar "&f%{ability3::%attacker%}% &aACTIVATED" to attacker
+	if {ability3::%attacker%} is "Flutter By":
+		attacker's health is less than 5
+		set damage to damage * 1.25
+		play sound "entity.player.hurt_on_fire" at volume 0.7 and pitch 1 for attacker and victim
+		ignite victim for 1 second
+		send action bar "&f%{ability3::%attacker%}% &aACTIVATED" to attacker
+	if {ability3::%victim%} is "Feather Falling":
+		damage cause is fall
+		set damage to damage * 0.1
+		if damage is smaller than 0.5:
+			cancel event
+		play sound "entity.allay.ambient_with_item" at volume 1.5 and pitch 0.5 for victim
+		send action bar "&f%{ability3::%victim%}% &aACTIVATED" to victim
+		loop all blocks in radius 3 of victim:
+			show pink dust at loop-block
+
+on any move:
+	{ability3::%player%} is "Nature Power"
+	if block below player is grass block:
+		remove speed from player
+		remove jump boost from player
+		apply speed 2 to player for 1 seconds
+		apply jump boost 2 to player for 1 seconds
+		send action bar "&f%{ability3::%player%}% &aACTIVATED" to player
+
+on any move:
+	{ability3::%player%} is "Quick Climb"
+	if block at player is scaffolding:
+		if player is not sneaking:
+			push player upwards at speed 0.1
+		else:
+			push player downwards at speed 0.2
+			apply slow falling to player for 0.1 seconds
+	if block at player is ladder:
+		if player is not sneaking:
+			push player upwards at speed 0.1
+		else:
+			push player downwards at speed 0.2
+			apply slow falling to player for 0.1 seconds
+	if block at player is vines:
+		if player is not sneaking:
+			push player upwards at speed 0.11
+		else:
+			push player downwards at speed 0.2
+			apply slow falling to player for 0.1 seconds
+
+
+on swim toggle:
+	{ability3::%player%} is "Submarine"
+	push player forward at speed 0.25
+	remove water breathing from player
+	apply water breathing to player for 2 seconds
+	remove dolphin's grace from player
+	apply dolphin's grace to player for 2 seconds
+	send action bar "&f%{ability3::%player%}% &aACTIVATED" to player
+	play sound "entity.dolphin.splash" at volume 0.5 and pitch 1 for player
+
+on hunger meter change:
+	player's food level is smaller than 6
+	{ability3::%player%} is "Survivalist":
+		cancel event
+		send action bar "&f%{ability3::%player%}% &aACTIVATED" to player
+
+on jump:
+	{ability3::%player%} is "Spring"
+	push player upwards at speed 0.2
+	push player forwards at speed 0.4
+	send action bar "&f%{ability3::%player%}% &aACTIVATED" to player
+	play sound "entity.slime.jump" at volume 0.7 and pitch 2 for player
+
+on damage:
+	{ability3::%victim%} is "Rubber Skin"
+	set {_e} to vector between attacker and victim
+	push attacker {_e} at speed -0.5
+	push attacker upwards at speed 0.5
+	send action bar "&f%{ability3::%victim%}% &aACTIVATED" to victim and attacker
+	play sound "item.armor.equip_turtle" at volume 1 and pitch 2 for victim and attacker
+
+on damage:
+	damage is greater than victim's health
+	victim's hunger bar is 10
+	{ability3::%victim%} is "Honeycomb"
+	set damage to victim's health - 0.5
+	apply resistance 10 to victim for 1 second
+	apply slowness 4 to victim for 0.5 second
+	set victim's hunger bar to 3
+	show mob spawner flames at victim
+	sound(victim, "item.totem.use", 10, 1, 1.5)
+	send action bar "&f%{ability3::%victim%}% &aACTIVATED" to victim
+
+on death:
+	{ability3::%attacker%} is "Creepy Harvest":
+		set attacker's health to attacker's health + victim's max health * 0.25
+		play sound "entity.player.hurt_sweet_berry_bush" at volume 1 and pitch 0.5 for attacker
+		show heart at block above victim
+		send action bar "&f%{ability3::%attacker%}% &aACTIVATED" to attacker
+	{ability3::%victim%} is "Suicide Bomber":
+		damage(victim, 5, 10)
+		show large explosion at victim
+		loop all entities in radius 10 of victim:
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-entity
+		send action bar "&f%{ability3::%victim%}% &aACTIVATED" to victim
+		
+on projectile hit:
+	shooter's name is not "&cPrepe"
+	if {ability3::%victim%} is "Bulletproof":
+		cancel event
+		play sound "entity.iron_golem.repair" at volume 0.4 and pitch 1 for shooter and victim
+		send action bar "&f%{ability3::%victim%}% &aACTIVATED" to victim

@@ -1,0 +1,881 @@
+command /mute [<player>] [<integer>]:
+	permission: op
+	trigger:
+		set {%arg-1%::mute} to true
+		set {%arg-1%::time} to arg-2
+		broadcast "&e&l%arg-1% has been muted for %{%arg-1%::time}%!"
+		wait for 1 minutes
+		clear {%arg-1%::mute}
+
+on chat:
+	if {%player%::mute} is true:
+		cancel event
+		send "&8You are muted for &7%{%player%::time}% minutes! &8(only you can see this)"
+
+on first join:
+	give 1 of stone axe to player
+	give 1 of stone pickaxe to player
+	give 1 of stone shovel to player
+	set {_x} to heart of the sea
+	enchant {_x} with mending
+	give 1 of {_x} named "&b&lYour &6&lAbility" to player
+	give 64 of bread to player
+	set {_key} to ghast spawn egg
+	enchant {_key} with mending
+	give player 1 of {_key} named "&f&lSpirit &7&lEgg"
+	equip player with leather helmet
+	equip player with leather chestplate
+	equip player with leather leggings
+	equip player with leather boots
+	
+
+on join:
+	play sound "block.note_block.pling" at volume 2 for all players
+
+on quit:
+	play sound "block.note_block.pling" at volume 1 and pitch 0 for all players
+
+on death:
+	if victim is spawned chicken:
+		clear drops
+	if victim is spawned ravager:
+		clear drops
+
+command /chicken:
+	trigger:
+		if {%player%::ride} is not set:
+			spawn chicken
+			make the player ride the spawned chicken
+			set {%player%::ride} to true
+		else:
+			send "&cYou are on cooldown!"
+
+command /ravager:
+	permission: op
+	trigger:
+		if {%player%::ride} is not set:
+			spawn ravager
+			make the player ride the spawned ravager
+			set {%player%::ride} to true
+		else:
+			send "&cYou are on cooldown!"
+
+every 0.1 second:
+	loop all players:
+		if {%loop-player%::ride} is true:
+			push spawned chicken in direction of loop-player with force 0.1
+			push spawned ravager in direction of loop-player with force 0.13
+
+on sneak toggle:
+	if {%player%::ride} is true:
+		kill spawned chicken
+		kill spawned ravager 
+		wait for 1 seconds
+		clear {%player%::ride}
+
+on right click:
+	if player's held item is air:
+		if {%player%::ride} is true:
+			if {%player%::chickenc} is not set:
+				push spawned chicken upwards with force 0.7
+				set {%player%::chickenc} to true
+				wait for 1 seconds
+				clear {%player%::chickenc} 
+			
+command /spawn:
+	trigger:
+		teleport player to location -27, 68, 432 in world "world"
+
+command /siege:
+	trigger:
+		teleport player to location 0, 73, 0 in world "siege"
+		
+on death:
+	if victim is villager:
+		drop villager spawn egg
+	drop bone
+	loop 3 times:
+		spawn experience orb
+	set {_e} to random integer between 1 and 6
+	if {_e} is 1:
+		drop experience bottle
+	if victim is player:
+		drop victim's head
+
+on damage:
+	set {_loc} to block above victim's location
+	loop 10 times:
+		show lava pop at {_loc} to all players
+	
+command /br <text>:
+	permission: op
+	trigger:
+		broadcast "&c&l[!] &r%arg-1%"
+
+command /horde1:
+	permission: op
+	trigger:
+		send title "&c&lHorde incoming..." to all players
+		play sound "block.end_portal.spawn" at volume 1 for all players
+		wait for 5 seconds
+		send title "&c&lA horde has spawned" to all players
+		broadcast "&4&lA horde has spawned at /warp spawn!"
+		loop 10 times:
+			spawn 1 zombie at location 0, 73, 0 in world "siege"
+			equip last spawned zombie with iron helmet
+			equip last spawned zombie with iron chestplate
+			equip last spawned zombie with iron leggings
+			equip last spawned zombie with iron boots
+			wait for 0.5 seconds
+
+command /horde1reward:
+	permission: op
+	trigger:
+		give 8 of iron ingot to all players
+		give 1 of emerald to all players
+		broadcast "&a&lYou beat the horde!"
+		set {_e} to tripwire hook
+		enchant {_e} with mending
+		give 1 of {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward" to all players
+		
+command /siege1:
+	permission: op
+	trigger:
+		send title "&c&lSiege in 30s!" to all players
+		broadcast "&4&lA lvl 1 siege is starting soon!"
+		play sound "block.end_portal.spawn" at volume 1 for all players
+		wait 10 seconds
+		send title "&c&lSiege in 20s!" to all players
+		wait 10 seconds
+		send title "&c&lSiege in 10s!" to all players
+		wait 5 seconds
+		send title "&4&l5" to all players
+		wait 1 seconds
+		send title "&4&l4" to all players
+		wait 1 seconds
+		send title "&4&l3" to all players
+		wait 1 seconds
+		send title "&4&l2" to all players
+		wait 1 seconds
+		send title "&4&l1" to all players
+		wait 1 second
+		broadcast "&lWAVE 1"
+		loop 15 times:
+			spawn 1 zombie at location 0, 73, 0 in world "siege"
+			equip last spawned zombie with leather helmet
+			equip last spawned zombie with leather chestplate
+			equip last spawned zombie with leather leggings
+			equip last spawned zombie with leather boots of protection 1
+		wait for 15 seconds
+		broadcast "&lWAVE 2"
+		loop 15 times:
+			spawn 1 zombie at location 0, 73, 0 in world "siege"
+			equip last spawned zombie with iron helmet
+			equip last spawned zombie with iron chestplate
+			equip last spawned zombie with iron leggings
+			equip last spawned zombie with iron boots of protection 1
+		wait for 30 seconds
+		broadcast "&lWAVE 3"
+		loop 25 times:
+			spawn 1 zombie at location 0, 73, 0 in world "siege"
+			equip last spawned zombie with iron helmet of protection 1
+			equip last spawned zombie with iron chestplate of protection 1
+			equip last spawned zombie with iron leggings of protection 1
+			equip last spawned zombie with iron boots of protection 1
+
+command /siege2:
+	permission: op
+	trigger:
+		send title "&c&lSiege in 30s!" to all players
+		broadcast "&4&lA lvl 2 siege is starting soon!"
+		play sound "block.end_portal.spawn" at volume 1 for all players
+		wait 10 seconds
+		send title "&c&lSiege in 20s!" to all players
+		wait 10 seconds
+		send title "&c&lSiege in 10s!" to all players
+		wait 5 seconds
+		send title "&4&l5" to all players
+		wait 1 seconds
+		send title "&4&l4" to all players
+		wait 1 seconds
+		send title "&4&l3" to all players
+		wait 1 seconds
+		send title "&4&l2" to all players
+		wait 1 seconds
+		send title "&4&l1" to all players
+		wait 1 second
+		broadcast "&lWAVE 1"
+		loop 15 times:
+			spawn 1 zombie at location 0, 73, 0 in world "siege"
+			equip last spawned zombie with iron helmet
+			equip last spawned zombie with iron chestplate
+			equip last spawned zombie with iron leggings
+			equip last spawned zombie with iron boots of protection 1
+			set tool of last spawned zombie to iron sword
+			wait for 0.1 seconds
+		spawn 1 ravager at location 0, 73, 0 in world "siege"
+		wait for 15 seconds
+		broadcast "&lWAVE 2"
+		loop 25 times:
+			spawn 1 zombie at location 0, 73, 0 in world "siege"
+			equip last spawned zombie with diamond helmet
+			equip last spawned zombie with diamond chestplate
+			equip last spawned zombie with diamond leggings
+			equip last spawned zombie with diamond boots of protection 1
+			set tool of last spawned zombie to iron sword
+			wait for 0.1 seconds
+		spawn 1 ravager at location 0, 73, 0 in world "siege"
+		wait for 30 seconds
+		broadcast "&lWAVE 3"
+		loop 40 times:
+			spawn 1 zombie at location 0, 73, 0 in world "siege"
+			equip last spawned zombie with diamond helmet of protection 1
+			equip last spawned zombie with diamond chestplate of protection 1
+			equip last spawned zombie with diamond leggings of protection 1
+			equip last spawned zombie with diamond boots of protection 1
+			set tool of last spawned zombie to iron sword
+			wait for 0.1 seconds
+		loop 4 times:
+			spawn 1 skeleton at location 0, 73, 0 in world "siege"
+			equip last spawned skeleton with diamond helmet of protection 1
+			equip last spawned skeleton with diamond chestplate of protection 1
+			equip last spawned skeleton with diamond leggings of protection 1
+			equip last spawned skeleton with diamond boots of protection 1
+			set tool of last spawned zombie to totem of undying
+		spawn 1 ravager at location 0, 73, 0 in world "siege"
+		spawn 1 villager at location 0, 73, 0 in world "siege"
+
+command /siege3:
+	permission: op
+	trigger:
+		send title "&c&lSiege in 30s!" to all players
+		broadcast "&4&lA lvl 3 siege is starting soon!"
+		play sound "block.end_portal.spawn" at volume 1 for all players
+		wait 10 seconds
+		send title "&c&lSiege in 20s!" to all players
+		wait 10 seconds
+		send title "&c&lSiege in 10s!" to all players
+		wait 5 seconds
+		send title "&4&l5" to all players
+		wait 1 seconds
+		send title "&4&l4" to all players
+		wait 1 seconds
+		send title "&4&l3" to all players
+		wait 1 seconds
+		send title "&4&l2" to all players
+		wait 1 seconds
+		send title "&4&l1" to all players
+		wait 1 second
+		broadcast "&lWAVE 1"
+		spawn 10 vex at location 0, 73, 0 in world "siege"
+		wait for 1 second
+		loop 20 times:
+			spawn 1 zombie at location 0, 73, 0 in world "siege"
+			equip last spawned zombie with iron helmet of protection 1
+			equip last spawned zombie with iron chestplate of protection 1
+			equip last spawned zombie with iron leggings of protection 1
+			equip last spawned zombie with iron boots of protection 1
+			set tool of last spawned zombie to iron sword
+			wait for 0.1 seconds
+		spawn 1 ravager at location 0, 73, 0 in world "siege"
+		wait for 15 seconds
+		broadcast "&lWAVE 2"
+		loop 25 times:
+			spawn 1 zombie at location 0, 73, 0 in world "siege"
+			equip last spawned zombie with diamond helmet of protection 1
+			equip last spawned zombie with diamond chestplate of protection 1
+			equip last spawned zombie with diamond leggings of protection 1
+			equip last spawned zombie with diamond boots of protection 1
+			set tool of last spawned zombie to iron sword
+			wait for 0.1 seconds
+		spawn 2 ravager at location 0, 73, 0 in world "siege"
+		wait for 30 seconds
+		broadcast "&lWAVE 3"
+		loop 40 times:
+			spawn 1 zombie at location 0, 73, 0 in world "siege"
+			equip last spawned zombie with diamond helmet of protection 2
+			equip last spawned zombie with diamond chestplate of protection 2
+			equip last spawned zombie with diamond leggings of protection 2
+			equip last spawned zombie with diamond boots of protection 2
+			set tool of last spawned zombie to iron sword
+			wait for 0.1 seconds
+		loop 10 times:
+			spawn 1 skeleton at location 0, 73, 0 in world "siege"
+			equip last spawned skeleton with diamond helmet of protection 1
+			equip last spawned skeleton with diamond chestplate of protection 1
+			equip last spawned skeleton with diamond leggings of protection 1
+			equip last spawned skeleton with diamond boots of protection 1
+			set tool of last spawned skeleton to totem of undying
+		spawn 2 ravager at location 0, 73, 0 in world "siege"
+		spawn 10 vex at location 0, 73, 0 in world "siege"
+		spawn 1 villager at location 0, 73, 0 in world "siege"
+		wait for 30 seconds
+		broadcast "&lWAVE 4 &4&lFINAL BOSS"
+		spawn 1 giant at location 0, 73, 0 in world "siege"
+			
+		
+command /siege1reward:
+	permission: op
+	trigger:
+		give 10 of iron ingot to all players
+		give 5 of gold ingot to all players
+		give 1 of diamond to all players
+		give 16 of cooked beef to all players
+		give 32 of experience bottle to all players
+		broadcast "&a&lYou beat the siege!"
+		set {_e} to tripwire hook
+		enchant {_e} with mending
+		give 1 of {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward" to all players
+
+on join:
+	clear {cdi::%event-player%}
+	clear {cdo::%event-player%}
+
+command /siege2reward:
+	permission: op
+	trigger:
+		if player doesn't have enough space for 20 of iron ingot:
+			drop 20 of iron ingot
+		else:
+			give 20 of iron ingot to all players
+		if player doesn't have enough space for 10 of gold ingot:
+			drop 10 of gold ingot
+		else:
+			give 10 of gold ingot to all players
+		if player doesn't have enough space for 3 of diamond:
+			drop 3 of diamond
+		else:
+			give 3 of diamond to all players
+		if player doesn't have enough space for 32 of cooked beef:
+			drop 32 of cooked beef
+		else:
+			give 32 of cooked beef to all players
+		if player doesn't have enough space for 64 of experience bottle:
+			drop 64 of experience bottle
+		else:
+			give 64 of experience bottle to all players
+		if player doesn't have enough space for 1 of villager spawn egg:
+			drop 1 of villager spawn egg
+		else:
+			give 1 of villager spawn egg to all players
+		broadcast "&a&lYou beat the siege!"
+		set {_e} to tripwire hook
+		enchant {_e} with mending
+		if player doesn't have enough space for 1 of {_e}:
+			drop 20 of iron ingot
+		else:
+			give 1 of {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward" to all players
+		
+command /ability:
+	permission: op
+	trigger:
+		set {_x} to heart of the sea
+		enchant {_x} with mending
+		give 1 of {_x} named "&b&lYour &6&lAbility" to player
+
+command /days:
+	trigger:
+		send "&c&lDays since someone asked Tacord about abilities:"
+		send "&e0 days"
+command /ability2:
+	permission: op
+	trigger:
+		set {_x} to slime ball
+		enchant {_x} with mending
+		give 1 of {_x} named "&b&lYour 2nd &6&lAbility" to player
+		
+on load:
+	clear {cd::%player%}
+	clear {cda::%player%}
+	
+
+command /cooldownreset <player>:
+	trigger:
+		clear {cdi::%arg-1%}
+		clear {cdo::%arg-1%}
+		send "done"
+		
+on load:
+	clear {cdi::%player%} 
+		
+		
+
+command /troy <text>:
+	permission: op
+	trigger:
+		broadcast "<ItzTroy> %arg-1%"
+
+command /troyjoin:
+	permission: op
+	trigger:
+		broadcast "&eItzTroy joined the game"
+
+command /prepejoin:
+	permission: op
+	trigger:
+		broadcast "&evPepe joined the game"
+		wait 0.5 seconds
+		broadcast "&evPepe left the game"
+		
+command /troyleave:
+	permission: op
+	trigger:
+		broadcast "&eItzTroy left the game"
+
+command /players:
+	trigger:
+		send "&e&lPlayer List"
+		send "&7Tacord"
+		send "&7Portcell"
+		send "&7IBeGood"
+		send "&7AwsomMC"
+		send "&7apollo_alt"
+		send "&7Jiboot"
+		send "&7Epikx"
+		send "&7Glex411"
+		send "&7JacWarrior01"
+		send "&7ashpopcorn"
+		send "&7taiju0"
+		send "&7ItzTroy"
+
+on entity target:
+	entity's target is a player named "IBeGood"
+	entity is vex
+	cancel event
+
+on left click:
+	set {_x} to heart of the sea
+	enchant {_x} with mending
+	if player's held item is {_x} named "&b&lYour &6&lAbility":
+		if {cdo::%player%} is not set:
+			cancel event
+			if player is "awsommc":
+				set {cdo::%player%} to true
+				play sound "entity.vex.charge" at volume 3 for player at player
+				set {loc.%player%} to player's location
+				add last spawned entity to {target.%player%::*}
+				loop 10 times:
+					spawn vex at {loc.%player%}
+					apply wither 1 to last spawned entity for 9999999 seconds
+				apply speed 2 to player for 6 seconds
+				apply strength to player for 6 seconds
+				wait for 10 seconds
+				clear {cdo::%player%}
+			if player is "tacord":
+				set {cdo::%player%} to true
+				loop all entities in radius 15 around player:
+					play sound "entity.wither.shoot" at volume 1 for loop-entity at loop-entity
+				set {loc.%player%} to block above block above player's location
+				spawn spectral arrow at {loc.%player%}
+				push last spawned entity in direction of player with force 1.5
+				wait for 0.5 seconds
+				teleport last spawned entity to block above location of player
+				push last spawned entity in direction of player with force 3
+				wait for 0.15 seconds
+				clear {cdi::%player%}
+				wait for 0.5 seconds
+				clear {cdo::%player%}
+			if player is "apollo_alt":
+				set {cdo::%player%} to true
+				loop all entities in radius 20 around player:
+					play sound "entity.mule.chest" at volume 3 and pitch 1 for all players at all players
+				push player forwards with force 2
+				wait for 0.2 seconds
+				play sound "entity.mule.chest" at volume 3 and pitch 1 for player at player
+				set {loc.%player%} to player's location
+				show mob spawner flames at {loc.%player%} to all players
+				loop all entities in radius 3 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 2
+				wait for 0.2 seconds
+				play sound "entity.mule.chest" at volume 3 and pitch 1 for player at player
+				set {loc.%player%} to player's location
+				show mob spawner flames at {loc.%player%} to all players
+				loop all entities in radius 3 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 2
+				wait for 0.2 seconds
+				play sound "entity.mule.chest" at volume 3 and pitch 1 for player at player
+				set {loc.%player%} to player's location
+				show mob spawner flames at {loc.%player%} to all players
+				loop all entities in radius 3 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 2
+				wait for 0.2 seconds
+				play sound "entity.mule.chest" at volume 3 and pitch 1 for player at player
+				set {loc.%player%} to player's location
+				show mob spawner flames at {loc.%player%} to all players
+				loop all entities in radius 3 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 2
+				wait for 0.2 seconds
+				play sound "entity.mule.chest" at volume 3 and pitch 1 for player at player
+				set {loc.%player%} to player's location
+				show mob spawner flames at {loc.%player%} to all players
+				loop all entities in radius 3 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 2
+				wait for 7 seconds
+				clear {cdo::%player%}
+			if player is "Elliot210507":
+				play sound "entity.bee.loop_aggressive" at volume 1 for player at player	
+				set {cdo::%player%} to true
+				play sound "block.brewing_stand.brew" at volume 3 for player at player
+				loop 10 times:
+					set {loc.%player%} to player's location
+					spawn bee at {loc.%player%}
+					apply wither to last spawned entity for 9999999 seconds
+				apply invisibility to player for 6 seconds
+				apply speed 3 to player for 6 seconds
+				wait for 10 seconds
+				clear {cdi::%player%}
+			if player is "glex411":
+				play sound "entity.bee.loop_aggressive" at volume 1 for player at player	
+				set {cdo::%player%} to true
+				play sound "block.brewing_stand.brew" at volume 3 for player at player
+				apply resistance to player for 4 seconds
+				apply saturation to player for 0.2 seconds
+				wait for 10 seconds
+				clear {cdo::%player%}
+			if player is "portcell":
+				set {cdo::%player%} to true
+				set {loc.%player%} to block above block above player's location
+				spawn arrow at {loc.%player%}
+				push last spawned entity in direction of player with force 3
+				wait for 0.7 seconds
+				clear {cdo::%player%}
+			if player is "masterbolt9999":
+				set {cdo::%player%} to true
+				play sound "entity.dolphin.play" at volume 1 for player at player
+				apply dolphin's grace to player for 6 seconds
+				apply water breathing to player for 6 seconds
+				apply swiftness 3 to player for 6 seconds
+				apply strength to player for 6 seconds
+				loop all entities in radius 20 around player:
+					play sound "entity.dolphin.play" at volume 1 for loop-entity at loop-entity
+				wait for 10 seconds
+				clear {cdo::%player%}
+			if player is "ponga1":
+				set {cdo::%player%} to true
+				apply regeneration 2 to player for 6 seconds
+				apply absorption 1 to player for 6 seconds
+				apply slowness 1 to player for 6 seconds
+				loop all entities in radius 20 around player:
+					play sound "entity.endermite.hurt" at volume 1 for player at loop-entity
+				wait for 10 seconds
+				clear {cdi::%player%}
+			if player is "epikx":
+				set {cdo::%player%} to true
+				push player upwards with force 1
+				push player forwards with force 1
+				loop all entities in radius 3 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 1
+				loop all entities in radius 20 around player:
+					play sound "item.firecharge.use" at volume 1 for player at loop-entity
+				wait for 7 seconds
+				clear {cdo::%player%}
+			if player is "apollo_alt":
+				set {cdo::%player%} to true
+				apply resistance 5 to player for 1.5 seconds
+				apply slowness 3 to player for 1.5 seconds
+				loop all entities in radius 3 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 1
+						push loop-entity backwards with force 3
+						push loop-entity downwards with force 2
+				loop all entities in radius 20 around player:
+					play sound "entity.iron_golem.repair" at volume 1 for player at loop-entity
+				wait for 5 seconds
+				clear {cdo::%player%}
+			if player is "ibegood":
+				set {cdo::%player%} to true
+				apply resistance 5 to player for 2 seconds
+				loop all entities in radius 2.5 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 2
+				push player upwards with force 1.5
+				push player forwards with force 0.5
+				wait for 0.6 seconds
+				push player downwards with force 3
+				wait for 0.6 seconds
+				loop all entities in radius 2.5 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 2
+				push player upwards with force 1.5
+				push player forwards with force 0.5
+				wait for 0.6 seconds
+				push player downwards with force 3
+				wait for 0.6 seconds
+				loop all entities in radius 2.5 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 2
+				push player upwards with force 1.5
+				push player forwards with force 0.5
+				wait for 0.6 seconds
+				push player downwards with force 3
+				wait for 0.6 seconds
+				loop all entities in radius 2.5 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 2
+				wait for 2 seconds
+				clear {cdo::%player%}
+			if player is "jiboot":
+				set {cdo::%player%} to true
+				set {loc.%player%} to block above block above block above block above block above block above player's location
+				show explosion at {loc.%player%} to the player
+				show explosion at {loc.%player%} to the player
+				show explosion at {loc.%player%} to the player
+				show explosion at {loc.%player%} to the player
+				apply slow falling to player for 2 second
+				loop all entities in radius 3 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 1
+						apply blindness 1 to loop-entity for 1 second
+						apply wither 3 to loop-entity for 1 second
+				teleport player to {loc.%player%}
+				loop all entities in radius 20 around player:
+					play sound "entity.wither.hurt" at volume 1 for player at loop-entity
+				wait for 5 seconds
+				clear {cdo::%player%}
+			if player is "Reaper31408":
+				set {loc.%player%} to player's location
+				set {cdo::%player%} to true
+				set {kalio2::%player%} to true
+				play sound "entity.wolf.shake" at volume 3 and pitch 3 for player at player
+				loop all entities in radius 2 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 1
+						play sound "entity.player.hurt_sweet_berry_bush" at volume 1 for loop-entity at loop-entity
+						play sound "entity.player.hurt_sweet_berry_bush" at volume 1 for player at player
+						apply blindness to loop-entity for 2 seconds
+				push player upwards with force 1.5
+				apply swiftness 1 to player for 1 seconds
+				wait for 0.7 seconds
+				push player downwards with force 5
+				apply resistance 5 to player for 2.5 seconds
+				wait for 0.6 seconds
+				remove resistance from player
+				set {loc.%player%} to player's location
+				loop all entities in radius 3.2 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 2.5
+						apply glowing to loop-entity for 0.5 seconds
+						apply slowness 10 to loop-entity for 1 seconds
+						play sound "block.anvil.land" at volume 1 for loop-entity at loop-entity
+						play sound "block.anvil.land" at volume 1 for player at player
+				show mob spawner flames at {loc.%player%} to all players
+				wait for 2.5 seconds
+				clear {kalio2::%player%}
+				clear {cdo::%player%}
+		else:
+			cancel event
+			send title "&e" with subtitle "&cYou're on cooldown!" to player for 0.1 seconds
+			play sound "entity.armor_stand.break" at volume 1 for player at player
+
+on right click:
+	set {_x} to heart of the sea
+	enchant {_x} with mending
+	if player's held item is {_x} named "&b&lYour &6&lAbility":
+		if {cdi::%player%} is not set:
+			cancel event
+			if player is "taiju0":
+				set {cdi::%player%} to true
+				loop all entities in radius 15 around player:
+					play sound "entity.wither.shoot" at volume 1 for loop-entity at loop-entity
+				shoot a fireball at speed 2
+				wait for 0.6 seconds
+				clear {cdi::%player%}
+			if player is "ponga1":
+				set {cdi::%player%} to true
+				loop all entities in radius 15 around player:
+					play sound "entity.evoker.cast_spell" at volume 1 for loop-entity at loop-entity
+				set {loc.%player%} to block above block above player's location
+				spawn trident at {loc.%player%}
+				push last spawned entity in direction of player with force 1
+				wait for 0.7 seconds
+				clear {cdi::%player%}
+			if player is "":
+				set {cdi::%player%} to true
+				loop all entities in radius 15 around player:
+					play sound "entity.wither.hurt" at volume 1 for loop-entity at loop-entity
+				loop all entities in radius 5 around player:
+					if loop-entity is not player:
+						apply slowness 3 to loop-entity for 3 seconds
+						apply weakness 1 to loop-entity for 3 seconds
+				wait for 5 seconds
+				clear {cdi::%player%}
+			if player is "tacord":
+				set {cdi::%player%} to true
+				play sound "entity.player.breath" at volume 0.5 and pitch 2 for player at player
+				loop all entities in radius 7 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 1
+						ignite loop-entity for 2 seconds
+						push loop-entity backwards with force 1
+						push loop-entity upwards with force 0.5
+				show wolf hearts on the player
+				loop all entities in radius 15 around player:
+					play sound "entity.player.breath" at volume 1 for loop-entity at loop-entity
+				wait for 2 seconds
+				clear {cdi::%player%}
+			if player is "":
+				set {cdi::%player%} to true
+				play sound "entity.player.breath" at volume 0.5 and pitch 2 for player at player
+				loop all entities in radius 5 around player:
+					if loop-entity isn't player:
+						apply slowness 2 to loop-entity for 2.5 seconds
+						apply blindness 1 to loop-entity for 2.5 seconds
+						apply wither 1 to loop-entity for 2.5 seconds
+				show mob spawner flames at {loc.%player%} to all players
+				loop all entities in radius 20 around player:
+					play sound "entity.player.breath" at volume 1 for player at loop-entity
+				wait for 3 seconds
+				clear {cdi::%player%}
+			if player is "portcell":
+				set {cdi::%player%} to true
+				loop all entities in radius 15 around player:
+					play sound "entity.player.breath" at volume 1 for player at loop-entity
+				loop 10 times:
+					push player upwards with force 0.35
+					push player forwards with force 0.13
+					apply slow falling to player for 0.2 seconds
+					wait for 0.2 seconds
+				wait for 5 seconds
+				clear {cdi::%player%}
+			if player is "_mistral":
+				set {cdi::%player%} to true
+				loop all entities in radius 15 around player:
+					play sound "entity.player.breath" at volume 1 for player at loop-entity
+				loop 10 times:
+					apply health boost 2 to player for 5 seconds
+					apply regeneration 1 to player for 5 seconds
+				wait for 7.5 seconds
+				clear {cdi::%player%}
+			if player is "elliot210507":
+				set {cdi::%player%} to true
+				loop 3 times:
+					set {loc.%player%} to block 2 in front of player's location
+					spawn evoker fangs at {loc.%player%}
+					set {loc.%player%} to block 3 in front of player's location
+					spawn evoker fangs at {loc.%player%}
+					set {loc.%player%} to block 4 in front of player's location
+					spawn evoker fangs at {loc.%player%}
+					set {loc.%player%} to block 5 in front of player's location
+					spawn evoker fangs at {loc.%player%}
+					set {loc.%player%} to block 6 in front of player's location
+					spawn evoker fangs at {loc.%player%}
+					set {loc.%player%} to block 7 in front of player's location
+					spawn evoker fangs at {loc.%player%}
+					set {loc.%player%} to block 8 in front of player's location
+					spawn evoker fangs at {loc.%player%}
+					set {loc.%player%} to block 9 in front of player's location
+					spawn evoker fangs at {loc.%player%}
+					set {loc.%player%} to block 10 in front of player's location
+					spawn evoker fangs at {loc.%player%}
+					set {loc.%player%} to block 11 in front of player's location
+					spawn evoker fangs at {loc.%player%}
+					wait for 0.4 seconds
+				wait for 2.5 seconds
+				clear {cdi::%player%}
+				loop all entities in radius 15 around player:
+					play sound "entity.ender_dragon.shoot" at volume 1 for loop-entity at loop-entity
+			if player is "jiboot":
+				set {cdi::%player%} to true
+				remove speed from player
+				play sound "block.brewing_stand.brew" at volume 3 for player at player
+				apply speed 2 to player for 6 seconds
+				apply strength 1 to player for 6 seconds
+				wait for 6 seconds
+				clear {cdi::%player%}
+				loop all entities in radius 15 around player:
+					play sound "block.brewing_stand.brew" at volume 3 for loop-entity at loop-entity
+			if player is "apollo_alt":
+				set {cdi::%player%} to true
+				play sound "entity.witch.hurt" at volume 3 for player at player
+				apply instant health 1 to player for 1 seconds
+				apply health boost 2 to player for 3 seconds
+				wait for 3 seconds
+				play sound "entity.witch.hurt" at volume 3 for player at player
+				apply speed 1 to player for 5 seconds
+				play sound "block.brewing_stand.brew" at volume 3 for player at player
+			if player is ".ashpopcorn":
+				set {cdi::%player%} to true
+				play sound "entity.witch.hurt" at volume 3 for player at player
+				apply resistance 5 to player for 2 seconds
+				play sound "block.brewing_stand.brew" at volume 3 for player at player
+			if player is "masterbolt9999":
+				set {cdi::%player%} to true
+				play sound "entity.witch.hurt" at volume 3 for player at player
+				apply speed 50 to player for 1 seconds
+				wait for 0.6 seconds
+				remove speed from player
+				play sound "block.brewing_stand.brew" at volume 3 for player at player
+				wait for 3 seconds
+				clear {cdi::%player%}
+			if player is "awsommc":
+				set {cdi::%player%} to true
+				play sound "entity.witch.hurt" at volume 3 for player at player
+				set {loc.%player%} to block above player's location
+				strike lightning effect at player
+				loop all entities in radius 5 around player:
+					if loop-entity isn't player:
+						damage loop-entity by 3
+				wait for 5 seconds
+				clear {cdi::%player%}
+				play sound "block.brewing_stand.brew" at volume 3 for player at player
+			if player is "Reaper31408":
+				set {cdi::%player%} to true
+				play sound "entity.bee.loop" at volume 3 and pitch 2 for player at player
+				set {loc.%player%} to player's location
+				spawn bee at {loc.%player%}
+				apply wither to last spawned entity for 9999999 seconds
+				spawn bee at {loc.%player%}
+				apply wither to last spawned entity for 9999999 seconds
+				set {loc.%player%} to block above player's location
+				spawn bee at {loc.%player%}
+				apply wither to last spawned entity for 9999999 seconds
+				spawn bee at {loc.%player%}
+				apply wither to last spawned entity for 9999999 seconds
+				push player upwards with force 1.5
+				set {loc.%player%} to player's location
+				spawn bee at {loc.%player%}
+				apply wither to last spawned entity for 9999999 seconds
+				spawn bee at {loc.%player%}
+				apply wither to last spawned entity for 9999999 seconds
+				apply slow falling to player for 10 seconds
+				apply jump boost 2 to player for 10 seconds
+				play sound "block.brewing_stand.brew" at volume 3 for player at player
+				loop all entities in radius 15 around player:
+					play sound "entity.bee.loop" at volume 1 for loop-entity at loop-entity
+				wait for 10 seconds
+				clear {cdi::%player%}
+			if player is "epikx":
+				set {cdi::%player%} to true
+				loop all entities in radius 15 around player:
+					play sound "entity.blaze.shoot" at volume 1 for loop-entity at loop-entity
+				apply fire resistance to player for 2 second
+				shoot a small fireball at speed 1
+				wait for 0.5 seconds
+				clear {cdi::%player%}
+			if player is "ibegood":
+				set {cdi::%player%} to true
+				play sound "block.end_portal_frame.fill" at volume 3 for player at player
+				apply regeneration 2 to player for 5 seconds
+				apply slowness 2 to player for 5 seconds
+				wait for 10 seconds
+				clear {cdi::%player%}
+		else:
+			cancel event
+			send title "&e" with subtitle "&cYou're on cooldown!" to player for 0.1 seconds
+			play sound "entity.armor_stand.break" at volume 1 for player at player
+
+on jump:
+	if {e::%event-entity%} is true:
+		cancel event
+
+on ignition:
+	if player's held item is flint and steel:
+		stop
+	else:
+		cancel event

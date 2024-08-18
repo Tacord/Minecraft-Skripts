@@ -1,0 +1,132 @@
+command /quests:
+	trigger:
+		set {_gui} to a new chest inventory with 1 row with name "&lQuests Menu"
+		set {_key} to book
+		enchant {_key} with mending 1
+		set slot 0 of {_gui} to red glass pane named "&e"
+		set slot 1 of {_gui} to red glass pane named "&e"
+		set slot 2 of {_gui} to {_key} named "&e&lDaily Quests"
+		set slot 3 of {_gui} to red glass pane named "&e"
+		set slot 4 of {_gui} to {_key} named "&e&lQuests" with lore "&fDo tasks to earn rewards!" and "&fDaily quests are easy and reset every day" and "&fLifetime quests are hard tasks that give huge rewards"
+		set slot 5 of {_gui} to red glass pane named "&e"
+		set slot 6 of {_gui} to {_key} named "&e&lLifetime Quests"
+		set slot 7 of {_gui} to red glass pane named "&e"
+		set slot 8 of {_gui} to red glass pane named "&e"
+		open {_gui} to player
+
+on break of stone or cobblestone or deepslate:
+	if {quests.%player%::stone} is greater than 299:
+		set {quests.%player%::stone} to "Completed"
+	if {quests.%player%::stone} is not "Completed":
+		set {quests.%player%::stone} to {quests.%player%::stone} + 1
+
+on break of stone or grass block or dirt:
+	if {quests.%player%::dirt} is greater than 299:
+		set {quests.%player%::dirt} to "Completed"
+	if {quests.%player%::dirt} is not "Completed":
+		set {quests.%player%::dirt} to {quests.%player%::dirt} + 1
+
+on death:
+	if victim is zombie:
+		if {quests.%attacker%::zombiekill} is greater than 4:
+			set {quests.%attacker%::zombiekill} to "Completed"
+		if {quests.%attacker%::zombiekill} is not "Completed":
+			set {quests.%attacker%::zombiekill} to {quests.%attacker%::zombiekill} + 1
+	if victim is player:
+		if {quests.%victim%::die} is greater than 9:
+			set {quests.%victim%::die} to "Completed"
+		if {quests.%victim%::die} is not "Completed":
+			set {quests.%victim%::die} to {quests.%victim%::die} + 1
+	if victim is skeleton:
+		if {quests.%attacker%::skeletonkill} is greater than 19:
+			set {quests.%attacker%::skeletonkill} to "Completed"
+		if {quests.%attacker%::skeletonkill} is not "Completed":
+			set {quests.%attacker%::skeletonkill} to {quests.%attacker%::skeletonkill} + 1
+
+on load:
+	loop all players:
+		clear {quests.%loop-player%::zombiekill}
+		clear {quests.%loop-player%::skeletonkill}
+		clear {quests.%loop-player%::stone}
+		clear {quests.%loop-player%::dirt}
+		clear {quests.%loop-player%::die}
+
+every 1 second:
+	loop all players:
+		if {quests.%loop-player%::zombiekill} is 5:
+			set {quests.%loop-player%::zombiekill} to "Completed"
+			give 24 of emerald to loop-player
+			send "&aYou just completed a daily quest!" to loop-player
+		if {quests.%loop-player%::skeletonkill} is 20:
+			set {quests.%loop-player%::skeletonkill} to "Completed"
+			give 24 of emerald to loop-player
+			send "&aYou just completed a daily quest!" to loop-player
+		if {quests.%loop-player%::die} is 10:
+			set {quests.%loop-player%::die} to "Completed"
+			give 24 of emerald to loop-player
+			send "&aYou just completed a daily quest!" to loop-player
+		if {quests.%loop-player%::stone} is 300:
+			set {quests.%loop-player%::stone} to "Completed"
+			give 24 of emerald to loop-player
+			send "&aYou just completed a daily quest!" to loop-player
+		if {quests.%loop-player%::dirt} is 300:
+			set {quests.%loop-player%::dirt} to "Completed"
+			give 24 of emerald to loop-player
+			send "&aYou just completed a daily quest!" to loop-player
+		if {quests.%loop-player%::level} is 300:
+			set {quests.%loop-player%::dirt} to "Completed"
+			give 24 of emerald to loop-player
+			send "&aYou just completed a daily quest!" to loop-player
+			
+
+on inventory click:
+	if name of event-inventory is "&lQuests Menu":
+		if index of event-slot = 0:
+			cancel event
+		if index of event-slot = 1:
+			cancel event
+		if index of event-slot = 2:
+			cancel event
+			set {_gui} to a new chest inventory with 1 row with name "&lQuests Menu"
+			set {_key} to book
+			enchant {_key} with mending 1
+			set slot 0 of {_gui} to pink glass pane named "&e"
+			set slot 1 of {_gui} to pink glass pane named "&e"
+			set slot 2 of {_gui} to {_key} named "&a&lKill 30 zombies" with lore "&eProgress: &f&l%{quests.%player%::zombiekill}% / 30" and "&aReward: &f&l24 emeralds"
+			set slot 3 of {_gui} to {_key} named "&a&lMine 300 dirt" with lore "&eProgress: &f&l%{quests.%player%::dirt}% / 300" and "&aReward: &f&l24 emeralds"
+			set slot 4 of {_gui} to {_key} named "&a&lMine 300 stone" with lore "&eProgress: &f&l%{quests.%player%::stone}% / 300" and "&aReward: &f&l24 emeralds"
+			set slot 5 of {_gui} to {_key} named "&a&lDie 10 times" with lore "&eProgress: &f&l%{quests.%player%::die}% / 10" and "&aReward: &f&l24 emeralds"
+			set slot 6 of {_gui} to {_key} named "&a&lKill 20 skeletons" with lore "&eProgress: &f&l%{quests.%player%::skeletonkill}% / 20" and "&aReward: &f&l24 emeralds"
+			set slot 7 of {_gui} to pink glass pane named "&e"
+			set slot 8 of {_gui} to pink glass pane named "&e"
+			open {_gui} to player
+		if index of event-slot = 3:
+			cancel event
+		if index of event-slot = 4:
+			cancel event
+		if index of event-slot = 5:
+			cancel event
+		if index of event-slot = 6:
+			cancel event
+			stop
+			set {_gui} to a new chest inventory with 1 row with name "&lQuests Menu"
+			set {_key} to book
+			enchant {_key} with mending 1
+			set slot 0 of {_gui} to pink glass pane named "&e"
+			set slot 1 of {_gui} to {_key} named "&a&lHave 100 levels" with lore "&eProgress: &f&l%{quests.%player%::level}% / 30" and "&aReward: &f&l10 enchanted golden apples"
+			set slot 2 of {_gui} to {_key} named "&a&lKill 1000 entities" with lore "&eProgress: &f&l%{quests.%player%::kill}% / 30" and "&aReward: &f&l64 diamonds"
+			set slot 3 of {_gui} to {_key} named "&a&lKill a player 100 times" with lore "&eProgress: &f&l%{quests.%player%::player}% / 300" and "&aReward: &f&lTrident"
+			set slot 4 of {_gui} to {_key} named "&a&lMine 10000 blocks" with lore "&eProgress: &f&l%{quests.%player%::block}% / 300" and "&aReward: &f&lBeacon"
+			set slot 5 of {_gui} to {_key} named "&a&lDie 200 times" with lore "&eProgress: &f&l%{quests.%player%::suicide}% / 10" and "&aReward: &f&l4 netherite ingots"
+			set slot 6 of {_gui} to {_key} named "&a&lKill 3 withers" with lore "&eProgress: &f&l%{quests.%player%::wither}% / 20" and "&aReward: &f&lLegendary Crate Key"
+			set slot 7 of {_gui} to {_key} named "&a&lUse your ability 1000 times" with lore "&eProgress: &f&l%{quests.%player%::ability}% / 30" and "&aReward: &f&l64 emerald blocks"
+			set slot 8 of {_gui} to pink glass pane named "&e"
+			open {_gui} to player
+		if index of event-slot = 7:
+			cancel event
+		if index of event-slot = 8:
+			cancel event
+			
+
+on spawn of ghast:
+	cancel event

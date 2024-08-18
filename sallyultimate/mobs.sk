@@ -1,0 +1,100 @@
+function spawnmob(m: text, p:player, l:entity):
+    if {_m} = "monkey":
+        spawn 1 of zombie at {_l}
+        set {_e} to last spawned zombie
+        equip {_e} with ("aceleap" parsed as offline player)'s skull
+        set name of {_e} to "Monkey"
+    if {_m} = "zombieking":
+        broadcast "&e[&c&l!&e] &a%{_p}% &fhas summoned &cZombie King"
+        spawn 1 of zombie at {_l}
+        set {_e} to last spawned zombie
+        set name of {_e} to "&eZombie King"
+        equip {_e} with golden helmet of unbreaking 3
+        equip {_e} with golden chestplate of unbreaking 1
+        equip {_e} with golden leggings of unbreaking 1
+        equip {_e} with golden boots of unbreaking 1
+        set maximum health of {_e} to 50
+        heal {_e}
+        apply speed 3 to last spawned entity for 999999 seconds
+
+on spawn of zombie:
+    set {_e} to random integer between 1 and 70
+    if {_e} is 1:
+        wait a tick
+        set name of last spawned zombie to "&7Suspicious Zombie"
+        equip last spawned zombie with golden helmet of unbreaking 3
+
+on death of zombie:
+    if name of victim is "&7Suspicious Zombie":
+        spawnmob("zombieking", attacker, victim)
+        make 100 of flame using 1 at victim
+        clear drops
+
+every 14 seconds:
+    set {_e} to random integer between 1 and 3
+    if {_e} is 1:
+        loop all zombies:
+            name of loop-zombie is "&eZombie King"
+            loop-zombie exists
+            loop all blocks in radius 2 of loop-zombie:
+                show mob spawner flames at loop-block
+            apply levitation 3 to loop-zombie for 1 second
+            wait for 2 seconds
+            loop 3 times:
+                loop all players in radius 6 of loop-zombie:
+                    apply poison to loop-player for 4 seconds
+                damage(loop-zombie, 6, 3)
+                loop all players in radius 16 of loop-zombie:
+                    sound(loop-player, "entity.zombie.break_wooden_door", 10, 0.7, 0.5)
+                make 400 of spit using 1 at loop-zombie
+                wait for 1.5 seconds
+    if {_e} is 2:
+        loop all zombies:
+            name of loop-zombie is "&eZombie King"
+            loop-zombie exists
+            loop all blocks in radius 3 of loop-zombie:
+                show mob spawner flames at loop-block
+            wait for 2 seconds
+            loop 2 times:
+                spawn adult zombie at loop-zombie
+                equip last spawned zombie with iron helmet of unbreaking 1
+                apply wither to last spawned zombie for 99999999 seconds
+    if {_e} is 3:
+        loop all zombies:
+            name of loop-zombie is "&eZombie King"
+            loop-zombie exists
+            loop all blocks in radius 3 of loop-zombie:
+                show mob spawner flames at loop-block
+            wait for 2 seconds
+            loop-zombie's target exists
+            set {_v} to vector between loop-zombie and loop-zombie's target
+            push loop-zombie {_v} at speed 1.5
+            loop 10 times:
+                loop all entities in radius 5 of loop-zombie:
+                    if loop-entity-2 is loop-zombie's target:
+                        make loop-zombie ride loop-entity-2
+                        wait for 1 second
+                        teleport loop-zombie to loop-zombie
+                        wait a tick
+                        teleport loop-entity-2 to block above loop-zombie
+                        wait a tick
+                        push loop-entity-2 upwards at speed 1
+                        sound(loop-zombie, "entity.zombie.break_wooden_door", 10, 0.7, 1)
+                        make 400 of spit using 1 at loop-zombie
+                        stop
+                wait 0.25 seconds
+
+on damage:
+    attacker is zombie
+    if name of victim is "&eZombie King":
+        kill attacker
+
+command /removebossbar:
+    permission: op
+    trigger:
+        delete boss bar named "mybar"
+
+
+command /spawnmob [<text>], [<player>]:
+    trigger:
+        spawnmob(arg-1, player, player)

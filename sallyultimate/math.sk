@@ -1,0 +1,7 @@
+every 10 minutes:
+    set {_e} to random integer between 1 and 1
+    if {_e} is 1:
+        differentiation()
+
+function differentiation():
+    set {_num1} to random integer between 1 and 100

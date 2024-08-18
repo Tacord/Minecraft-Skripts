@@ -1,0 +1,73 @@
+on load:
+	set {diegame::*} to "no"
+	
+every 20 minutes:
+	set {_worddecide} to random integer between 1 and 20
+	if {_worddecide} is 1:
+		set {word::*} to "sally"
+	if {_worddecide} is 2:
+		set {word::*} to "soaptastic"
+	if {_worddecide} is 3:
+		set {word::*} to "dream speedruns"
+	if {_worddecide} is 4:
+		set {word::*} to "pikachu"
+	if {_worddecide} is 5:
+		set {word::*} to "karens are insane"
+	if {_worddecide} is 6:
+		set {word::*} to "i am swag"
+	if {_worddecide} is 7:
+		set {word::*} to "e"
+	if {_worddecide} is 8:
+		set {word::*} to "not even close"
+	if {_worddecide} is 9:
+		set {word::*} to "potassium"
+	if {_worddecide} is 10:
+		set {word::*} to "tacord is cool"
+	if {_worddecide} is 11:
+		set {word::*} to "sheesh"
+	if {_worddecide} is 12:
+		set {word::*} to "are you going to finish that croissant"
+	if {_worddecide} is 13:
+		set {word::*} to "you're gonna have a bad time"
+	if {_worddecide} is 14:
+		set {word::*} to "bidoof god"
+	if {_worddecide} is 15:
+		set {word::*} to "nickeldeon"
+	if {_worddecide} is 16:
+		set {word::*} to "qwertyuiop"
+	if {_worddecide} is 17:
+		set {word::*} to "arlo cereal"
+	if {_worddecide} is 18:
+		set {word::*} to "blyat"
+	if {_worddecide} is 19:
+		set {word::*} to "never gonna give you up"
+	if {_worddecide} is 20:
+		set {word::*} to "nineteen dollar fortnite card"
+	broadcast "&e&l[FlashGames] &fFirst player to type &l%{word::*}% &fwins 1 level!"
+	play sound "block.note_block.flute" with volume 1 and pitch 1 at all players for all players
+
+on chat:
+	if message is {word::*}:
+		cancel event
+		broadcast "&e&l[FlashGames] &f&l%player% &fwas the first to say the word!"
+		play sound "block.crop.break" with volume 1 and pitch 1 at all players for all players
+		set {_xp} to level of player
+		set {_xp1} to {_xp} + 1
+		set level of player to {_xp1}
+		set {word::*} to "owiejfaiwenfoiawhpanwefijapwfeif"
+	
+			
+every 30 minutes:
+	broadcast "&e&l[FlashGames] &fFirst player to &cdie &fwins 1 level!"
+	play sound "block.note_block.flute" with volume 1 and pitch 1 at all players for all players
+	set {diegame::*} to "yes"
+
+on death:
+	if {diegame::*} is "yes":
+		victim is player
+		broadcast "&e&l[FlashGames] &f&l%player% &fwas the first to die!"
+		play sound "block.crop.break" with volume 1 and pitch 1 at all players for all players
+		set {_xp} to level of player
+		set {_xp1} to {_xp} + 1
+		set level of player to {_xp1}
+		set {diegame::*} to "no"

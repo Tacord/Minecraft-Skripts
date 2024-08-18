@@ -1,0 +1,101 @@
+on death:
+	if victim is spider:
+		set {_a} to random integer between 1 and 2
+		if {_a} is 1:
+			drop cobweb of mending named "&f&lWeb Slinger"
+	if victim is sheep:
+		set {_a} to random integer between 1 and 2
+		if {_a} is 1:
+			drop red wool of mending named "&c&lEject Wool"
+	if victim is skeleton:
+		set {_a} to random integer between 1 and 2
+		if {_a} is 1:
+			drop spectral arrow of mending named "&3&lSacred Arrow"
+
+command /itemsling:
+	permission: op
+	trigger:
+		give 1 of cobweb of mending named "&f&lWeb Slinger" to player
+
+command /itemreveal:
+	permission: op
+	trigger:
+		give 1 of slime ball of mending named "&b&lReveal Orb" to player
+
+command /itemarrow:
+	permission: op
+	trigger:
+		give 1 of spectral arrow of mending named "&3&lSacred Arrow" to player
+
+command /itemwool:
+	permission: op
+	trigger:
+		give 1 of red wool of mending named "&c&lEject Wool" to player
+
+on rightclick with cobweb:
+	if name of player's tool is "&f&lWeb Slinger":
+		cancel event
+		set {_e} to 1
+		play sound "entity.spider.death" at volume 1 and pitch 2 at player
+		set {_e} to {_e} + 1
+		set {_loc} to block {_e} in front of player's head
+		if {_loc} is air:
+			set block at {_loc} to cobweb
+			wait for 0.1 seconds
+		play sound "entity.spider.death" at volume 1 and pitch 2 at player
+		set {_e} to {_e} + 1
+		set {_loca} to block {_e} in front of player's head
+		if {_loca} is air:
+			set block at {_loca} to cobweb
+			wait for 0.1 seconds
+		play sound "entity.spider.death" at volume 1 and pitch 3 at player
+		set {_e} to {_e} + 1
+		set {_loce} to block {_e} in front of player's head
+		if {_loce} is air:
+			set block at {_loce} to cobweb
+			remove 1 of cobweb named "&f&lWeb Slinger" from player
+			wait for 4 seconds
+		if {_loc} is cobweb:
+			set block at {_loc} to air
+		if {_loca} is cobweb:
+			set block at {_loca} to air
+		if {_loce} is cobweb:
+			set block at {_loce} to air
+
+on rightclick with red wool:
+	if name of player's tool is "&c&lEject Wool":
+		cancel event
+		push player upwards with force 1.8
+		apply slow falling to player for 5 seconds
+		remove 1 of red wool named "&c&lEject Wool" from player
+		play sound "entity.sheep.hurt" at volume 1 and pitch 1 at player
+
+on rightclick with spectral arrow:
+	if name of player's tool is "&3&lSacred Arrow":
+		cancel event
+		apply slowness 10 to player for 0.7 second
+		wait for 0.7 second
+		shoot a spectral arrow at speed 3.5
+		remove 1 of spectral arrow named "&3&lSacred Arrow" from player
+		play sound "entity.skeleton.hurt" at volume 1 and pitch 1 at player
+
+on rightclick with slime ball:
+	if name of player's tool is "&b&lReveal Orb":
+		cancel event
+		remove 1 of slime ball named "&b&lReveal Orb" from player
+		play sound "entity.player.breath" at volume 0.4 and pitch 1 at player
+		apply blindness to player for 2 second
+		apply slowness 4 to player for 1 second
+		wait for 1 second
+		play sound "entity.wither.spawn" at volume 0.4 and pitch 3 at player
+		loop all entities in radius 10 of player:
+			loop-entity is not player
+			apply glowing to loop-entity for 7 second
+		wait for 0.3 second
+		loop all entities in radius 20 of player:
+			loop-entity is not player
+			apply glowing to loop-entity for 3 second
+		wait for 0.3 second
+		loop all entities in radius 30 of player:
+			loop-entity is not player
+			apply glowing to loop-entity for 2 second

@@ -1,0 +1,232 @@
+command /dunstop:
+	permission: op
+	trigger:
+		clear {dungeon::temple1}
+		clear {dungeon::temple2}
+		clear {dungeon::temple3}
+		clear {dungeon::temple4}
+		clear {dungeon::temple5}
+		clear {dungeon::temple6}
+		clear {dungeon::temple7}
+		clear {dungeon::temple8}
+
+command /dungeon:
+	permission: op
+	trigger:
+		teleport player to location 64.18, -59.50, -236.79 in world "temple"
+		send "&aWelcome, %player%! You are now in the Temple of Herobrine."
+		set {dungeon::temple1} to true
+		clear {dungeon::temple3}
+		clear {dungeon::temple6}
+
+on walk on polished andesite:
+	if {dungeon::temple1} is true:
+		loop 4 times:
+			spawn adult zombie at location 58, -59, -247 in world "temple"
+			set name of last spawned entity to "&6&lRookie Zombie"
+			equip last spawned zombie with leather helmet
+			equip last spawned zombie with leather chestplate
+			equip last spawned zombie with leather leggings
+			equip last spawned zombie with leather boots
+			set tool of last spawned zombie to wooden sword
+		broadcast "We're under attack!"
+		clear {dungeon::temple1}
+		set {dungeon::temple2} to true
+
+on walk on gold block:
+	if {dungeon::temple4} is true:
+		loop 6 times:
+			spawn adult zombie at location 53, -58, -268 in world "temple"
+			set name of last spawned entity to "&e&lElite Zombie"
+			apply speed 2 to last spawned entity for 120 seconds
+			equip last spawned zombie with diamond helmet
+			equip last spawned zombie with diamond chestplate
+			equip last spawned zombie with diamond leggings
+			equip last spawned zombie with diamond boots
+			set tool of last spawned zombie to iron sword
+		broadcast "We're surrounded!"
+		clear {dungeon::temple4}
+		set {dungeon::temple5} to true
+
+on walk on white concrete:
+	if {dungeon::temple7} is true:
+		loop 8 times:
+			spawn skeleton at location 19, -60, -239 in world "temple"
+			set name of last spawned entity to "&6&lSkellie"
+			apply speed 1 to last spawned entity for 120 seconds
+			equip last spawned skeleton with diamond helmet
+			equip last spawned skeleton with diamond chestplate
+			equip last spawned skeleton with diamond leggings
+			equip last spawned skeleton with diamond boots
+			set tool of last spawned skeleton to totem of undying
+		broadcast "We're under attack!"
+		clear {dungeon::temple7}
+		set {dungeon::temple8} to true
+
+on death of zombie:
+	if name of victim is "&6&lRookie Zombie":
+		if {dungeon::temple2} is true:
+			set {dungeon::temple3} to {dungeon::temple3} + 1
+			if {dungeon::temple3} is 4:
+				broadcast "&aYou defeated all the zombies! Please move on..."
+				set block at location 58, -60, -255 in world "temple" to air
+				set block at location 58, -59, -255 in world "temple" to air
+				clear {dungeon::temple2}
+				clear {dungeon::temple3}
+				set {dungeon::temple4} to true
+	if name of victim is "&e&lElite Zombie":
+		if {dungeon::temple5} is true:
+			set {dungeon::temple6} to {dungeon::temple6} + 1
+			if {dungeon::temple6} is 6:
+				broadcast "&aYou defeated all the zombies! Please move on..."
+				set block at location 40, -59, -268.5 in world "temple" to air
+				set block at location 40, -60, -268.5 in world "temple" to air
+				clear {dungeon::temple2}
+				clear {dungeon::temple3}
+				clear {dungeon::temple4}
+				clear {dungeon::temple5}
+				clear {dungeon::temple6}
+				set {dungeon::temple7} to true
+
+on death of skeleton:
+	if name of victim is "&6&lSkellie":
+		if {dungeon::temple8} is true:
+			set {dungeon::temple9} to {dungeon::temple9} + 1
+			if {dungeon::temple9} is 8:
+				broadcast "&aYou defeated all the skeletons! Please move on..."
+				set block at location 9, -54, -236 in world "temple" to air
+				clear {dungeon::temple2}
+				clear {dungeon::temple3}
+				clear {dungeon::temple4}
+				clear {dungeon::temple5}
+				clear {dungeon::temple6}
+				clear {dungeon::temple7}
+				clear {dungeon::temple8}
+				clear {dungeon::temple9}
+				set {dungeon::temple10} to true
+
+command /refresh:
+	permission: op
+	trigger:
+		set block at location 58, -60, -255 in world "temple" to cobblestone wall
+		set block at location 58, -59, -255 in world "temple" to cobblestone wall
+		set block at location 40, -59, -268.5 in world "temple" to gold block
+		set block at location 40, -60, -268.5 in world "temple" to gold block
+
+command /mobrookie [<integer>]:
+	permission: op
+	trigger:
+		loop arg-1 times:
+			spawn adult zombie
+			set name of last spawned entity to "&6&lRookie Zombie"
+			equip last spawned zombie with leather helmet
+			equip last spawned zombie with leather chestplate
+			equip last spawned zombie with leather leggings
+			equip last spawned zombie with leather boots
+			set tool of last spawned zombie to wooden sword
+
+command /mobelite [<integer>]:
+	permission: op
+	trigger:
+		loop arg-1 times:
+			spawn adult zombie
+			set name of last spawned entity to "&e&lElite Zombie"
+			apply speed 2 to last spawned entity for 120 seconds
+			equip last spawned zombie with diamond helmet
+			equip last spawned zombie with diamond chestplate
+			equip last spawned zombie with diamond leggings
+			equip last spawned zombie with diamond boots
+			set tool of last spawned zombie to iron sword
+
+command /mobrascal [<integer>]:
+	permission: op
+	trigger:
+		loop arg-1 times:
+			spawn baby zombie
+			set max health of last spawned entity to 0.5
+			set name of last spawned entity to "&c&lRascal"
+			apply speed 3 to last spawned entity for 120 seconds
+			equip last spawned zombie with chainmail helmet
+			set tool of last spawned zombie to wooden sword
+
+command /mobboom [<integer>]:
+	permission: op
+	trigger:
+		loop arg-1 times:
+			spawn adult husk
+			set name of last spawned entity to "&c&lBoom Boom"
+			apply slowness 3 to last spawned entity for 120 seconds
+			apply resistance 4 to last spawned entity for 120 seconds
+			equip last spawned entity with iron helmet
+			equip last spawned entity with diamond chestplate
+			set tool of last spawned zombie to iron sword
+
+command /mobskeleton [<integer>]:
+	permission: op
+	trigger:
+		loop arg-1 times:
+			spawn skeleton
+			set name of last spawned entity to "&6&lSkellie"
+			equip last spawned entity with iron helmet
+			equip last spawned entity with iron chestplate
+			equip last spawned entity with iron leggings
+			equip last spawned entity with iron boots
+			apply speed 2 to last spawned entity for 120 seconds
+			set tool of last spawned entity to totem of undying
+
+command /mobcreeper [<integer>]:
+	permission: op
+	trigger:
+		loop arg-1 times:
+			spawn creeper
+			set name of last spawned entity to "&a&lStealthy Snake"
+			apply speed 2 to last spawned entity for 120 seconds
+
+command /mobstray [<integer>]:
+	permission: op
+	trigger:
+		loop arg-1 times:
+			spawn stray
+			set name of last spawned entity to "&1&lFrozen King"
+			equip last spawned entity with diamond helmet
+			equip last spawned entity with diamond chestplate
+			equip last spawned entity with diamond leggings
+			equip last spawned entity with diamond boots
+			set tool of last spawned entity to stone sword
+
+command /mobskeletonking [<integer>]:
+	permission: op
+	trigger:
+		loop arg-1 times:
+			spawn stray
+			set name of last spawned entity to "&8&lSkellie King"
+			equip last spawned entity with diamond helmet 	
+			equip last spawned entity with diamond chestplate
+			equip last spawned entity with diamond leggings
+			equip last spawned entity with diamond boots
+			set tool of last spawned entity to stone sword
+
+on damage:
+	if name of attacker is "&1&lFrozen King":
+		apply slowness 8 to victim for 0.7 second
+		play sound "entity.player.hurt_freeze" at volume 1 and pitch 1 for victim
+
+on explode:
+	if name of event-entity is "&a&lStealthy Snake":
+		loop 2 times:
+			spawn adult zombie 
+			set name of last spawned entity to "&7&lZombo"
+			equip last spawned entity with iron helmet
+			equip last spawned entity with iron chestplate
+			equip last spawned entity with iron leggings
+			equip last spawned entity with iron boots
+
+on death:
+	if name of event-entity is "&a&lStealthy Snake":
+		loop 2 times:
+			spawn adult zombie 
+			set name of last spawned entity to "&7&lZombo"
+			equip last spawned entity with iron helmet
+			equip last spawned entity with iron chestplate
+			equip last spawned entity with iron leggings
+			equip last spawned entity with iron boots

@@ -1,0 +1,49 @@
+command /tradeconcrete:
+	trigger:
+		player's name is "Portcell" or "Tacord"
+		if {coins::%player%} is greater than 0:
+			set {coins::%player%} to {coins::%player%} - 1
+			give 64 of white concrete to player
+		else:
+			send "&cYou don't have enough coins"
+
+command /tradedye:
+	trigger:
+		player's name is "Portcell" or "Tacord"
+		if {coins::%player%} is greater than 0:
+			set {coins::%player%} to {coins::%player%} - 1
+			give 32 of black dye to player
+		else:
+			send "&cYou don't have enough coins"
+
+
+command /donate:
+	trigger:
+		send "&aGIVE ME MONEY"
+		send "&eVIP &7[$2]:"
+		send "&f- Get 200 coins instantly!"
+		send "&f- Get your name in the /credits!"
+		send "&f- Test out new abilities early!"
+		send "&f- /tradeconcrete &7(Trade 1 coin for 1 stack of concrete)"
+
+command /credits:
+	trigger:
+		send "&d&lSally&f&lCustom"
+		send "&7Made by Tacord"
+		send ""
+		send "&fAbilities: &7Tacord"
+		send "&fOrbital Strike: &7Jiboot"
+		send ""
+		send "&bVIP: &7Portcell"
+
+on join:
+	if player's name is ".AwakeLight10359":
+		wait for 1 second
+		play sound "entity.cat.hiss" at volume 2 and pitch 2 for player
+		send ""
+		send "&c&lWARNING"
+		send "&e.AwakeLight10359&f, you have been reported of stealing goods from others on the server. If we notice any more suspicious behaviour, you will be punished. Please return the items to their rightful owners to stop seeing this message, &cwe have logs running 24/7 monitoring all your actions."
+		send ""
+		loop 50 times:
+			play sound "block.note_block.pling" at volume 2 and pitch 1 for player
+			wait for 0.1 seconds

@@ -1,0 +1,389 @@
+command /irontransfer:
+	trigger:
+		if player's inventory contains 4 iron ingot:
+			add 10 to {coins::%player%}
+			remove 4 of iron ingot from player
+			send "&aSuccessfully traded 4 iron ingots for 10 coins!"
+		else:
+			send "&cYou don't have enough iron!"
+
+command /diamondtransfer:
+	trigger:
+		if player's inventory contains 2 diamond:
+			add 20 to {coins::%player%}
+			remove 2 of diamond from player
+			send "&aSuccessfully traded 2 diamonds for 20 coins!"
+		else:
+			send "&cYou don't have enough diamonds!"
+
+	
+on death:
+	if victim is zombie:
+		set {coins::%attacker%} to {coins::%attacker%} + 1
+		set {xp::%attacker%} to {xp::%attacker%} + 1
+		play sound "entity.player.levelup" with volume 1 and pitch 2 to attacker
+		checkxp(attacker)
+	if victim is a creeper:
+		set {coins::%attacker%} to {coins::%attacker%} + 3
+		set {xp::%attacker%} to {xp::%attacker%} + 3
+		checkxp(attacker)
+		play sound "entity.player.levelup" with volume 1 and pitch 2 to attacker
+	if victim is a skeleton:
+		set {coins::%attacker%} to {coins::%attacker%} + 1
+		set {xp::%attacker%} to {xp::%attacker%} + 1
+		checkxp(attacker)
+		play sound "entity.player.levelup" with volume 1 and pitch 2 to attacker
+	if victim is spider:
+		set {coins::%attacker%} to {coins::%attacker%} + 1
+		set {xp::%attacker%} to {xp::%attacker%} + 1
+		checkxp(attacker)
+		play sound "entity.player.levelup" with volume 1 and pitch 2 to attacker
+	if victim is enderman:
+		set {coins::%attacker%} to {coins::%attacker%} + 5
+		set {xp::%attacker%} to {xp::%attacker%} + 5
+		checkxp(attacker)
+		play sound "entity.player.levelup" with volume 1 and pitch 2 to attacker
+	if victim is a wither:
+		set {coins::%attacker%} to {coins::%attacker%} + 50
+		set {xp::%attacker%} to {xp::%attacker%} + 50
+		checkxp(attacker)
+		play sound "entity.player.levelup" with volume 1 and pitch 2 to attacker
+	if victim is ender dragon:
+		set {coins::%attacker%} to {coins::%attacker%} + 200
+		set {xp::%attacker%} to {xp::%attacker%} + 200
+		checkxp(attacker)
+		play sound "entity.player.levelup" with volume 1 and pitch 2 to attacker
+	set line 2 of attacker's scoreboard to colored "&a%{coins::%attacker%}%⛁"
+
+on level up:
+	set {coins::%player%} to {coins::%player%} + player's level
+	play sound "entity.player.levelup" with volume 1 and pitch 2 to player
+	set line 2 of player's scoreboard to colored "&a%{coins::%player%}%⛁"
+
+on death:
+	play sound "entity.allay.hurt" with volume 2 and pitch 0.5 to victim
+
+
+
+
+
+
+
+
+
+on death of player:
+	if attacker is a player:	
+		set {kills::%attacker%} to {kills::%attacker%} + 1
+on death of player:	
+	set {deaths::%victim%} to {deaths::%victim%} + 1
+
+
+command /leaderboard <text>:
+	trigger:
+		if arg-1 is "Kills":
+			loop {kills::*}:
+				add 1 to {_size}
+				if {_low.to.high.list::%loop-value%} is not set:
+					set {_low.to.high.list::%loop-value%} to loop-index
+				else:
+					set {_n} to 0
+					loop {_size} times:
+						set {_n} to {_n}+1
+						{_low.to.high.list::%loop-value-1%.%{_n}%} is not set
+						set {_low.to.high.list::%loop-value-1%.%{_n}%} to loop-index
+						stop loop
+			wait 1 tick
+			set {_n} to size of {_low.to.high.list::*}
+			loop {_low.to.high.list::*}:
+				set {_high.to.low.list::%{_n}%} to loop-value
+				set {_n} to {_n}-1
+			wait 1 tick
+			send "&8-------------------"
+			send "&f&lHighest Kill Counts"
+			loop {_high.to.low.list::*}:
+				loop-value does not contain "entity" or "<none>"
+				add 1 to {_result}
+				send "&7%{_result}%. &e%loop-value%: &7%{kills::%loop-value%}% Kills" to player
+				if {_result} is 10:
+					send "&8-------------------"
+					stop
+			send "&8-------------------"
+
+
+
+		if arg-1 is "Deaths":
+			loop {deaths::*}:
+				add 1 to {_size}
+				if {_low.to.high.list::%loop-value%} is not set:
+					set {_low.to.high.list::%loop-value%} to loop-index
+				else:
+					set {_n} to 0
+					loop {_size} times:
+						set {_n} to {_n}+1
+						{_low.to.high.list::%loop-value-1%.%{_n}%} is not set
+						set {_low.to.high.list::%loop-value-1%.%{_n}%} to loop-index
+						stop loop
+			wait 1 tick
+			set {_n} to size of {_low.to.high.list::*}
+			loop {_low.to.high.list::*}:
+				set {_high.to.low.list::%{_n}%} to loop-value
+				set {_n} to {_n}-1
+			wait 1 tick
+			send "&8-------------------"
+			send "&f&lHighest Death Counts"
+			loop {_high.to.low.list::*}:
+				loop-value does not contain "entity" or "<none>"
+				add 1 to {_result}
+				send "&7%{_result}%. &e%loop-value%: &7%{deaths::%loop-value%}% Deaths" to player
+				if {_result} is 10:
+					send "&8-------------------"
+					stop
+			send "&8-------------------"
+
+
+		if arg-1 is "Coins":
+			loop {coins::*}:
+				add 1 to {_size}
+				if {_low.to.high.list::%loop-value%} is not set:
+					set {_low.to.high.list::%loop-value%} to loop-index
+				else:
+					set {_n} to 0
+					loop {_size} times:
+						set {_n} to {_n}+1
+						{_low.to.high.list::%loop-value-1%.%{_n}%} is not set
+						set {_low.to.high.list::%loop-value-1%.%{_n}%} to loop-index
+						stop loop
+			wait 1 tick
+			set {_n} to size of {_low.to.high.list::*}
+			loop {_low.to.high.list::*}:
+				set {_high.to.low.list::%{_n}%} to loop-value
+				set {_n} to {_n}-1
+			wait 1 tick
+			send "&8-------------------"
+			send "&f&lRichest Players"
+			loop {_high.to.low.list::*}:
+				loop-value does not contain "entity" or "<none>"
+				add 1 to {_result}
+				send "&7%{_result}%. &e%loop-value%: &7%{coins::%loop-value%}%⛁" to player
+				if {_result} is 10:
+					send "&8-------------------"
+					stop
+			send "&8-------------------"
+
+		if arg-1 is "Levels":
+			loop {level::*}:
+				add 1 to {_size}
+				if {_low.to.high.list::%loop-value%} is not set:
+					set {_low.to.high.list::%loop-value%} to loop-index
+				else:
+					set {_n} to 0
+					loop {_size} times:
+						set {_n} to {_n}+1
+						{_low.to.high.list::%loop-value-1%.%{_n}%} is not set
+						set {_low.to.high.list::%loop-value-1%.%{_n}%} to loop-index
+						stop loop
+			wait 1 tick
+			set {_n} to size of {_low.to.high.list::*}
+			loop {_low.to.high.list::*}:
+				set {_high.to.low.list::%{_n}%} to loop-value
+				set {_n} to {_n}-1
+			wait 1 tick
+			send "&8-------------------"
+			send "&f&lMost Pro Players"
+			loop {_high.to.low.list::*}:
+				loop-value does not contain "entity" or "<none>"
+				add 1 to {_result}
+				send "&7%{_result}%. &e%loop-value%: &7LV %{level::%loop-value%}%" to player
+				if {_result} is 10:
+					send "&8-------------------"
+					stop
+			send "&8-------------------"
+
+on tab complete of "/leaderboard":
+	set tab completions for position 1 to "Kills", "Deaths", "Levels" and "Coins"
+
+command /killsset <offline player> <integer>:
+	permission: op
+	trigger:
+		set {kills::%arg-1%} to arg-2
+
+command /deathsset <offline player> <integer>:
+	permission: op
+	trigger:
+		set {deaths::%arg-1%} to arg-2
+
+command /coinsset <offline player> <integer>:
+	permission: op
+	trigger:
+		set {coins::%arg-1%} to arg-2
+
+command /levelset <offline player> <integer>:
+	permission: op
+	trigger:
+		set {level::%arg-1%} to arg-2
+
+
+command /resetlb:
+	permission: op
+	trigger:
+		delete {kills::*}
+		delete {deaths::*}
+		delete {coins::*}
+		delete {_high.to.low.list::*}
+		delete {_size}
+		delete {_n}
+		delete {_high.to.low.list::%{_n}%}
+
+
+
+
+command /daily:
+	trigger:
+		set {_gui} to a new chest inventory with 3 row with name "&lClaim Daily Reward"
+		set slot (integers from 0 to 100) of {_gui} to light blue stained glass pane
+		set slot 1 of {_gui} to gold nugget of mending 1 named "&e&lDay 1" with lore "&f50 coins"
+		set slot 2 of {_gui} to experience bottle of mending 1 named "&e&lDay 2" with lore "&f32 experience bottles, 50 coins" 
+		set slot 3 of {_gui} to iron ingot of mending 1 named "&e&lDay 3" with lore "&f32 Iron Ingots, 50 coins"
+		set slot 4 of {_gui} to diamond of mending 1 named "&e&lDay 4" with lore "&f10 Diamonds, 25 coins" 
+		set slot 5 of {_gui} to totem of undying of mending 1 named "&e&lDay 5" with lore "&fTotem of undying" 
+		set slot 6 of {_gui} to experience bottle of mending 1 named "&e&lDay 6" with lore "&f64 experience bottles, 50 coins" 
+		set slot 7 of {_gui} to gold nugget named "&e&lDay 7" with lore "&f200 coins"
+		set slot 10 of {_gui} to golden apple named "&e&lDay 8" with lore "&f6 Golden Apples, 50 coins"
+		set slot 11 of {_gui} to enchanted golden apple of mending 1 named "&e&lDay 9" with lore "&fEnchanted Golden Apple" 
+		set slot 12 of {_gui} to experience bottle of mending 1 named "&e&lDay 10" with lore "&f64 experience bottles, 50 coins" 
+		set slot 13 of {_gui} to netherite ingot of mending 1 named "&e&lDay 11" with lore "&f8 ancient debris"
+		set slot 14 of {_gui} to gold nugget of mending 1 named "&e&lDay 12" with lore "&f200 coins"
+		set slot 15 of {_gui} to conduit of mending 1 named "&e&lDay 13" with lore "&fConduit"
+		set slot 16 of {_gui} to trident of mending 1 named "&e&lDay 14" with lore "&fTrident"
+		set slot 22 of {_gui} to nether star named "&a&lYou are on day:" with lore "&f&l- &e&l%{daily::%player%}% &f&l-" and "&7Do /dailyclaim to claim your daily reward." and "&7Make sure you leave space in your inventory!"
+		open {_gui} to player
+
+on inventory click:
+	if name of event-inventory is "&lClaim Daily Reward":
+		cancel event
+
+at 12am:
+	loop all offline players:
+		clear {dailycd::%loop-offline player%}
+
+#command /dailyclaim:
+	trigger:
+		{dailycd::%player%} is not set
+		set {dailycd::%player%} to true
+		play sound "entity.player.levelup" with volume 1 and pitch 0.5 to all players
+		broadcast "&b&l%player% &eclaimed their &lday %{daily::%player%} + 1%&e reward!"
+		set {_e} to tripwire hook
+		set {_eg} to ghast spawn egg
+		enchant {_e} with mending
+		enchant {_eg} with mending
+		if {daily::%player%} is not set:
+			set {daily::%player%} to 0
+		if {daily::%player%} is 0:
+			set {daily::%player%} to 1
+			set {coins::%player%} to {coins::%player%} + 50 
+			send "&aYou have claimed your day 1 reward!"
+			stop
+		if {daily::%player%} is 1:
+			set {daily::%player%} to 2
+			give 32 of experience bottle to player
+			set {coins::%player%} to {coins::%player%} + 50
+			send "&aYou have claimed your day 2 reward!"
+			stop
+		if {daily::%player%} is 2:
+			set {daily::%player%} to 3
+			give 32 of iron ingot to player
+			set {coins::%player%} to {coins::%player%} + 50
+			send "&aYou have claimed your day 3 reward!"
+			stop
+		if {daily::%player%} is 3:
+			set {daily::%player%} to 4
+			give 10 of diamond to player
+			set {coins::%player%} to {coins::%player%} + 25
+			send "&aYou have claimed your day 4 reward!"
+			stop
+		if {daily::%player%} is 4:
+			set {daily::%player%} to 5
+			give 1 of totem of undying to player
+			send "&aYou have claimed your day 5 reward!"
+			stop
+		if {daily::%player%} is 5:
+			set {daily::%player%} to 6
+			give 64 of experience bottle to player
+			set {coins::%player%} to {coins::%player%} + 50
+			send "&aYou have claimed your day 6 reward!"
+			stop
+		if {daily::%player%} is 6:
+			set {daily::%player%} to 7
+			set {coins::%player%} to {coins::%player%} + 200
+			send "&aYou have claimed your day 7 reward!"
+			stop
+		if {daily::%player%} is 7:
+			set {daily::%player%} to 8
+			set {coins::%player%} to {coins::%player%} + 50
+			give 6 of golden apple to player
+			send "&aYou have claimed your day 8 reward!"
+			stop
+		if {daily::%player%} is 8:
+			set {daily::%player%} to 9
+			give 1 of enchanted golden apple to player
+			send "&aYou have claimed your day 9 reward!"
+			stop
+		if {daily::%player%} is 9:
+			set {daily::%player%} to 10
+			give 64 of experience bottle to player
+			set {coins::%player%} to {coins::%player%} + 50
+			send "&aYou have claimed your day 10 reward!"
+			stop
+		if {daily::%player%} is 10:
+			set {daily::%player%} to 11
+			give 8 of ancient debris to player
+			send "&aYou have claimed your day 11 reward!"
+			stop
+		if {daily::%player%} is 11:
+			set {daily::%player%} to 12
+			set {coins::%player%} to {coins::%player%} + 200
+			send "&aYou have claimed your day 12 reward!"
+			stop
+		if {daily::%player%} is 12:
+			set {daily::%player%} to 13
+			give 1 of conduit to player
+			send "&aYou have claimed your day 13 reward!"
+			stop
+		if {daily::%player%} is 13:
+			set {daily::%player%} to 0
+			give 1 of trident to player
+			send "&aYou have claimed your day 14 reward!"
+			broadcast "&b%player% has finished their daily rewards!"
+			send "&fYour daily count will reset to 0."
+			stop
+
+on projectile hit:
+	if projectile is an arrow:
+		delete projectile
+
+on damage:
+	{death Aurorus Blaze::%victim%} is true
+	cancel event
+
+command /resetslot:
+	trigger:
+		remove 10 of honeycomb of mending named "&b&lAbility" from player
+
+on any move:
+	if block below player is lime glazed terracotta:
+		set block below player to red glazed terracotta
+		set {_b} to block below player
+		player's world is "arena"
+		sound(player, "item.armor.equip_elytra", 10, 2, 1)
+		push player upwards at speed 1.5
+		remove slow falling from player
+		apply slow falling to player for 2 seconds
+		wait for 1 second
+		push player downwards at speed 0.5
+		set block at {_b} to lime glazed terracotta
+
+on spawn of slime:
+	if event-entity's world is "beta":
+		cancel event
+	if event-entity's world is "arena":
+		cancel event

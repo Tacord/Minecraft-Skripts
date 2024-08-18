@@ -1,0 +1,74 @@
+every 10 minutes:
+	set {_1} to random integer between 0 and 9
+	set {_2} to random integer between 0 and 9
+	set {_3} to random integer between 0 and 10
+	set {_4} to random integer between 0 and 12
+	set {_type} to random integer between 1 and 3
+	if {_type} is 1:
+		set {_e} to random integer between 1 and 2
+		if {_e} is 1:
+			set {_op} to "-"
+			set {ans} to {_1} - {_2}
+			set {ans} to {_3} * {ans}
+			set {ans} to "%{ans}%"
+		if {_e} is 2:
+			set {_op} to "+"
+			set {ans} to {_1} + {_2}
+			set {ans} to {_3} * {ans}
+			set {ans} to "%{ans}%"
+		broadcast "&e&l[FlashGames] &fFirst player to solve:" 
+		broadcast "&bx = %{_3}%(%{_1}% %{_op}% %{_2}%)" 
+		broadcast "&fwins 10 coins"
+	if {_type} is 2:
+		set {_e} to random integer between 1 and 2
+		if {_e} is 1:
+			set {_op} to "-"
+			set {ans} to {_1} * {_3}
+			set {ans} to {ans} - {_2}
+			set {ans} to "%{ans}%"
+		if {_e} is 2:
+			set {_op} to "+"
+			set {ans} to {_1} * {_3}
+			set {ans} to {ans} + {_2}
+			set {ans} to "%{ans}%"
+		broadcast "&e&l[FlashGames] &fFirst player to solve:"
+		broadcast "&bf(x) = %{_1}%x %{_op}% %{_2}%" 
+		broadcast "&bf(%{_3}%) = ?"
+		broadcast "&fwins 10 coins"
+	if {_type} is 3:
+		set {_e} to random integer between 1 and 2
+
+		if {_e} is 1:
+			set {_op} to "-"
+			set {ans} to {_1} - {_2}
+			set {_1} to {_4} * {_1}
+			set {_2} to {_4} * {_2}
+			set {ans} to "%{ans}%"
+		if {_e} is 2:
+			set {_op} to "+"
+			set {ans} to {_1} + {_2}
+			set {_1} to {_4} * {_1}
+			set {_2} to {_4} * {_2}
+			set {ans} to "%{ans}%"
+		broadcast "&e&l[FlashGames] &fFirst player to solve:"
+		broadcast "&b%{_4}%x = %{_1}% %{_op}% %{_2}%" 
+		broadcast "&fwins 10 coins"
+
+on chat:
+	if message is {ans}:
+		cancel event
+		broadcast "&e&l[FlashGames] &a%player% &fwas the first to solve the problem!"
+		broadcast "&7The answer was &f%{ans}%"
+		play sound "block.crop.break" with volume 1 and pitch 1 at all players for all players
+		add 10 to {coins::%player%}
+		clear {ans}
+
+command /revealanswer:
+	permission: op
+	trigger:
+		send "Answer is &b%{ans}%"
+
+command /test:
+	permission: op
+	trigger:
+		spawn cow at location of player

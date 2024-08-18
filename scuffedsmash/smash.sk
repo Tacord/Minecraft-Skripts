@@ -1,0 +1,2676 @@
+on left click:
+	if player's held item is iron ingot of mending named "&7Down Attack":
+		loop all entities in radius 2 of clicked block:
+			{hitcd::%loop-entity%} is false
+			loop-entity is not player
+			set {percent::%loop-entity%} to {percent::%loop-entity%} + random integer between 2 and 5
+			set {launch::%loop-entity%} to {percent::%loop-entity%} * 1.5 / 100
+			play sound "entity.generic.hurt" at volume 1 and pitch 1 for player and loop-entity
+			push loop-entity downwards at speed 0.25 + {launch::%loop-entity%}
+			set {hitcd::%loop-entity%} to false
+			wait for 0.65 second
+			set {hitcd::%loop-entity%} to true
+
+on right click:
+	player's held item is player's skull
+	cancel event
+	send "&f&l%player%'s Stats"
+	send "&eKOs: &7%{kills::%player%}%"
+	send "&eDeaths: &7%{deaths::%player%}%"
+	send "&eJumps: &7%{jumps::%player%}%"
+	send "&eCoins: &7%{coins::%player%}%"
+
+on right click on entity:
+	if player's held item is air:
+		send "&c&l%{percent::%clicked entity%}%%%" to player
+
+on jump:
+	set {jumps::%player%} to {jumps::%player%} + 1
+
+on flight toggle:
+	if player's gamemode is not creative:
+		cancel event
+		wait a tick 
+		set {jumps::%player%} to {jumps::%player%} + 1
+		teleport player to player's location
+		set player's flight state to false
+		if {character::%player%} is "Gingerbrave":
+			push player upwards at speed 1.3
+			push player forwards at speed 0.55
+			stop
+		if {character::%player%} is "Dug":
+			push player forwards at speed 0.4
+			push player upwards at speed 1
+			stop
+		if {character::%player%} is "Perry":
+			push player upwards at speed 1.3
+			push player forwards at speed 0.45
+			stop
+		if {character::%player%} is "Sans":
+			push player upwards at speed 1.15
+			push player forwards at speed 0.5
+			stop
+		if {character::%player%} is "Gumball":
+			push player upwards at speed 1.18
+			push player forwards at speed 0.35
+			stop
+		if {character::%player%} is "Red":
+			push player upwards at speed 1.05
+			push player forwards at speed 0.5
+			stop
+		if {character::%player%} is "Peter":
+			push player upwards at speed 1
+			push player forwards at speed 0.45
+			stop
+		if {character::%player%} is "Pink Bean":
+			push player upwards at speed 1.05
+			push player forwards at speed 0.4
+			stop
+		if {character::%player%} is "Walter":
+			push player upwards at speed 1.2
+			push player forwards at speed 0.35
+			stop
+		if {character::%player%} is "Gwen":
+			push player upwards at speed 1.35
+			push player forwards at speed 0.5
+			stop
+		if {character::%player%} is "Mordecai":
+			push player upwards at speed 1.35
+			push player forwards at speed 0.2
+			stop
+		if {character::%player%} is "Jett":
+			push player upwards at speed 1.14
+			push player forwards at speed 0.3
+			stop
+		if {character::%player%} is "Mabel":
+			push player upwards at speed 1.2
+			push player forwards at speed 0.35
+			stop
+		else:
+			push player upwards at speed 1.15
+			push player forwards at speed 0.45
+
+on explode:
+	cancel event
+	loop all entities within radius 6 of event-entity:
+		set {percent::%loop-entity%} to {percent::%loop-entity%} + 20
+		push loop-entity backwards at speed 1.5 + {percent::%loop-entity%} * 2 / 100
+		play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-entity
+		show large explosion at location of event-entity
+
+on chat:
+	set chat format to "&f[&e%{coins::%player%}%⛁&f] %{tag::%player%}% &f%player%: &7%message%"
+	play sound "%{chatsound::%player%}%" at volume 1 and pitch 2 for all players
+
+on first join:
+	broadcast "&a&l%player% just joined for the 1st time!"
+	send "&fSally: &7Welcome, %player%!"
+	send "&fSally: &7Right click the guide in your inventory to learn how to play."
+	set {coins::%player%} to {coins::%player%} + 400
+	send "&aThanks for playing early!"
+	send "&eYou have received &6400 coins"
+	wait 1 second
+	set line 4 of player's scoreboard to colored "&eCoins: &r%{coins::%player%}%"
+
+command /exit:
+	trigger:
+		if {smash::%player%} is not "smash":
+			clear {smash::%player%}
+			teleport player to location 0.5, 66, 0.5 in world "smash"
+			clear player's inventory
+			set slot 3 of player's inventory to emerald of mending named "&bFighter List"
+			set slot 0 of player's inventory to player's skull named "&aStats"
+			set slot 8 of player's inventory to chest named "&6Cosmetics"
+			set slot 4 of player's inventory to clock of mending named "&cSm&4ash"
+			set slot 5 of player's inventory to book of mending named "&eGuide"
+			clear {game}
+
+command /msg <offline player> <text>:
+	aliases: /w
+	usage: &fUsage: &7/msg <online-player> <message> 
+	trigger:
+		send "&7&lYou &d&l--> &7&l%arg-1%: &f%arg-2%" to player
+		send "&7&l%player% &d&l--> &7&lYou: &f%arg-2%" to arg-1
+
+command /emergencyquit:
+	permission: op
+	trigger:
+		clear {game}
+on quit:
+	if {smash::%player%} is "smash":
+		set {queue} to {queue} - 1
+		set {stocks::%player%} to 0
+		broadcast "&e%player% &crage quit"
+		if {queue} is 1:
+			loop all players:
+				if {smash::%loop-player%} is "smash":
+					teleport loop-player to location 0.5, 66, 0.5 in world "smash"
+					clear loop-player's inventory
+					set slot 3 of loop-player's inventory to emerald of mending named "&bFighter List"
+					set slot 0 of loop-player's inventory to loop-player's skull named "&aStats"
+					set slot 8 of loop-player's inventory to chest named "&6Cosmetics"
+					set slot 4 of loop-player's inventory to clock of mending named "&cSm&4ash"
+					play sound "entity.player.levelup" at volume 1 and pitch 1 for all players
+
+on join:
+	wait a tick
+	play sound "entity.firework_rocket.launch" to all players
+	apply saturation 1 to player for 99999999999999 seconds
+	teleport player to location 0.5, 66, 0.5 in world "smash"
+	set tablist name of player to "&f[&e%{coins::%player%}%⛁&f] %{tag::%player%}% &f%player%"
+	clear {smash::%player%}
+	clear player's inventory
+	set slot 3 of player's inventory to emerald of mending named "&bFighter List"
+	set slot 0 of player's inventory to player's skull named "&aStats"
+	set slot 8 of player's inventory to chest named "&6Cosmetics"
+	set slot 4 of player's inventory to clock of mending named "&cSm&4ash"
+	set slot 5 of player's inventory to book of mending named "&eGuide"
+	set title of player's scoreboard to "&a&lScuffed&e&lSmash"
+	wait a tick
+	set line 3 of player's scoreboard to colored "&cDamage: &r%{percent::%player%}%%%"
+	set line 4 of player's scoreboard to colored "&eCoins: &r%{coins::%player%}%"
+	set line 5 of player's scoreboard to colored "&bStocks Left: &r%{stocks::%player%}%"
+	set line 6 of player's scoreboard to colored "&dCharacter: &r%{character::%player%}%"
+	set {up::%player%} to true
+	set {down::%player%} to true
+	set {neut::%player%} to true
+	set {side::%player%} to true
+	if {coins::%player%} is not set:
+		set {coins::%player%} to 0
+	if {character::%player%} is not set:
+		set {character::%player%} to "%player%"
+	if {dug::%player%} is not set:
+		set {dug::%player%} to "&cLocked"
+	if {perry::%player%} is not set:
+		set {perry::%player%} to "&cLocked"
+	if {gingerbrave::%player%} is not set:
+		set {gingerbrave::%player%} to "&cLocked"
+	if {sans::%player%} is not set:
+		set {sans::%player%} to "&cLocked"
+	if {gumball::%player%} is not set:
+		set {gumball::%player%} to "&cLocked"
+	if {red::%player%} is not set:
+		set {red::%player%} to "&cLocked"
+	if {peter::%player%} is not set:
+		set {peter::%player%} to "&cLocked"
+	if {walter::%player%} is not set:
+		set {walter::%player%} to "&cLocked"
+	if {gwen::%player%} is not set:
+		set {gwen::%player%} to "&cLocked"
+	if {mordecai::%player%} is not set:
+		set {mordecai::%player%} to "&cLocked"
+	if {jett::%player%} is not set:
+		set {jett::%player%} to "&cLocked"
+	if {mabel::%player%} is not set:
+		set {mabel::%player%} to "&cLocked"
+	if {bean::%player%} is not set:
+		set {bean::%player%} to "&cLocked"
+
+	if {kills::%player%} is not set:
+		set {kills::%player%} to 0
+	if {jumps::%player%} is not set:
+		set {jumps::%player%} to 0
+	if {deaths::%player%} is not set:
+		set {deaths::%player%} to 0
+	if {tag::%player%} is not set:
+		set {tag::%player%} to "&7Fighter"
+	if {tag1::%player%} is not set:
+		set {tag1::%player%} to "&cLocked"
+	if {tag2::%player%} is not set:
+		set {tag2::%player%} to "&cLocked"
+	if {tag3::%player%} is not set:
+		set {tag3::%player%} to "&cLocked"
+	if {tag4::%player%} is not set:
+		set {tag4::%player%} to "&cLocked"
+	if {tag5::%player%} is not set:
+		set {tag5::%player%} to "&cLocked"
+	if {tag6::%player%} is not set:
+		set {tag6::%player%} to "&cLocked"
+
+	if {chatsound::%player%} is not set:
+		set {chatsound::%player%} to "entity.chicken.egg"
+	if {chatsound1::%player%} is not set:
+		set {chatsound1::%player%} to "&cLocked"
+	if {chatsound2::%player%} is not set:
+		set {chatsound2::%player%} to "&cLocked"
+
+
+
+command /resetallchar <player>:
+	permission: op
+	trigger:
+		set {dug::%arg-1%} to "&cLocked"
+		set {perry::%arg-1%} to "&cLocked"
+		set {gingerbrave::%arg-1%} to "&cLocked"
+		set {sans::%arg-1%} to "&cLocked"
+		set {gumball::%arg-1%} to "&cLocked"
+		set {peter::%arg-1%} to "&cLocked"
+		set {red::%arg-1%} to "&cLocked"
+		set {walter::%arg-1%} to "&cLocked"
+		set {gwen::%arg-1%} to "&cLocked"
+		set {mordecai::%arg-1%} to "&cLocked"
+		set {jett::%arg-1%} to "&cLocked"
+		set {mabel::%arg-1%} to "&cLocked"
+		set {bean::%arg-1%} to "&cLocked"
+
+command /resetchar <player> <text>:
+	permission: op
+	trigger:
+		set {arg-2::%arg-1%} to "&cLocked"
+
+on sneak toggle:
+	player's gamemode is not creative
+	player is sneaking
+	{airdodge::%player%} is true
+	if block below player is air:
+		set {airdodge::%player%} to false
+		push player downwards at speed 0.5
+		set {hitcd::%player%} to true
+		play sound "entity.generic.extinguish_fire" at volume 1 and pitch 3 for player
+		wait for 0.25 seconds
+		set {hitcd::%player%} to false
+
+every 0.5 seconds:
+	loop all zombies:
+		if y-coordinate of loop-zombie is less than 33:
+			teleport loop-zombie to location 0, 69, -23 in world "smash"
+			set {percent::%loop-zombie%} to 0
+			loop all players:
+				if {smash::%loop-player%} is "zombie":
+					set {coins::%loop-player%} to {coins::%loop-player%} + 1
+					play sound "entity.player.levelup" at volume 1 and pitch 1.5 to loop-player
+					set {kills::%loop-player%} to {kills::%loop-player%} + 1
+		if y-coordinate of loop-zombie is more than 99:
+			teleport loop-zombie to location 0, 69, -23 in world "smash"
+			set {percent::%loop-zombie%} to 0
+			loop all players:
+				if {smash::%loop-player%} is "zombie":
+					set {coins::%loop-player%} to {coins::%loop-player%} + 1
+					play sound "entity.player.levelup" at volume 1 and pitch 1.5 to loop-player
+					set {kills::%loop-player%} to {kills::%loop-player%} + 1
+
+every 0.5 seconds:
+	loop all villagers:
+		if y-coordinate of loop-villager is less than 33:
+			teleport loop-villager to location 0, 70, 95 in world "smash"
+			set {percent::%loop-villager%} to 0
+		if y-coordinate of loop-villager is more than 99:
+			teleport loop-villager to location 0, 70, 95 in world "smash"
+			set {percent::%loop-villager%} to 0
+					
+every second:
+	loop all players:
+		if {character::%loop-player%} is "Gingerbrave":
+			set helmet of loop-player to ("hyuniii" parsed as offline player)'s skull 
+		if {character::%loop-player%} is "Perry":
+			set helmet of loop-player to ("Reigion" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Dug":
+			set helmet of loop-player to ("Dog" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Sans":
+			set helmet of loop-player to ("Avurith" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Gumball":
+			set helmet of loop-player to ("OldYoutuber" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Red":
+			set helmet of loop-player to ("GuavaSensei" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Peter":
+			set helmet of loop-player to ("fartacus7" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Walter":
+			set helmet of loop-player to ("RSHVE" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Gwen":
+			set helmet of loop-player to ("AybukeGamingTR" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Mordecai":
+			set helmet of loop-player to ("Freely_None" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Jett":
+			set helmet of loop-player to ("emal" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Mabel":
+			set helmet of loop-player to ("shybiii" parsed as offline player)'s skull
+		if {character::%loop-player%} is "Pink Bean":
+			set helmet of loop-player to ("themome" parsed as offline player)'s skull
+
+every 2 seconds:
+	loop all players:
+		set {online} to number of all players
+		set loop-player's tab list header to "&e&lScuffed&a&lSmash%nl%&7Online players: &f%{online}%%nl%"
+		set loop-player's tab list footer to "%nl%&7IP: &fscuffedsmash.minehut.gg%nl%&eThanks for playing!"
+		wait for 1 second
+		set loop-player's tab list header to "&a&lScuffed&e&lSmash%nl%&7Online players: &f%{online}%%nl%"
+
+
+
+on inventory click:
+	player's gamemode is survival
+	cancel event
+
+on block break:
+	player's gamemode is survival
+	cancel event
+	send "&c&lHey! &cYou can not break this block."
+	
+every 0.5 seconds:
+	loop all players:
+		if y-coordinate of loop-player is less than 33:
+			show large explosion at loop-player
+			set {deaths::%loop-player%} to {deaths::%loop-player%} + 1
+			send "&7If you would like to leave/forfeit this gamemode, do &e/exit" to loop-player
+			set {stocks::%loop-player%} to {stocks::%loop-player%} - 1
+			broadcast "&f☠ &e%loop-player% &cwas knocked into the void"
+			if {stocks::%loop-player%} is 0:
+				broadcast "&e%loop-player% &chas been defeated"
+				play sound "entity.player.hurt_sweet_berry_bush" at volume 1 and pitch 0.5 for all players
+				make loop-player execute command "/exit"
+				if {smash::%loop-player%} is "smash":
+					teleport loop-player to location 0.5, 66, 0.5 in world "smash"
+					clear loop-player's inventory
+					set slot 3 of loop-player's inventory to emerald of mending named "&bFighter List"
+					set slot 0 of loop-player's inventory to loop-player's skull named "&aStats"
+					set slot 8 of loop-player's inventory to chest named "&6Cosmetics"
+					set slot 4 of loop-player's inventory to clock of mending named "&cSm&4ash"
+					set slot 5 of loop-player's inventory to book of mending named "&eGuide"
+					set {queue} to {queue} - 1
+					clear {smash::%loop-player%}
+					if {queue} is 1:
+						loop all players:
+							if {smash::%loop-player-2%} is "smash":
+								clear {smash::%loop-player-2%}
+								teleport loop-player-2 to location 0.5, 66, 0.5 in world "smash"
+								clear loop-player-2's inventory
+								set slot 3 of loop-player-2's inventory to emerald of mending named "&bFighter List"
+								set slot 4 of loop-player-2's inventory to clock of mending named "&cSm&4ash"
+								set slot 5 of loop-player-2's inventory to book of mending named "&eGuide"
+								set {queue} to {queue} - 1
+								play sound "entity.player.levelup" at volume 1 and pitch 1 for all players
+								broadcast "&a%loop-player-2% has won!"
+								clear {game}
+				stop
+			teleport loop-player to {deathloc::%loop-player%}
+			clear loop-player's inventory
+			wait for 0.05 seconds
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-player
+			send title "&cYou died!" with subtitle "Back in &e5" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e4" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e3" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e2" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e1" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			{smash::%loop-player%} is set
+			teleport loop-player to {spawnloc::%loop-player%}
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-player
+			give 1 of gold ingot of mending named "&bNeutral Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&eSide Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&aUp Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&dDown Special &3(Right click)" to loop-player
+			give 1 of iron ingot of mending named "&7Up Attack" to loop-player
+			give 1 of iron ingot of mending named "&7Down Attack" to loop-player
+			apply slow falling to loop-player for 2.5 seconds
+			loop 6 times:
+				set {percent::%loop-player%} to 0
+				set {hitcd::%loop-player%} to false
+				wait for 1 second
+			set {hitcd::%loop-player%} to true
+		if y-coordinate of loop-player is more than 99:
+			show large explosion at loop-player
+			set {deaths::%loop-player%} to {deaths::%loop-player%} + 1
+			send "&7If you would like to leave/forfeit this gamemode, do &e/exit" to loop-player
+			set {stocks::%loop-player%} to {stocks::%loop-player%} - 1
+			broadcast "&f☠ &e%loop-player% &cwas knocked into the void"
+			if {stocks::%loop-player%} is 0:
+				broadcast "&e%loop-player% &chas been defeated"
+				play sound "entity.player.hurt_sweet_berry_bush" at volume 1 and pitch 0.5 for all players
+				make loop-player execute command "/exit"
+				if {smash::%loop-player%} is "smash":
+					teleport loop-player to location 0.5, 66, 0.5 in world "smash"
+					clear loop-player's inventory
+					set slot 3 of loop-player's inventory to emerald of mending named "&bFighter List"
+					set slot 0 of loop-player's inventory to loop-player's skull named "&aStats"
+					set slot 8 of loop-player's inventory to chest named "&6Cosmetics"
+					set slot 4 of loop-player's inventory to clock of mending named "&cSm&4ash"
+					set slot 5 of loop-player's inventory to book of mending named "&eGuide"
+					set {queue} to {queue} - 1
+					clear {smash::%loop-player%}
+					if {queue} is 1:
+						loop all players:
+							if {smash::%loop-player-2%} is "smash":
+								clear {smash::%loop-player-2%}
+								teleport loop-player-2 to location 0.5, 66, 0.5 in world "smash"
+								clear loop-player-2's inventory
+								set slot 3 of loop-player-2's inventory to emerald of mending named "&bFighter List"
+								set slot 4 of loop-player-2's inventory to clock of mending named "&cSm&4ash"
+								set slot 5 of loop-player-2's inventory to book of mending named "&eGuide"
+								set {queue} to {queue} - 1
+								play sound "entity.player.levelup" at volume 1 and pitch 1 for all players
+								broadcast "&a%loop-player-2% has won!"
+								clear {game}
+				stop
+			if {smash::%loop-player%} is "zombie":
+				send "&7If you would like to leave this gamemode, do &e/exit" to loop-player
+			teleport loop-player to {deathloc::%loop-player%}
+			clear loop-player's inventory
+			wait for 0.05 seconds
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-player
+			send title "&cYou died!" with subtitle "Back in &e5" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e4" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e3" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e2" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e1" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			{smash::%loop-player%} is set
+			teleport loop-player to {spawnloc::%loop-player%}
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-player
+			give 1 of gold ingot of mending named "&bNeutral Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&eSide Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&aUp Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&dDown Special &3(Right click)" to loop-player
+			give 1 of iron ingot of mending named "&7Up Attack" to loop-player
+			give 1 of iron ingot of mending named "&7Down Attack" to loop-player
+			apply slow falling to loop-player for 2.5 seconds
+			loop 6 times:
+				set {percent::%loop-player%} to 0
+				set {hitcd::%loop-player%} to false
+				wait for 1 second
+			set {hitcd::%loop-player%} to true
+		if x-coordinate of loop-player is more than 49:
+			show large explosion at loop-player
+			set {deaths::%loop-player%} to {deaths::%loop-player%} + 1
+			set {stocks::%loop-player%} to {stocks::%loop-player%} - 1
+			broadcast "&f☠ &e%loop-player% &cwas knocked into the void"
+			if {stocks::%loop-player%} is 0:
+				broadcast "&e%loop-player% &chas been defeated"
+				play sound "entity.player.hurt_sweet_berry_bush" at volume 1 and pitch 0.5 for all players
+				make loop-player execute command "/exit"
+				if {smash::%loop-player%} is "smash":
+					clear {smash::%loop-player%}
+					teleport loop-player to location 0.5, 66, 0.5 in world "smash"
+					clear loop-player's inventory
+					set slot 3 of loop-player's inventory to emerald of mending named "&bFighter List"
+					set slot 0 of loop-player's inventory to loop-player's skull named "&aStats"
+					set slot 8 of loop-player's inventory to chest named "&6Cosmetics"
+					set slot 4 of loop-player's inventory to clock of mending named "&cSm&4ash"
+					set slot 5 of loop-player's inventory to book of mending named "&eGuide"
+					set {queue} to {queue} - 1
+					clear {smash::%loop-player%}
+					if {queue} is 1:
+						loop all players:
+							if {smash::%loop-player-2%} is "smash":
+								clear {smash::%loop-player-2%}
+								teleport loop-player-2 to location 0.5, 66, 0.5 in world "smash"
+								clear loop-player-2's inventory
+								set slot 3 of loop-player-2's inventory to emerald of mending named "&bFighter List"
+								set slot 4 of loop-player-2's inventory to clock of mending named "&cSm&4ash"
+								set slot 5 of loop-player-2's inventory to book of mending named "&eGuide"
+								set {queue} to {queue} - 1
+								play sound "entity.player.levelup" at volume 1 and pitch 1 for all players
+								broadcast "&a%loop-player-2% has won!"
+								clear {game}
+				stop
+			if {smash::%loop-player%} is "zombie":
+				send "&7If you would like to leave this gamemode, do &e/exit" to loop-player
+			teleport loop-player to {deathloc::%loop-player%}
+			clear loop-player's inventory
+			wait for 0.05 seconds
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-player
+			send title "&cYou died!" with subtitle "Back in &e5" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e4" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e3" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e2" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e1" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			{smash::%loop-player%} is set
+			teleport loop-player to {spawnloc::%loop-player%}
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-player
+			give 1 of gold ingot of mending named "&bNeutral Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&eSide Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&aUp Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&dDown Special &3(Right click)" to loop-player
+			give 1 of iron ingot of mending named "&7Up Attack" to loop-player
+			give 1 of iron ingot of mending named "&7Down Attack" to loop-player
+			apply slow falling to loop-player for 2.5 seconds
+			loop 6 times:
+				set {percent::%loop-player%} to 0
+				set {hitcd::%loop-player%} to false
+				wait for 1 second
+			set {hitcd::%loop-player%} to true
+		if x-coordinate of loop-player is less than -47:
+			show large explosion at loop-player
+			set {deaths::%loop-player%} to {deaths::%loop-player%} + 1
+			send "&7If you would like to leave/forfeit this gamemode, do &e/exit" to loop-player
+			set {stocks::%loop-player%} to {stocks::%loop-player%} - 1
+			broadcast "&f☠ &e%loop-player% &cwas knocked into the void"
+			if {stocks::%loop-player%} is 0:
+				broadcast "&e%loop-player% &chas been defeated"
+				play sound "entity.player.hurt_sweet_berry_bush" at volume 1 and pitch 0.5 for all players
+				make loop-player execute command "/exit"
+				if {smash::%loop-player%} is "smash":
+					teleport loop-player to location 0.5, 66, 0.5 in world "smash"
+					clear loop-player's inventory
+					set slot 3 of loop-player's inventory to emerald of mending named "&bFighter List"
+					set slot 0 of loop-player's inventory to loop-player's skull named "&aStats"
+					set slot 8 of loop-player's inventory to chest named "&6Cosmetics"
+					set slot 4 of loop-player's inventory to clock of mending named "&cSm&4ash"
+					set slot 5 of loop-player's inventory to book of mending named "&eGuide"
+					set {queue} to {queue} - 1
+					clear {smash::%loop-player%}
+					if {queue} is 1:
+						loop all players:
+							if {smash::%loop-player-2%} is "smash":
+								clear {smash::%loop-player-2%}
+								teleport loop-player-2 to location 0.5, 66, 0.5 in world "smash"
+								clear loop-player-2's inventory
+								set slot 3 of loop-player-2's inventory to emerald of mending named "&bFighter List"
+								set slot 4 of loop-player-2's inventory to clock of mending named "&cSm&4ash"
+								set slot 5 of loop-player-2's inventory to book of mending named "&eGuide"
+								set {queue} to {queue} - 1
+								play sound "entity.player.levelup" at volume 1 and pitch 1 for all players
+								broadcast "&a%loop-player-2% has won!"
+								clear {game}
+				stop
+			if {smash::%loop-player%} is "zombie":
+				send "&7If you would like to leave this gamemode, do &e/exit" to loop-player
+			teleport loop-player to {deathloc::%loop-player%}
+			clear loop-player's inventory
+			wait for 0.05 seconds
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-player
+			send title "&cYou died!" with subtitle "Back in &e5" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e4" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e3" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e2" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			wait for 1 second
+			send title "&cYou died!" with subtitle "Back in &e1" to loop-player for 1 seconds
+			play sound "ui.button.click" at volume 1 and pitch 1 for loop-player
+			{smash::%loop-player%} is set
+			wait for 1 second
+			teleport loop-player to {spawnloc::%loop-player%}
+			play sound "entity.generic.explode" at volume 1 and pitch 1 for loop-player
+			give 1 of gold ingot of mending named "&bNeutral Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&eSide Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&aUp Special &3(Right click)" to loop-player
+			give 1 of gold ingot of mending named "&dDown Special &3(Right click)" to loop-player
+			give 1 of iron ingot of mending named "&7Up Attack" to loop-player
+			give 1 of iron ingot of mending named "&7Down Attack" to loop-player
+			apply slow falling to loop-player for 2.5 seconds
+			loop 6 times:
+				set {percent::%loop-player%} to 0
+				set {hitcd::%loop-player%} to false
+				wait for 1 second
+			set {hitcd::%loop-player%} to true
+			
+on player walk:
+	if block below event-entity is not air or yellow wool:
+		set player's flight state to true
+		set {up::%player%} to true
+		set {airdodge::%player%} to true
+
+every 2 seconds:
+	loop all entities:
+		set {hitcd::%loop-entity%} to true
+		set title of loop-entity's scoreboard to "&a&lScuffed&e&lSmash"
+		set line 3 of loop-entity's scoreboard to colored "&cDamage: &r%{percent::%loop-entity%}%%%"
+		set line 4 of loop-entity's scoreboard to colored "&eCoins: &r%{coins::%loop-entity%}%"
+		set line 5 of loop-entity's scoreboard to colored "&bStocks Left: &r%{stocks::%loop-entity%}%"
+		set line 6 of loop-entity's scoreboard to colored "&dCharacter: &r%{character::%loop-entity%}%"
+	loop all zombies:
+		if block below loop-entity is air:
+			teleport loop-entity to loop-entity
+			push loop-entity upwards at speed 1
+
+on combust:
+	cancel event
+
+on damage:
+	victim is player or zombie or villager
+	cancel event
+	{resist::%victim%} is not true
+	if damage cause is not fall:
+		{counter::%victim%} is not true
+		if {hitcd::%victim%} is true:
+			loop 10 times:
+				show critical hit at block 2 above victim
+			set {_e} to random integer between 1 and 2
+			if {_e} is 1:
+				if victim is zombie:
+					set {coins::%attacker%} to {coins::%attacker%} + 1
+					play sound "entity.player.levelup" at volume 0.4 and pitch 3 for attacker
+			set {launch::%victim%} to {percent::%victim%} * 1.5 / 100
+			set {percent::%victim%} to {percent::%victim%} + random integer between 2 and 9
+			set {launch::%victim%} to {percent::%victim%} * 1.5 / 100
+			if {konami::%victim%} is true:
+				set {percent::%victim%} to {percent::%victim%} + 3
+				set {launch::%victim%} to {percent::%victim%} / 100
+			send action bar "&e&l%{percent::%victim%}%%%" to attacker
+			make victim execute command "/hurtpercent"
+			if attacker's held item is iron ingot of mending named "&7Up Attack":
+				play sound "entity.generic.hurt" at volume 1 and pitch 1 for victim and attacker
+				push victim upwards at speed 0.6 + {launch::%victim%}
+				set {hitcd::%victim%} to false
+				wait for 0.65 second
+				set {hitcd::%victim%} to true
+				stop
+			if attacker's held item is iron ingot of mending named "&7Down Attack":
+				play sound "entity.generic.hurt" at volume 1 and pitch 1 for victim and attacker
+				push victim downwards at speed 0.25 + {launch::%victim%}
+				set {hitcd::%victim%} to false
+				wait for 0.65 second
+				set {hitcd::%victim%} to true
+				stop
+			if attacker's held item is iron sword of mending named "&fPerry's Dagger" or "&fPlayco Armboy":
+				set {percent::%victim%} to {percent::%victim%} + random integer between 8 and 12
+				play sound "entity.player.attack.crit" at volume 1 and pitch 1.2 for victim and attacker
+				push victim in direction of attacker at speed 1.25 + {launch::%victim%}
+				push victim upwards at speed 0.6 + {launch::%victim%} / 2
+				set {hitcd::%victim%} to false
+				wait for 0.5 second
+				set {hitcd::%victim%} to true
+				stop
+			else:
+				play sound "entity.generic.hurt" at volume 1 and pitch 1 for victim and attacker
+				push victim in direction of attacker at speed 1 + {launch::%victim%}
+				push victim upwards at speed 0.5 + {launch::%victim%} / 2
+				set {hitcd::%victim%} to false
+				wait for 0.65 second
+				set {hitcd::%victim%} to true
+				stop
+		else:
+			play sound "entity.generic.small_fall" at volume 1 and pitch 3 for victim and attacker
+
+on damage:
+	if {counter::%victim%} is true:
+		set {percent::%attacker%} to {percent::%attacker%} + random integer between 10 and 15
+		set {launch::%attacker%} to {percent::%attacker%} * 2.5 / 100
+		push attacker in direction of victim at speed 1 + {launch::%attacker%}
+		push attacker upwards at speed 0.5 + {launch::%attacker%} / 1.5
+		play sound "entity.player.attack.crit" at volume 1 and pitch 1 to victim and attacker 
+			
+			
+command /start <player>:
+	permission: op
+	trigger:
+		set {up::%arg-1%} to true
+		set {neut::%arg-1%} to true
+		set {side::%arg-1%} to true
+		set {down::%arg-1%} to true
+		set {percent::%arg-1%} to 0
+
+on join:
+	set {percent::%player%} to 0
+	
+command /percent:
+	trigger:
+		send action bar "&l%{percent::%player%}%%%" to player
+
+command /hurtpercent:
+	trigger:
+		send action bar "&c&l%{percent::%player%}%%%" to player
+		wait for 0.2 seconds
+		send action bar "&l%{percent::%player%}%%%" to player
+
+every 2 second:
+	loop all players:
+		make loop-player execute command "/percent"
+	
+command /specials:
+	permission: op
+	trigger:
+		give 1 of gold ingot of mending named "&bNeutral Special &3(Right click)" to player
+		give 1 of gold ingot of mending named "&eSide Special &3(Right click)" to player
+		give 1 of gold ingot of mending named "&aUp Special &3(Right click)" to player
+		give 1 of gold ingot of mending named "&dDown Special &3(Right click)" to player
+		
+command /attacks:
+	permission: op
+	trigger:
+		give 1 of iron ingot of mending named "&7Up Attack" to player
+		give 1 of iron ingot of mending named "&7Down Attack" to player
+		
+on drop:
+	cancel event
+
+on dismount:
+	kill all bats
+
+on right click:
+	{character::%player%} is "Gwen"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		{gwencooldown::%player%} is not set
+		cancel event
+		if {up::%player%} is true:
+			set {gwencooldown::%player%} to true
+			set {up::%player%} to false
+			play sound "block.honey_block.step" at volume 1 and pitch 1 for player
+			play sound "entity.spider.hurt" at volume 1 and pitch 1 for player
+			if block 8 in front of player is air:
+				set block 8 in front of player to bone block
+			set {_loc} to block 8 in front of player
+			set {_e} to 1
+			loop 8 times:
+				show spit at location {_e} in front of player
+				show spit at location {_e} in front of player
+				show spit at location {_e} in front of player
+				set {_e} to {_e} + 1
+			wait for 0.25 seconds
+			set {up::%player%} to false
+			apply slow falling to player for 0.4 seconds
+			set {_e} to 1
+			loop 8 times:
+				show spit at location {_e} in front of player
+				show spit at location {_e} in front of player
+				show spit at location {_e} in front of player
+				set {_e} to {_e} + 1
+			loop 30 times:
+				set {_vector} to vector between {_loc} and player's location
+				if distance between {_loc} and player's location is greater than 15:
+					push player {_vector} at speed -0.18
+				else:
+					push player {_vector} at speed -0.09
+				push player forwards at speed 0.025
+				wait for 0.05 seconds
+				play sound "block.honey_block.step" at volume 0.4 and pitch 2 for player
+				show spit at location of player
+				loop all entities within radius 1.5 of event-entity:
+					{hitcd::%player%} is true
+					loop-entity is not player
+					set {percent::%loop-entity%} to {percent::%loop-entity%} + 0.3
+					make loop-entity execute command "/hurtpercent"
+					teleport loop-entity to player
+					play sound "entity.generic.hurt" at volume 0.25 and pitch 1 for loop-entity and player
+			loop 10 times:
+				set {_vector} to vector between {_loc} and player's location
+				push player {_vector} at speed -0.2
+				wait for 0.05 seconds
+				play sound "block.honey_block.step" at volume 0.7 and pitch 1 for player
+				show spit at location of player
+				loop all entities within radius 3 of event-entity:
+					if {hitcd::%player%} is true:
+						loop-entity is not player
+						push loop-entity in direction of player at speed 0.1 + {percent::%loop-entity%} * 1.5 / 100
+						set {percent::%loop-entity%} to round({percent::%loop-entity%})
+						make loop-entity execute command "/percent"
+						set {hitcd::%player%} to false
+			wait for 1 second
+			clear {gwencooldown::%player%}
+			if block at {_loc} is bone block:
+				set block at {_loc} to air
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			play sound "entity.spider.step" at volume 1 and pitch 1 for player
+			set {_a} to 1
+			set {_b} to location at block 11 in front of player
+			loop all blocks 5 in front of player:
+				if loop-block is not air:
+					wait 1 second
+					set {neut::%player%} to true
+					stop
+				if loop-block is air:
+					set loop-block to cobweb
+					wait a tick
+					set loop-block to air
+					set {_a} to {_a} + 1
+					if {_a} is greater than 10:
+						spawn pig at block 11 in front of player
+						play sound "entity.skeleton.shoot" at volume 1 and pitch 1 for player
+						show large explosion at block above last spawned pig
+						loop all entities in radius 3.5 of last spawned pig:
+							loop-entity is not player
+							set {percent::%loop-entity%} to {percent::%loop-entity%} + 5
+							push loop-entity in direction of player at speed 1 + {percent::%loop-entity%} / 100
+							play sound "entity.player.hurt" at volume 1 and pitch 1 for player and loop-entity
+						loop all entities in radius 15 of last spawned pig:
+							play sound "entity.generic.explode" at volume 0.5 and pitch 1.2 for player and loop-entity
+						kill last spawned pig
+						wait for 1 seconds
+						set {neut::%player%} to true
+						stop
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			play sound "entity.player.hurt_sweet_berry_bush" at volume 1 and pitch 1 for player
+			loop all blocks in radius 5 of player:
+				show critical hit at location of loop-block
+			loop all entities in radius 5.5 of player:
+				loop-entity is not player
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 10
+				play sound "entity.player.hurt_sweet_berry_bush" at volume 1 and pitch 1 for loop-entity and player
+				if block at location of loop-entity is air:
+					set block at location of loop-entity to cobweb
+					set {_loc} to location of loop-entity
+					wait for 2 second
+					set block at {_loc} to air
+			wait for 2 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			set {counter::%player%} to true
+			play sound "entity.player.attack.strong" at volume 1 and pitch 2 to player
+			wait for 1 second
+			set {counter::%player%} to false
+			play sound "entity.player.attack.strong" at volume 1 and pitch 0.5 to player
+			wait for 3 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+
+
+
+
+
+
+on right click:
+	{character::%player%} is "Sans"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		cancel event
+		if {up::%player%} is true:
+			set {up::%player%} to false
+			wait a tick
+			teleport player to player
+			set {_e} to 10
+			push player upwards at speed 2
+			wait for 0.7 seconds
+			teleport player to player
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			shoot a fireball at speed 2
+			wait for 2 seconds
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			strike lightning effect at block 2 in front of player
+			loop all entities in radius 4 of player:
+				loop-entity is not player
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 12
+				push loop-entity in direction of player with force 1
+				play sound "entity.generic.hurt" at volume 1 and pitch 1 for loop-entity and player
+				strike lightning effect at block 2 in front of player
+				strike lightning effect at block 2 behind player
+			wait for 4 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			set {counter::%player%} to true
+			play sound "entity.player.attack.strong" at volume 1 and pitch 2 to player
+			wait for 1 second
+			set {counter::%player%} to false
+			play sound "entity.player.attack.strong" at volume 1 and pitch 0.5 to player
+			wait for 3 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+			
+
+
+
+
+on right click:
+	{character::%player%} is "Mordecai"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		cancel event
+		if {up::%player%} is true:
+			set {up::%player%} to false	
+			set player's chestplate to air
+			wait a tick 
+			teleport player to player
+			push player upwards at speed 1.25
+			wait for 0.5 seconds
+			set player's chestplate to elytra
+			wait for 4.5 seconds
+			if player's chestplate is elytra:
+				set player's chestplate to air
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {charge::%player%} is set:
+			loop all entities in radius 10 of player:
+				play sound "block.note_block.bell" at volume 2 and pitch {punchies::%player%} / 8 for loop-entity
+			set {punchies::%player%} to {punchies::%player%} + 1
+			if {punchies::%player%} is greater than 16:
+				set {punchies::%player%} to 16
+			apply slowness {punchies::%player%} to player for 2.5 seconds
+			if {punchies::%player%} is greater than 13:
+				send title "&6&lHigh charge!" with subtitle "&cCharging: &f&l%{punchies::%player%}%" to player
+			if {punchies::%player%} is greater than 7:
+				{punchies::%player%} is smaller than 13
+				send title "&e&lMedium charge" with subtitle "&cCharging: &f&l%{punchies::%player%}%" to player
+			else:
+				send title "&a&lLow charge" with subtitle "&cCharging: &f&l%{punchies::%player%}%" to player
+		if {neut::%player%} is true:
+			set {punchies::%player%} to 1
+			send title "&a&lLow charge" with subtitle "&cCharging: &f&l%{punchies::%player%}%" to player
+			set {charge::%player%} to true
+			set {neut::%player%} to false
+			wait for 2 seconds
+			remove slowness from player
+			loop all entities within radius 4.5 of player:
+				play sound "entity.generic.explode" at volume 1 and pitch 2 for player
+				loop-entity is not player
+				set {_a} to {punchies::%player%} / 10
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + {punchies::%loop-entity%} + 8
+				push loop-entity in direction of player at speed {_a} + {percent::%loop-entity%} * 1.5 / 100
+				push loop-entity upwards at speed {_a} + {percent::%loop-entity%} * 1.5 / 100
+				make loop-entity execute command "/percent"
+				set {hitcd::%player%} to false
+			loop all blocks in radius 4 of player:
+				show critical hit at loop-block
+			set {punchies::%player%} to 0
+			clear {charge::%player%}
+			wait for 2.5 second
+			set {neut::%player%} to true
+			stop
+		else:
+			{charge::%player%} is not set
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			spawn minecart at block above player
+			make player ride last spawned minecart
+			loop 80 times:
+				{smash::%player%} is set
+				loop all entities within radius 1.5 of last spawned minecart:
+					{hitcd::%player%} is true
+					loop-entity is not player or event-entity
+					set {percent::%loop-entity%} to {percent::%loop-entity%} + 0.1
+					make loop-entity execute command "/percent"
+					teleport loop-entity to player
+					play sound "entity.generic.hurt" at volume 0.15 and pitch 1 for loop-entity and player
+					teleport loop-entity to block above player
+				push last spawned minecart in direction of player at speed 0.5
+				push last spawned minecart downwards at speed 0.48
+				wait a tick
+			kill last spawned minecart
+			wait for 2 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			set slot 3 of player's inventory to iron sword named "&fPlayco Armboy"
+			wait for 4 seconds
+			if slot 3 of player's inventory is iron sword named "&fPlayco Armboy":
+				set slot 3 of player's inventory to gold ingot of mending named "&dDown Special &3(Right click)"
+			wait for 2.5 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+			
+
+
+
+
+
+
+
+on right click:
+	{character::%player%} is "Perry"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		cancel event
+		if {up::%player%} is true:
+			set {up::%player%} to false
+			send title "&cCharging" with subtitle "" to player for 0.3 second 
+			wait a tick 
+			teleport player to player
+			apply slow falling 100 to player for 1 second
+			wait for 1 second
+			send title "&aBrrrr" with subtitle "" to player for 0.3 second 
+			loop 10 times:
+				push player upwards at speed 0.15
+				push player forwards at speed 0.18
+				wait for 0.08 seconds
+			loop 40 times:
+				set {up::%player%} to false
+				wait for 0.05 seconds
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			shoot an arrow at speed 7
+			wait for 2 seconds
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			set slot 1 of player's inventory to iron sword named "&fPerry's Dagger"
+			wait for 4 seconds
+			if slot 1 of player's inventory is iron sword named "&fPerry's Dagger":
+				set slot 1 of player's inventory to gold ingot of mending named "&eSide Special &3(Right click)"
+			wait for 5 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			apply invisibility to player for 2 seconds
+			wait for 3 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+			
+
+
+
+on fishing:
+	{character::%player%} is "Mabel"
+	wait a tick 
+	teleport player to player
+	push player forwards at speed 1.5
+	set slot 2 of player's inventory to gold ingot of mending named "&aUp Special &3(Right click)"
+
+on right click:
+	{character::%player%} is "Mabel"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		cancel event
+		if {up::%player%} is true:
+			set slot 2 of player's inventory to fishing rod named "&fGrappling Hook"
+			wait for 4 seconds
+			if slot 2 of player's inventory is fishing rod named "&fGrappling Hook":
+				set slot 2 of player's inventory to gold ingot of mending named "&aUp Special &3(Right click)"
+			set {up::%player%} to false
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {charge::%player%} is set:
+			loop all entities in radius 10 of player:
+				play sound "block.note_block.chime" at volume 2 and pitch {punchies::%player%} / 8 for loop-entity
+			set {punchies::%player%} to {punchies::%player%} + 1
+			if {punchies::%player%} is greater than 16:
+				set {punchies::%player%} to 16
+			apply slowness {punchies::%player%} to player for 2.5 seconds
+			if {punchies::%player%} is greater than 13:
+				send title "&6&lLOUD!" with subtitle "&cCharging: &f&l%{punchies::%player%}%" to player
+			if {punchies::%player%} is greater than 7:
+				{punchies::%player%} is smaller than 13
+				send title "&e&lAudible" with subtitle "&cCharging: &f&l%{punchies::%player%}%" to player
+			else:
+				send title "&a&lQuiet" with subtitle "&cCharging: &f&l%{punchies::%player%}%" to player
+		if {neut::%player%} is true:
+			set {punchies::%player%} to 1
+			send title "&a&lQuiet" with subtitle "&cCharging: &f&l%{punchies::%player%}%" to player
+			set {charge::%player%} to true
+			set {neut::%player%} to false
+			wait for 2 seconds
+			remove slowness from player
+			loop all entities within radius 4.5 of player:
+				play sound "entity.generic.pling" at volume 1 and pitch 2 for player
+				loop-entity is not player
+				set {_a} to {punchies::%player%} / 10
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + {punchies::%loop-entity%} + 8
+				push loop-entity in direction of player at speed {_a} + {percent::%loop-entity%} * 1.5 / 100
+				push loop-entity upwards at speed {_a} + {percent::%loop-entity%} * 1.5 / 100
+				make loop-entity execute command "/percent"
+				set {hitcd::%player%} to false
+			loop all blocks in radius 4 of player:
+				show critical hit at loop-block
+			set {punchies::%player%} to 0
+			clear {charge::%player%}
+			wait for 2.5 second
+			set {neut::%player%} to true
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			set {resist::%player%} to true
+			play sound "entity.player.attack.strong" at volume 1 and pitch 2 to player
+			apply slowness 1 to player for 3 seconds
+			wait for 3 second
+			set {resist::%player%} to false
+			play sound "entity.player.attack.strong" at volume 1 and pitch 0.5 to player
+			wait for 3 seconds
+			apply speed 4 to player for 9999999999 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			apply slowness 10 to player for 1 second
+			wait for 1 second
+			apply speed 15 to player for 5 seconds
+			apply blindness 100 to player for 5 seconds
+			wait for 5 seconds
+			remove speed from player
+			remove nausea from player
+			apply speed 4 to player for 99999999999 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+			
+		
+
+
+
+
+on right click:
+	{character::%player%} is "Peter"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		cancel event
+		if {up::%player%} is true:
+			set {up::%player%} to false
+			send title "&cCharging" with subtitle "" to player for 0.5 second 
+			wait a tick 
+			teleport player to player
+			apply slow falling 1 to player for 0.5 second
+			wait for 0.5 second
+			send title "&e" with subtitle "" to player for 0.3 second 
+			play sound "entity.piglin.hurt" at volume 1 and pitch 0.5 for player
+			push player upwards at speed 1.3
+			apply slow falling to player for 2 seconds
+			wait for 0.7 second
+			loop 20 times:
+				set {up::%player%} to false
+				wait for 0.05 seconds
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			set slot 0 of player's inventory to bow named "&fPeter's Gun"
+			loop 3 times:
+				shoot a small fireball at speed 10
+				play sound "block.anvil.place" at volume 1.5 and pitch 2 for player
+				wait for 0.2 seconds
+			wait for 2 seconds
+			if slot 0 of player's inventory is bow named "&fPeter's Gun":
+				set slot 0 of player's inventory to gold ingot of mending named "&bNeutral Special &3(Right click)"
+			play sound "block.piston.extend" at volume 1.5 and pitch 0.5 for player
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			loop 3 times:
+				loop all entities in radius 4 of player:
+					loop-entity is not player
+					teleport loop-entity to player
+					set {percent::%loop-entity%} to {percent::%loop-entity%} + 3
+					push loop-entity in direction of player with force 0.5 + {percent::%loop-entity%} * 2 / 100
+					play sound "entity.generic.hurt" at volume 1 and pitch 1 for loop-entity and player
+					wait for 0.125 seconds
+			loop all entities in radius 4 of player:
+				loop-entity is not player
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 8
+				push loop-entity in direction of player with force 0.5 + {percent::%loop-entity%} * 2 / 100
+					
+				play sound "entity.generic.hurt" at volume 1 and pitch 1 for loop-entity and player
+			wait for 3.5 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			set slot 3 of player's inventory to water bottle named "&fBeer"
+			play sound "entity.evoker.prepare_wololo" at volume 1.5 and pitch 2 for player
+			wait for 4 seconds
+			if slot 3 of player's inventory is water bottle named "&fBeer":
+				set slot 3 of player's inventory to gold ingot of mending named "&dDown Special &3(Right click)"
+			if slot 3 of player's inventory is glass bottle:
+				set slot 3 of player's inventory to gold ingot of mending named "&dDown Special &3(Right click)"
+			wait for 4 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+			
+on drink:
+	if {character::%player%} is "Peter":
+		set {percent::%player%} to {percent::%player%} - 20
+		if {percent::%player%} is less than 1:
+			set {percent::%player%} to 0
+		play sound "entity.evoker.prepare_summon" at volume 1 and pitch 2 for player
+		make player execute command "/percent"
+			
+			
+			
+			
+on right click:
+	{character::%player%} is "Dug"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		cancel event
+		if {up::%player%} is true:
+			set {up::%player%} to false
+			spawn a snowball at location of player
+			make player ride last spawned snowball
+			push last spawned snowball upwards with force 0.4
+			push last spawned snowball in direction of player with force 0.65
+			loop 40 times:
+				set {up::%player%} to false
+				wait for 0.05 seconds
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			apply slowness 3 to player for 0.5 seconds
+			wait for 0.5 seconds
+			loop all entities in radius 3 of player:
+				loop-entity is not player
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 20
+				push loop-entity in direction of player with force 2
+				loop 5 times:
+					play sound "entity.generic.hurt" at volume 1 and pitch 1 for loop-entity and player
+					wait for 0.1 second
+			wait for 2 seconds
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			loop 5 times:
+				push player upwards at speed 0.3
+				wait for 0.2 seconds
+				push player downwards at speed 1
+				loop all entities in radius 2 of player:
+					loop-entity is not player
+					set {percent::%loop-entity%} to {percent::%loop-entity%} + 4
+					push loop-entity in direction of player with force 0.5 + {percent::%loop-entity%} * 2 / 100
+					play sound "entity.generic.hurt" at volume 1 and pitch 1 for loop-entity and player
+				wait for 0.4 seconds
+			wait for 3 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			push player downwards at speed 10
+			play sound "entity.generic.big_fall" at volume 0.5 and pitch 3 for player
+			wait for 0.5 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+			
+			
+			
+			
+on right click:
+	{character::%player%} is "Gingerbrave"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		{character::%player%} is "Gingerbrave"
+		cancel event
+		if {up::%player%} is true:
+			set {up::%player%} to false
+			spawn a bat at location of player
+			make player ride last spawned bat
+			loop 60 times:
+				push last spawned bat in direction of player at speed 0.185
+				push last spawned bat upwards at speed 0.05
+				wait for 0.05 seconds
+			kill last spawned bat
+			loop 50 times:
+				set {up::%player%} to false
+				wait for 0.05 seconds
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			apply slowness 4 to player for 1 second
+			wait for 1 second
+			apply speed 12 to player for 2.5 seconds
+			wait for 2.5 seconds
+			remove speed from player
+			apply speed 4 to player for 9999999999999 seconds
+			wait for 6 seconds
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			push player forwards at speed 1
+			loop all entities in radius 2 of player:
+				loop-entity is not player
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 7
+				push loop-entity in direction of player with force 0.5
+				play sound "entity.generic.hurt" at volume 1 and pitch 1 for loop-entity and player
+				wait for 0.2 seconds
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 7
+				push loop-entity in direction of player with force 1 + {percent::%loop-entity%} * 2 / 100
+				play sound "entity.generic.hurt" at volume 1 and pitch 1 for loop-entity and player
+			wait for 4.5 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			loop all entities in radius 9 of player:
+				loop-entity is not player
+				set {_vector} to vector between loop-entity and player's location
+				push loop-entity {_vector} at speed 1.5
+			wait for 6 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+
+
+
+on right click:
+	{character::%player%} is "Gumball"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		cancel event
+		if {up::%player%} is true:
+			set {up::%player%} to false
+			wait a tick 
+			teleport player to player
+			loop 8 times:
+				push player upwards with force 0.25
+				apply slowness 3 to player for 0.05 seconds
+				wait for 0.05 seconds
+				if player's facing is not upwards:
+					push player forwards with force 0.4
+					apply swiftness 3 to player for 0.05 seconds
+					remove swiftness from player
+					wait for 0.05 seconds
+					push player backwards with force 0.25
+				apply slowness 3 to player for 0.05 seconds
+				wait for 0.05 seconds
+				apply speed 5 to player for 0.05 seconds
+			wait for 0.3 seconds
+			wait a tick 
+			teleport player to player
+			apply speed 3 to player for 999999999999 seconds
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			loop 4 times:
+				apply slowness 3 to player for 0.1 seconds
+				shoot a snowball at speed (random number between 0.4 to 1.7)
+				wait for 1 tick
+				play sound "entity.player.attack.weak" at volume 1 and pitch 1 for player
+			wait for 1 seconds
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			shoot a small fireball at speed 0.25
+			wait for 0.8 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			send "&eType in chat the konami code within &b8 seconds"
+			send "&7'up up down down left right left right'"
+			set {konami::%player%} to true
+			wait for 1 seconds
+			send "&a8 more seconds"
+			wait for 1 seconds
+			send "&a7 more seconds"
+			wait for 1 seconds
+			send "&a6 more seconds"
+			wait for 1 seconds
+			send "&a5 more seconds"
+			wait for 1 seconds
+			send "&a4 more seconds"
+			wait for 1 seconds
+			send "&a3 more seconds"
+			wait for 1 seconds
+			send "&a2 more seconds"
+			wait for 1 seconds
+			send "&a1 more seconds"
+			wait for 1 seconds
+			send "&cTime's up!"
+			set {konami::%player%} to false
+			wait for 10 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+
+on ignite:
+	cancel event
+	
+on chat:
+	if {konami::%player%} is true:
+		if message contains "up up down down left right left right":
+			set {konami::%player%} to false
+			apply speed 8 to player for 8 seconds
+			apply jump boost 8 to player for 8 seconds
+			wait for 8 seconds
+			remove jump boost from player
+			remove speed from player
+			apply speed 3 to player for 9999999999999 seconds
+			apply jump boost 8 to player for 9999999999999 seconds
+		else:
+			broadcast "&cIncorrect code."
+
+
+
+
+on right click:
+	{character::%player%} is "Walter"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		{character::%player%} is "Walter"
+		cancel event
+		if {up::%player%} is true:
+			set {up::%player%} to false
+			wait a tick 
+			teleport player to player's location
+			play sound "entity.player.hurt_on_fire" at volume 1 and pitch 1 for player
+			push player upwards at speed 1
+			show smoke at location below the player to all players
+			loop all entities in radius 3 of player:
+				loop-entity is not player
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 6
+				push loop-entity upwards at speed 0.9
+				play sound "entity.player.hurt" at volume 1 and pitch 1 for loop-entity and player
+			wait for 0.6 seconds
+			play sound "entity.player.hurt_on_fire" at volume 1 and pitch 1 for player
+			wait a tick 
+			teleport player to player's location
+			push player forwards at speed 0.8
+			show smoke at location below the player to all players
+			loop all entities in radius 3 of player:
+				loop-entity is not player
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 6
+				push loop-entity in direction of player at speed 0.6
+				play sound "entity.player.hurt" at volume 1 and pitch 1 for loop-entity and player
+			wait for 0.6 seconds
+			play sound "entity.player.hurt_on_fire" at volume 1 and pitch 1 for player
+			wait a tick 
+			teleport player to player's location
+			push player upwards at speed 0.6
+			show smoke at location below the player to all players
+			loop all entities in radius 3 of player:
+				loop-entity is not player
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 6
+				push loop-entity in direction of player at speed 0.4 + {percent::%loop-entity%} / 100
+				play sound "entity.player.hurt" at volume 1 and pitch 1 for loop-entity and player
+				wait for 0.15 seconds
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			set {_e} to player
+			spawn pig at block above location of player
+			push last spawned pig in direction of player at speed 1
+			play sound "entity.skeleton.shoot" at volume 1 and pitch 1 for player
+			wait for 1.5 seconds
+			show large explosion at block above last spawned pig
+			loop all entities in radius 4.5 of last spawned pig:
+				loop-entity is not {_e} 
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 10
+				push loop-entity in direction of {_e} at speed 0.4 + {percent::%loop-entity%} / 100
+				play sound "entity.player.hurt" at volume 1 and pitch 1 for {_e} and loop-entity
+			loop all entities in radius 10 of last spawned pig:
+				play sound "entity.generic.explode" at volume 0.5 and pitch 1.2 for {_e} and loop-entity
+			kill last spawned pig
+			wait for 1 seconds
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			set {_a} to location of player
+			apply fire resistance to player for 2 second
+			if block at {_a} is air:
+				set block at {_a} to fire
+				wait for 2 second
+				set block at {_a} to air
+			wait for 2 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			give player splash potion of poison
+			wait for 6 seconds
+			remove 1 of potion of poison from player
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+			
+on death of pig:
+	clear drops
+
+
+
+
+
+
+on right click:
+	{character::%player%} is "Jett"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		cancel event
+		if {up::%player%} is true:
+			set {up::%player%} to false
+			wait a tick 
+			teleport player to player's location
+			play sound "block.snow.break" at volume 2 and pitch 1 for player
+			push player upwards at speed 1.15
+			show smoke at location below the player to all players
+			apply slow falling to player for 1.3 second
+			loop all entities in radius 2.5 of player:
+				loop-entity is not player
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 6
+				push loop-entity upwards at speed 1.2
+				play sound "entity.player.hurt" at volume 1 and pitch 1 for loop-entity and player
+			loop all blocks in radius 2 of player:
+				loop 2 times:
+					show spit at loop-block
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			set {_e} to player
+			spawn pig at block above location of player
+			push last spawned pig in direction of player at speed 1.6
+			play sound "entity.skeleton.shoot" at volume 1 and pitch 1 for player
+			wait for 1.8 seconds
+			loop all blocks in radius 5 of last spawned pig:
+				loop 12 times:
+					show spit at loop-block
+				kill last spawned pig
+			wait for 1 seconds
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			if block below player is not air:
+				push player forwards at speed 1
+				play sound "entity.bat.takeoff" at volume 1 and pitch 2 for player
+				loop all blocks in radius 1 of player:
+					show spit at loop-block
+				wait for 1 seconds
+				set {side::%player%} to true
+			if block below player is air:
+				push player forwards at speed 1
+				play sound "entity.bat.takeoff" at volume 1 and pitch 2 for player
+				loop all blocks in radius 1 of player:
+					show spit at loop-block
+				wait for 4 seconds
+				set {side::%player%} to true
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			loop 5 times:
+				set {_e} to random number between 1 and 2.5
+				shoot an arrow at speed {_e}
+				play sound "entity.zombie.infect" at volume 2 and pitch 1 for player
+				wait for 0.2 seconds
+			wait for 3 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+			
+			
+			
+			
+			
+			
+every 5 seconds:
+	loop all entities:
+		remove poison from loop-entity
+
+on right click:
+	{character::%player%} is "%player%"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		{character::%player%} is "%player%"
+		cancel event
+		if {up::%player%} is true:
+			wait a tick 
+			teleport player to player's location
+			push player upwards at speed 1.2
+			push player forwards at speed 0.5
+			set {up::%player%} to false
+			play sound "entity.bat.takeoff" at volume 1 and pitch 1 for player
+			loop 5 times:
+				show smoke at location above the player to all players
+				show smoke at location below the player to all players
+				loop all entities in radius 3 of player:
+					loop-entity is not player
+					set {percent::%loop-entity%} to {percent::%loop-entity%} + 3
+					push loop-entity in direction of player at speed 0.1 + {percent::%loop-entity%} / 100
+					play sound "entity.player.hurt" at volume 1 and pitch 1 for loop-entity and player
+				wait for 0.15 seconds
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			shoot an arrow at speed 1.5
+			play sound "entity.skeleton.shoot" at volume 1 and pitch 1 for player
+			wait for 0.8 seconds
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			push player forwards at speed 1
+			play sound "entity.blaze.shoot" at volume 1 and pitch 1 for player
+			loop 8 times:
+				show cloud at location above the player to all players
+				wait for 0.05 seconds
+			push player backwards at speed 0.6
+			play sound "entity.generic.extinguish_fire" at volume 0.5 and pitch 3 for player
+			loop 8 times:
+				show cloud at location above the player
+				wait for 0.05 seconds
+			wait for 4 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			push player upwards at speed 1.4
+			play sound "entity.axolotl.death" at volume 1 and pitch 0.7 for player
+			wait for 0.75 second
+			push player downwards at speed 3
+			wait for 0.55 seconds
+			play sound "block.anvil.place" at volume 0.4 and pitch 0.5 for player
+			loop 5 times:
+				show mob spawner flames at location above the player
+			loop all entities in radius 2 of player:
+				loop-entity is not player
+				push loop-entity backwards at speed 1.5
+			wait for 3 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+
+
+
+
+
+on right click:
+	{character::%player%} is "Pink Bean"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		cancel event
+		if {up::%player%} is true:
+			wait a tick 
+			teleport player to player's location
+			push player upwards at speed 0.7
+			if player's facing is north:
+				push player northwards at speed 1
+			if player's facing is south:
+				push player southwards at speed 1
+			if player's facing is west:
+				push player westwards at speed 1
+			if player's facing is east:
+				push player eastwards at speed 1
+			if player's facing is up:
+				push player upwards at speed 0.23
+			set {up::%player%} to false
+			play sound "entity.vindicator.hurt" at volume 0.75 and pitch 2 for player
+			loop all entities in radius 3 of player:
+				loop-entity is not player
+				set {percent::%loop-entity%} to {percent::%loop-entity%} + 8
+				push loop-entity in direction of player at speed 0.3 + {percent::%loop-entity%} / 100
+				play sound "entity.player.hurt" at volume 1 and pitch 1 for loop-entity and player
+			loop 3 times:
+				show spit at location above the player to all players
+				show spit at location below the player to all players
+				wait for 0.15 seconds
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			loop all blocks in radius 4 of player:
+				block below loop-block is not air
+				show spit at loop-block
+			loop 10 times:
+				loop all entities in radius 5 of player:
+					loop-entity is not player
+					teleport loop-entity to player
+					wait a tick
+					play sound "entity.vindicator.death" at volume 0.1 and pitch 2 for loop-entity and player
+			wait for 3 seconds
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			loop 15 times:
+				show mob spawner flames at location of player
+				loop all entities in radius 2.5 of player:
+					play sound "entity.vindicator.death" at volume 0.1 and pitch 2 for loop-entity and player
+					loop-entity is not player
+					set {percent::%loop-entity%} to {percent::%loop-entity%} + 2
+					push loop-entity in direction of player at speed 0.5 + {percent::%loop-entity%} / 100
+					play sound "entity.player.hurt" at volume 1 and pitch 1 for loop-entity and player
+				if player's facing is not upwards:
+					push player forwards at speed 0.25
+					push player downwards at speed 0.05
+				wait 0.1 seconds
+			wait 2 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} and {up::%player%} is true:
+			set {down::%player%} to false
+			set {up::%player%} to false
+			if block below player is air:
+				set block below player to yellow wool
+				set {_e} to location of block below player
+				play sound "block.grass.break" at volume 1 and pitch 0.5 for player
+				wait for 3 seconds
+				play sound "block.grass.break" at volume 1 and pitch 2 for player
+				set block at {_e} to air
+			wait for 2 second
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+
+
+
+
+on right click:
+	{character::%player%} is "Red"
+	if player's held item is gold ingot of mending named "&aUp Special &3(Right click)":
+		{character::%player%} is "Red"
+		cancel event
+		if {up::%player%} is true:
+			set {up::%player%} to false
+			wait a tick 
+			teleport player to player
+			apply slow falling to player for 0.8 seconds
+			loop 8 times:
+				push player upwards at speed 0.05
+				wait for 0.1 seconds
+			wait a tick 
+			teleport player to player
+			push player forwards at speed 1.45
+			play sound "entity.bat.takeoff" at volume 1 and pitch 3 for player
+			loop 10 times:
+				show spit at location above the player to all players
+				wait a tick
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&bNeutral Special &3(Right click)":
+		cancel event
+		if {neut::%player%} is true:
+			set {neut::%player%} to false
+			apply slowness 3 to player for 0.3 seconds
+			wait for 0.3 seconds
+			remove slowness from player
+			loop all entities in radius 4.5 of player:
+				loop-entity is not player
+				push loop-entity in direction of player with force 1 + {percent::%player%} * 2 / 100
+				play sound "entity.generic.burp" at volume 1 and pitch 0.5 for loop-entity and player
+			wait for 3 seconds
+			set {neut::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&eSide Special &3(Right click)":
+		cancel event
+		if {side::%player%} is true:
+			set {side::%player%} to false
+			play sound "entity.skeleton.shoot" at volume 1 and pitch 1.5 for player
+			spawn arrow at location of player
+			push last spawned arrow in direction of player at speed 0.75
+			make player ride last spawned arrow
+			wait for 2 seconds
+			kill last spawned arrow
+			wait for 2.5 seconds
+			set {side::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+	if player's held item is gold ingot of mending named "&dDown Special &3(Right click)":
+		cancel event
+		if {down::%player%} is true:
+			set {down::%player%} to false
+			spawn primed tnt at location of player
+			loop all entities in radius 14 of player:
+				play sound "entity.creeper.primed" at volume 1 and pitch 1 for loop-entity
+			wait for 0.5 second
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.5 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.5 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.5 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.25 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.25 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.25 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.25 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.25 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.25 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.125 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.125 seconds
+			loop all entities in radius 8 of player:
+				play sound "ui.button.click" at volume 1 and pitch 2 for loop-entity
+			wait for 0.125 seconds
+			wait for 3 seconds
+			set {down::%player%} to true
+		else:
+			send title "&c" with subtitle "&cYou are on cooldown" to player
+			
+
+			
+			
+every 30 seconds:
+	loop all players:
+		set tablist name of loop-player to "&f[&e%{coins::%loop-player%}%⛁&f] %{tag::%loop-player%}% &f%loop-player%"
+	loop all arrows:
+		kill loop-entity
+on pick up:
+	if event-item is arrow:
+		cancel event
+		
+command /fly:
+	trigger:
+		set player's flight state to true
+		
+command /push [<number>]:
+	trigger:
+		push player backwards at speed arg 1
+
+on right click:
+	if player's held item is clock:
+		cancel event
+		set {_gui} to a new chest inventory with 3 row with name "&eSelect gamemode"
+		set slot (integers from 0 to 26) of {_gui} to light blue stained glass pane
+		set slot (integers from 9 to 17) of {_gui} to white stained glass pane
+		set slot 11 of {_gui} to zombie spawn egg of mending named "&eZombie Smash" with lore "&fBattle against zombies" and "&fRecommended for farming coins"
+		set slot 13 of {_gui} to iron sword of mending named "&cRegular Smash" with lore "&fBattle against other players" and "&fRecommended while another player is online"
+		set slot 15 of {_gui} to villager spawn egg of mending named "&aTraining" with lore "&fPractice recovering, new characters" and "&fand attacks in this mode"
+		open {_gui} to player
+
+on right click:
+	player's held item is chest
+	cancel event
+	set {_gui} to a new chest inventory with 5 row with name "&bCosmetics"
+	set slot (integers from 0 to 100) of {_gui} to yellow stained glass pane
+	set slot 11 of {_gui} to name tag of mending named "&eTags" with lore "&fTablist and chat tags"
+	set slot 13 of {_gui} to blaze powder of mending named "&eDeath Effects" with lore "&fShow your saltiness"
+	set slot 15 of {_gui} to golden sword of mending named "&eDamage Effects" with lore "&fShow effects when you hit an opponent"
+	set slot 30 of {_gui} to nether star of mending named "&eParticles" with lore "&fShow off your particles"
+	set slot 32 of {_gui} to music disc of mending named "&eChat Sounds" with lore "&fSounds to play whenever you chat"
+	open {_gui} to player
+
+command /tags:
+	trigger:
+		set {_gui} to a new chest inventory with 1 row with name "&bTags"
+		set slot 0 of {_gui} to name tag named "&7Fighter" with lore "&aCost: &f0 coins" and "&6Unlocked"
+		set slot 1 of {_gui} to name tag named "&cWarrior" with lore "&aCost: &f50 coins" and "%{tag1::%player%}%"
+		set slot 2 of {_gui} to name tag named "&6Cheese" with lore "&aCost: &f50 coins" and "%{tag2::%player%}%"
+		set slot 3 of {_gui} to name tag named "&bDas&fani" with lore "&aCost: &f100 coins" and "%{tag3::%player%}%"
+		set slot 4 of {_gui} to name tag named "&3Evi&fan" with lore "&aCost: &f100 coins" and "%{tag4::%player%}%"
+		set slot 5 of {_gui} to name tag named "&dS&fa&dl&fl&dy" with lore "&aCost: &f200 coins" and "%{tag5::%player%}%"
+		set slot 6 of {_gui} to name tag named "&4Ome&fga" with lore "&aCost: &f200 coins" and "%{tag6::%player%}%"
+		open {_gui} to player
+
+on inventory click:
+	if name of event-inventory is "&bTags":
+		cancel event
+		if index of event-slot = 0:
+			set {tag::%player%} to "&7Fighter"
+			send "&aSuccessfully selected tag"
+		if index of event-slot = 1:
+			if {tag1::%player%} is not "&6Unlocked":
+				if {coins::%player%} is more than 49:
+					set {tag1::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 50
+					set {tag::%player%} to "&cWarrior"
+					send "&aYou have purchased a tag"
+			if {tag1::%player%} is "&6Unlocked":
+				set {tag::%player%} to "&cWarrior"
+				send "&aSuccessfully selected tag"
+		if index of event-slot = 2:
+			if {tag2::%player%} is not "&6Unlocked":
+				if {coins::%player%} is more than 49:
+					set {tag2::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 50
+					set {tag::%player%} to "&6Cheese"
+					send "&aYou have purchased a tag"
+			if {tag2::%player%} is "&6Unlocked":
+				set {tag::%player%} to "&6Cheese"
+				send "&aSuccessfully selected tag"
+		if index of event-slot = 3:
+			if {tag3::%player%} is not "&6Unlocked":
+				if {coins::%player%} is more than 99:
+					set {tag3::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 100
+					set {tag::%player%} to "&bDas&fani"
+					send "&aYou have purchased a tag"
+			if {tag3::%player%} is "&6Unlocked":
+				set {tag::%player%} to "&bDas&fani"
+				send "&aSuccessfully selected tag"
+		if index of event-slot = 4:
+			if {tag4::%player%} is not "&6Unlocked":
+				if {coins::%player%} is more than 99:
+					set {tag4::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 100
+					set {tag::%player%} to "&3Evi&fan"
+					send "&aYou have purchased a tag"
+			if {tag4::%player%} is "&6Unlocked":
+				set {tag::%player%} to "&3Evi&fan"
+				send "&aSuccessfully selected tag"
+		if index of event-slot = 5:
+			if {tag5::%player%} is not "&6Unlocked":
+				if {coins::%player%} is more than 199:
+					set {tag5::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 200
+					set {tag::%player%} to "&dS&fa&dl&fl&dy"
+					send "&aYou have purchased a tag"
+			if {tag5::%player%} is "&6Unlocked":
+				set {tag::%player%} to "&dS&fa&dl&fl&dy"
+				send "&aSuccessfully selected tag"
+		if index of event-slot = 6:
+			if {tag6::%player%} is not "&6Unlocked":
+				if {coins::%player%} is more than 199:
+					set {tag6::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 200
+					set {tag::%player%} to "&4Ome&fga"
+					send "&aYou have purchased a tag"
+			if {tag6::%player%} is "&6Unlocked":
+				set {tag::%player%} to "&4Ome&fga"
+				send "&aSuccessfully selected tag"
+
+command /deatheffects:
+	trigger:
+		set {_gui} to a new chest inventory with 1 row with name "&bDeath Effects"
+		set slot 0 of {_gui} to fire charge named "&7Default Explosion" with lore "&aCost: &f0 coins" and "&6Unlocked"
+		open {_gui} to player
+
+command /damageeffects:
+	trigger:
+		set {_gui} to a new chest inventory with 1 row with name "&bDamage Effects"
+		set slot 0 of {_gui} to iron sword named "&7Critical Hit" with lore "&aCost: &f0 coins" and "&6Unlocked"
+		open {_gui} to player
+
+command /particles:
+	trigger:
+		set {_gui} to a new chest inventory with 1 row with name "&bParticles"
+		set slot 0 of {_gui} to barrier named "&7None" with lore "&aCost: &f0 coins" and "&6Unlocked"
+		open {_gui} to player
+
+command /chatsounds:
+	trigger:
+		set {_gui} to a new chest inventory with 1 row with name "&bChat sounds"
+		set slot 0 of {_gui} to egg named "&7Pop!" with lore "&aCost: &f0 coins" and "&6Unlocked"
+		set slot 1 of {_gui} to egg named "&7Whoosh!" with lore "&aCost: &f50 coins" and "%{chatsound1::%player%}%"
+		set slot 2 of {_gui} to egg named "&7Groovy!" with lore "&aCost: &f100 coins" and "%{chatsound2::%player%}%"
+		open {_gui} to player
+
+on inventory click:
+	if name of event-inventory is "&bChat sounds":
+		cancel event
+		if index of event-slot = 0:
+			set {chatsound::%player%} to "entity.chicken.egg"
+			send "&aSuccessfully selected sound"
+		if index of event-slot = 1:
+			if {chatsound1::%player%} is not "&6Unlocked":
+				if {coins::%player%} is more than 49:
+					set {chatsound1::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 50
+					set {chatsound::%player%} to "entity.blaze.shoot"
+					send "&aYou have purchased a chat sound"
+			if {chatsound1::%player%} is "&6Unlocked":
+				set {chatsound::%player%} to "entity.blaze.shoot"
+				send "&aSuccessfully selected chat sound"
+		if index of event-slot = 2:
+			if {chatsound2::%player%} is not "&6Unlocked":
+				if {coins::%player%} is more than 99:
+					set {chatsound2::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 100
+					set {chatsound::%player%} to "block.note_block.harp"
+					send "&aYou have purchased a chat sound"
+			if {chatsound2::%player%} is "&6Unlocked":
+				set {chatsound::%player%} to "block.note_block.harp"
+				send "&aSuccessfully selected chat sound"
+
+
+on inventory click:
+	if name of event-inventory is "&bCosmetics":
+		cancel event
+		if index of event-slot = 11:
+			make player execute command "/tags"
+		if index of event-slot = 13:
+			make player execute command "/deatheffects"
+		if index of event-slot = 15:
+			make player execute command "/damageeffects"
+		if index of event-slot = 30:
+			make player execute command "/particles"
+		if index of event-slot = 32:
+			make player execute command "/chatsounds"
+
+on right click:
+	if player's held item is emerald:
+		set {_gui} to a new chest inventory with 6 row with name "&lCharacter List"
+		set slot (integers from 0 to 100) of {_gui} to white stained glass pane
+		set slot 10 of {_gui} to skull of ("Dog" parsed as offline player) named "&aDug" with lore "&eI have just met you, and I love you!" and "&7Up Special: Throws a ball and then rides the ball", "&7Side Special: Hops constantly dealing damage on impact", "&7Neutral Special: Bites a target dealing great damage", "&7Down Special: Falls to the ground on demand", "&fSpeed: &6Slow", "&fJump Height: &cVery Low", "&fDifficulty: &aEasy", "", "&aCost: &f100 coins", "%{dug::%player%}%"
+		set slot 11 of {_gui} to skull of ("Reigion" parsed as offline player) named "&bPerry the Platypus" with lore "&eHe doesn't do much" and "&7Up Special: Rides a jetpack", "&7Side Special: Equips player with a dagger", "&7Neutral Special: Shoots a harpoon gun", "&7Down Special: Turns invisible for 2 seconds", "&fSpeed: &2Very Fast", "&fJump Height: &aHigh", "&fDifficulty: &cHard", "", "&aCost: &f200 coins", "%{perry::%player%}%"
+		set slot 12 of {_gui} to skull of ("hyuniii" parsed as offline player) named "&aGingerbrave" with lore "&eThe bravest cookie" and "&7Up Special: Gets rescued by pet", "&7Side Special: Dashes and crashes into enemies", "&7Neutral Special: Gains a speed boost", "&7Down Special: Pulls enemies with magnetic aura", "&fSpeed: &aFast", "&fJump Height: &aHigh", "&fDifficulty: &eMedium", "", "&aCost: &f100 coins", "%{gingerbrave::%player%}%"
+		set slot 13 of {_gui} to skull of player named "&a%player%" with lore "&eIt is you!" and "&7Up Special: Dashes upwards", "&7Side Special: Thrusts player forwards", "&7Neutral Special: Shoots an arrow", "&7Down Special: Crashes into the ground", "&fSpeed: &eAverage", "&fJump Height: &eAverage", "&fDifficulty: &aEasy", "", "&aCost: &fNA", "&6Unlocked"
+		set slot 14 of {_gui} to skull of ("Avurith" parsed as offline player) named "&bSans" with lore "&esans undertale." and "&7Up Special: Teleports 8 blocks upwards", "&7Side Special: Judgement lightning strike", "&7Neutral Special: Shoots a gaster blaster (fireball)", "&7Down Special: Counters attacks for a short while", "&fSpeed: &cVery Slow", "&fJump Height: &6Low", "&fDifficulty: &eMedium", "", "&aCost: &f200 coins", "%{sans::%player%}%"
+		set slot 15 of {_gui} to skull of ("OldYoutuber" parsed as offline player) named "&bGumball" with lore "&eWill eliminate the middle class" and "&7Up Special: Mashes keyboard to lag to the stage", "&7Side Special: Shoots a hadouken", "&7Neutral Special: Shoots a barage of CDs (snowballs)", "&7Down Special: Types in chat konami code to get a buff", "&fSpeed: &eAverage", "&fJump Height: &eAverage", "&fDifficulty: &eMedium", "", "&aCost: &f200 coins", "%{gumball::%player%}%"
+		set slot 16 of {_gui} to skull of ("fartacus7" parsed as offline player) named "&5Peter Griffin" with lore "&eshut up meg" and "&7Up Special: Charges up a fart launching upwards", "&7Side Special: Beats up nearby enemies", "&7Neutral Special: Shoots 3 times with a gun", "&7Down Special: Drinks a beer and heals health", "&fSpeed: &6Slow", "&fJump Height: &6Low", "&fDifficulty: &eMedium", "", "&aCost: &f400 coins", "%{peter::%player%}%"
+
+		set slot (integers from 19 to 25) of {_gui} to skull of ("GroupDark" parsed as offline player) named "&f???"
+		set slot (integers from 28 to 34) of {_gui} to skull of ("GroupDark" parsed as offline player) named "&f???"
+		set slot (integers from 37 to 43) of {_gui} to skull of ("GroupDark" parsed as offline player) named "&f???"
+
+		set slot 19 of {_gui} to skull of ("GuavaSensei" parsed as offline player) named "&5Red" with lore "&eAHHHH HEE HEE HA" and "&7Up Special: Uses red's mighty feathers to push player", "&7Side Special: Homes and flies into an enemy", "&7Neutral Special: Gets launched by a slingshot", "&7Down Special: Drops a TNT", "&fSpeed: &eAverage", "&fJump Height: &6Low", "&fDifficulty: &aEasy", "", "&aCost: &f400 coins", "%{red::%player%}%"
+		set slot 24 of {_gui} to skull of ("shybiii" parsed as offline player) named "&5Mabel Pines" with lore "&eI'm legalizing everything" and "&7Up Special: Uses grappling hook", "&7Side Special: Uses sweater to resist incoming damage", "&7Neutral Special: Charges her voice to sing (mash the item)", "&7Down Special: Eats a pack of smile dip giving nausea + speed", "&fSpeed: &aFast", "&fJump Height: &eAverage", "&fDifficulty: &cHard", "", "&aCost: &f400 coins", "%{mabel::%player%}%"
+		set slot 21 of {_gui} to skull of ("AybukeGamingTR" parsed as offline player) named "&5Spider Gwen" with lore "&eGhost-Spider" and "&7Up Special: Shoots a web and swings off", "&7Side Special: Stuns enemies who get caught in web", "&7Neutral Special: Shoots a web projectile", "&7Down Special: Uses spidey senses to counter the next attack", "&fSpeed: &2Very Fast", "&fJump Height: &2Very High", "&fDifficulty: &cHard", "", "&aCost: &f400 coins", "%{gwen::%player%}%"
+		set slot 22 of {_gui} to skull of ("Freely_None" parsed as offline player) named "&5Mordecai" with lore "&eYou pissed me off." and "&7Up Special: Jumps and glides downwards", "&7Side Special: Rides a golf cart", "&7Neutral Special: Charges a 'punchies' punch", "&7Down Special: Uses playco armboy to attack", "&fSpeed: &eAverage", "&fJump Height: &2Very High", "&fDifficulty: &eMedium", "", "&aCost: &f400 coins", "%{mordecai::%player%}%"
+		set slot 23 of {_gui} to skull of ("emal" parsed as offline player) named "&5Jett" with lore "&eWind, show me where to go" and "&7Up Special: Uses updraft to propel upwards", "&7Side Special: Uses tailwind to propel forward", "&7Neutral Special: Uses cloudburst to blind opponent", "&7Down Special: Throws 7 blade storm knives", "&fSpeed: &eAverage", "&fJump Height: &eAverage", "&fDifficulty: &eMedium", "", "&aCost: &f400 coins", "%{jett::%player%}%"
+		set slot 20 of {_gui} to skull of ("RSHVE" parsed as offline player) named "&5Walter White" with lore "&eI am the one who knocks." and "&7Up Special: Lights himself on fire to propel upwards", "&7Side Special: Leaves trail of phosphorus, lights fire", "&7Neutral Special: Shoots a bag of mercury fulminate, explodes", "&7Down Special: Throws a potion of poison", "&fSpeed: &6Slow", "&fJump Height: &eAverage", "&fDifficulty: &cHard", "", "&aCost: &f400 coins", "%{walter::%player%}%"
+		set slot 25 of {_gui} to skull of ("TheMome" parsed as offline player) named "&5Pink Bean" with lore "&eGo on Khalifa! Mia Khalifa!" and "&7Up Special: Dives forward, high horizontal distance", "&7Side Special: Gains a speed boost, damages nearby", "&7Neutral Special: Grabs nearby opponents on demand", "&7Down Special: Creates a (hexagon) block under player", "&fSpeed: &6Slow", "&fJump Height: &6Low", "&fDifficulty: &aEasy", "", "&aCost: &f400 coins", "%{bean::%player%}%"
+		set slot 49 of {_gui} to nether star named "&f&lCharacter Selected:" with lore "&e%{character::%player%}%"
+		set slot 4 of {_gui} to nether star named "&f&lRarities:" with lore "&aCommon: &7100 coins" and "&bRare: &7200 coins" and "&5Epic: &7400 coins" and "&6Legendary: &7800 coins"
+		open {_gui} to player
+
+on inventory click:
+	if name of event-inventory is "&eSelect Gamemode":
+		cancel event
+		if index of event-slot = 11:
+			{smash::%player%} is not "smash"
+			set {smash::%player%} to "zombie"
+			set {deathloc::%player%} to location 0.5, 77, -19.5 in world "smash"
+			set {spawnloc::%player%} to location 0.5, 78, -23 in world "smash"
+			teleport player to {spawnloc::%player%}
+			set {stocks::%player%} to 3
+			set {percent::%player%} to 0
+			make player execute command "/percent"
+			clear player's inventory
+			give 1 of gold ingot of mending named "&bNeutral Special &3(Right click)" to player
+			give 1 of gold ingot of mending named "&eSide Special &3(Right click)" to player
+			give 1 of gold ingot of mending named "&aUp Special &3(Right click)" to player
+			give 1 of gold ingot of mending named "&dDown Special &3(Right click)" to player
+			give 1 of iron ingot of mending named "&7Up Attack" to player
+			give 1 of iron ingot of mending named "&7Down Attack" to player
+			apply slow falling to player for 3 seconds
+		if index of event-slot = 15:
+			{smash::%player%} is not "smash"
+			set {smash::%player%} to "training"
+			set {deathloc::%player%} to location 0.5, 78, 90.5 in world "smash"
+			set {spawnloc::%player%} to location 0.5, 78, 95 in world "smash"
+			teleport player to {spawnloc::%player%}
+			set {stocks::%player%} to 10
+			set {percent::%player%} to 0
+			make player execute command "/percent"
+			clear player's inventory
+			give 1 of gold ingot of mending named "&bNeutral Special &3(Right click)" to player
+			give 1 of gold ingot of mending named "&eSide Special &3(Right click)" to player
+			give 1 of gold ingot of mending named "&aUp Special &3(Right click)" to player
+			give 1 of gold ingot of mending named "&dDown Special &3(Right click)" to player
+			give 1 of iron ingot of mending named "&7Up Attack" to player
+			give 1 of iron ingot of mending named "&7Down Attack" to player
+			give 1 of emerald of mending named "&bFighter List" to player
+			apply slow falling to player for 3 seconds
+		if index of event-slot = 13:
+			if {game} is true:
+				send "&c&lWhoops! &eLooks like there is a battle happening currently. Please wait until it has finished."
+				stop
+			if {smash::%player%} is "smash":
+				make player execute command "/leavequeue"
+				stop
+			set {smash::%player%} to "smash"
+			set {stocks::%player%} to 3
+			set {spawnloc::%player%} to location 0.5, 85, 25 in world "smash"
+			set {deathloc::%player%} to location 0.5, 79, 7.5 in world "smash"
+			set {queue} to {queue} + 1
+			set {percent::%player%} to 0
+			make player execute command "/percent"
+			broadcast "&a%player% has joined the queue"
+			broadcast "&ePlayers found &a%{queue}%/8"
+			if {queue} is smaller than 2:
+				broadcast "&7Waiting for more players..."
+			if {queue} is greater than 1:
+				{battlestart} is not true
+				set {battlestart} to true
+				{battlestart} is true
+				set {_e} to 15
+				loop 15 times:
+					broadcast "&aBattle starting in %{_e}% seconds"
+					set {_e} to {_e} - 1
+					wait for 1 second
+					if {queue} is less than 2:
+						clear {battlestart}
+						stop
+				clear {battlestart}
+				set {game} to true
+				loop all players:
+					if {smash::%loop-player%} is "smash":
+						set {percent::%loop-player%} to 0
+						teleport loop-player to {spawnloc::%loop-player%}
+						apply slow falling to loop-player for 3 seconds
+						clear loop-player's inventory
+						give 1 of gold ingot of mending named "&bNeutral Special &3(Right click)" to loop-player
+						give 1 of gold ingot of mending named "&eSide Special &3(Right click)" to loop-player
+						give 1 of gold ingot of mending named "&aUp Special &3(Right click)" to loop-player
+						give 1 of gold ingot of mending named "&dDown Special &3(Right click)" to loop-player
+						give 1 of iron ingot of mending named "&7Up Attack" to loop-player
+						give 1 of iron ingot of mending named "&7Down Attack" to loop-player
+						loop 100 times:
+							set {cd::%loop-player%} to true
+				
+command /leavequeue:
+	trigger:
+		if {smash::%player%} is "smash":
+			set {queue} to {queue} - 1
+			clear {smash::%player%}
+			broadcast "&c%player% has left the queue"
+			broadcast "&ePlayers found &a%{queue}%/8"
+
+command /queuefix:
+	permission: op
+	trigger:
+		set {queue} to 0
+		
+command /coin <player> <integer>:
+	permission: op
+	trigger:
+		set {coins::%arg-1%} to {coins::%arg-1%} + arg 2
+		
+on inventory click:
+	if name of event-inventory is "&lCharacter List":
+		set {_e} to 0
+		loop 100 times:
+			if index of event-slot = {_e}:
+				set {_e} to {_e} + 1
+			cancel event
+		if index of event-slot = 13:
+			set {character::%player%} to "%player%"
+			cancel event
+			send "&7You have selected &a%{character::%player%}%"
+			remove jump boost from player
+			remove slowness from player
+			remove speed from player
+			apply speed 3 to player for 99999999999999 seconds
+			apply jump boost 5 to player for 99999999999999 seconds
+		if index of event-slot = 12:
+			if {gingerbrave::%player%} is "&6Unlocked":
+				set {character::%player%} to "Gingerbrave"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("hyuniii" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 7 to player for 99999999999999 seconds
+				remove speed from player
+				remove slowness from player
+				apply speed 4 to player for 99999999999999 seconds
+				stop
+			if {gingerbrave::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 99:
+					set {gingerbrave::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 100
+					set {character::%player%} to "Gingerbrave"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("hyuniii" parsed as offline player)'s skull
+					remove jump boost from player
+					apply jump boost 7 to player for 99999999999999 seconds
+					remove speed from player
+					remove slowness from player
+					apply speed 4 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 11:
+			if {perry::%player%} is "&6Unlocked":
+				set {character::%player%} to "Perry"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("Reigion" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 6 to player for 99999999999999 seconds
+				remove speed from player
+				remove slowness from player
+				apply speed 6 to player for 99999999999999 seconds
+				stop
+			if {perry::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 199:
+					set {perry::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 200
+					set {character::%player%} to "Perry"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("Reigion" parsed as offline player)'s skull
+					remove jump boost from player
+					apply jump boost 6 to player for 99999999999999 seconds
+					remove speed from player
+					remove slowness from player
+					apply speed 6 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 10:
+			if {dug::%player%} is "&6Unlocked":
+				set {character::%player%} to "Dug"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("Dog" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 2 to player for 99999999999999 seconds
+				remove speed from player
+				remove slowness from player
+				apply speed 1 to player for 99999999999999 seconds
+				stop
+			if {dug::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 99:
+					set {dug::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 100
+					set {character::%player%} to "Dug"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("Dog" parsed as offline player)'s skull
+					remove jump boost from player
+					apply jump boost 2 to player for 99999999999999 seconds
+					remove speed from player
+					remove slowness from player
+					apply speed 1 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 14:
+			if {sans::%player%} is "&6Unlocked":
+				set {character::%player%} to "Sans"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("Avurith" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 4 to player for 99999999999999 seconds
+				remove speed from player
+				remove slowness from player
+				stop
+			if {sans::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 199:
+					set {sans::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 200
+					set {character::%player%} to "Sans"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("Avurith" parsed as offline player)'s skull
+					remove jump boost from player
+					remove speed from player
+					remove slowness from player
+					apply jump boost 4 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 15:
+			if {gumball::%player%} is "&6Unlocked":
+				set {character::%player%} to "Gumball"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("OldYoutuber" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 5 to player for 99999999999999 seconds
+				remove speed from player
+				wait a tick
+				apply speed 3 to player for 99999999999999 seconds
+				remove slowness from player
+				stop
+			if {gumball::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 199:
+					set {gumball::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 200
+					set {character::%player%} to "Gumball"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("OldYoutuber" parsed as offline player)'s skull
+					remove jump boost from player
+					apply jump boost 5 to player for 99999999999999 seconds
+					remove speed from player
+					apply speed 3 to player for 99999999999999 seconds
+					remove slowness from player
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 16:
+			if {peter::%player%} is "&6Unlocked":
+				set {character::%player%} to "Peter"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("fartacus7" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 3 to player for 99999999999999 seconds
+				remove speed from player
+				apply speed 1 to player for 99999999999999 seconds
+				remove slowness from player
+				stop
+			if {peter::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 399:
+					set {peter::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 400
+					set {character::%player%} to "Peter"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("fartacus7" parsed as offline player)'s skull
+					remove jump boost from player
+					apply jump boost 3 to player for 99999999999999 seconds
+					remove speed from player
+					remove slowness from player
+					apply speed 1 to player for 99999999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 19:
+			if {red::%player%} is "&6Unlocked":
+				set {character::%player%} to "Red"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("GuavaSensei" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 4 to player for 99999999999999 seconds
+				remove speed from player
+				apply speed 2 to player for 99999999999999 seconds
+				remove slowness from player
+				stop
+			if {red::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 399:
+					set {red::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 400
+					set {character::%player%} to "Red"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("GuavaSensei" parsed as offline player)'s skull
+					remove jump boost from player
+					remove speed from player
+					remove slowness from player
+					apply jump boost 4 to player for 99999999999999 seconds
+					apply speed 2 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 20:
+			if {walter::%player%} is "&6Unlocked":
+				set {character::%player%} to "Walter"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("RSHVE" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 5 to player for 99999999999999 seconds
+				remove speed from player
+				apply speed 1 to player for 99999999999999 seconds
+				remove slowness from player
+				stop
+			if {walter::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 399:
+					set {walter::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 400
+					set {character::%player%} to "Walter"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("RSHVE" parsed as offline player)'s skull
+					remove jump boost from player
+					remove speed from player
+					remove slowness from player
+					apply jump boost 5 to player for 99999999999999 seconds
+					apply speed 1 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 21:
+			if {gwen::%player%} is "&6Unlocked":
+				set {character::%player%} to "Gwen"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("AybukeGamingTR" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 8 to player for 99999999999999 seconds
+				remove speed from player
+				apply speed 6 to player for 99999999999999 seconds
+				remove slowness from player
+				stop
+			if {gwen::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 399:
+					set {gwen::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 400
+					set {character::%player%} to "Gwen"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("AybukeGamingTR" parsed as offline player)'s skull
+					remove jump boost from player
+					remove speed from player
+					remove slowness from player
+					apply jump boost 8 to player for 99999999999999 seconds
+					apply speed 6 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 22:
+			if {mordecai::%player%} is "&6Unlocked":
+				set {character::%player%} to "Mordecai"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("Freely_None" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 9 to player for 99999999999999 seconds
+				remove speed from player
+				apply speed 2 to player for 99999999999999 seconds
+				remove slowness from player
+				stop
+			if {mordecai::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 399:
+					set {mordecai::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 400
+					set {character::%player%} to "Mordecai"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("Freely_None" parsed as offline player)'s skull
+					remove jump boost from player
+					remove speed from player
+					remove slowness from player
+					apply jump boost 9 to player for 99999999999999 seconds
+					apply speed 2 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 23:
+			if {jett::%player%} is "&6Unlocked":
+				set {character::%player%} to "Jett"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("emal" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 5 to player for 99999999999999 seconds
+				remove speed from player
+				apply speed 3 to player for 99999999999999 seconds
+				remove slowness from player
+				stop
+			if {jett::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 399:
+					set {jett::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 400
+					set {character::%player%} to "Jett"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("emal" parsed as offline player)'s skull
+					remove jump boost from player
+					remove speed from player
+					remove slowness from player
+					apply jump boost 5 to player for 99999999999999 seconds
+					apply speed 3 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 24:
+			if {mabel::%player%} is "&6Unlocked":
+				set {character::%player%} to "Mabel"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("shybiii" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 5 to player for 99999999999999 seconds
+				remove speed from player
+				apply speed 4 to player for 99999999999999 seconds
+				remove slowness from player
+				stop
+			if {mabel::%player%} is "&cLocked":
+				if {coins::%player%} is greater than 399:
+					set {mabel::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 400
+					set {character::%player%} to "Mabel"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("shybiii" parsed as offline player)'s skull
+					remove jump boost from player
+					remove speed from player
+					remove slowness from player
+					apply jump boost 5 to player for 99999999999999 seconds
+					apply speed 4 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+		if index of event-slot = 25:
+			if {bean::%player%} is "&6Unlocked":
+				set {character::%player%} to "Pink Bean"
+				cancel event
+				send "&7You have selected &a%{character::%player%}%"
+				set helmet of player to ("themome" parsed as offline player)'s skull
+				remove jump boost from player
+				apply jump boost 3 to player for 99999999999999 seconds
+				remove speed from player
+				apply speed 1 to player for 99999999999999 seconds
+				remove slowness from player
+				stop
+			if {bean::%player%} is not "&6Unlocked":
+				if {coins::%player%} is greater than 399:
+					set {bean::%player%} to "&6Unlocked"
+					set {coins::%player%} to {coins::%player%} - 400
+					set {character::%player%} to "Pink Bean"
+					send "&7You have purchased &a%{character::%player%}%"
+					set helmet of player to ("themome" parsed as offline player)'s skull
+					remove jump boost from player
+					remove speed from player
+					remove slowness from player
+					apply jump boost 3 to player for 99999999999999 seconds
+					apply speed 1 to player for 99999999999999 seconds
+				else:
+					send "&cYou do not have enough coins to purchase this character"
+					
+on right click:
+	player's held item is book
+	send "Sally: &7Hey there %player%!"
+	wait for 1 second
+	send "Sally: &7Welcome to the world of scuffed smash"
+	wait for 2 second
+	send "Sally: &7The goal of scuffed smash is to defeat your opponents by &eknocking them off the stage&7."
+	wait for 2 second
+	send "Sally: &7When the game starts, each player gets 3 lives (also known as &estocks&7)"
+	wait for 2 second
+	send "Sally: &7When a player runs out of lives, they lose."
+	wait for 2 second
+	send "Sally: &7There are 2 types of moves in scuffed smash: &eSpecials &7and &ebasic attacks&7."
+	wait for 2 second
+	send "Sally: &eSpecial attacks&7 are unique to the character that you are using. Each character has a different way of using these attacks. Special attacks can be used by right clicking &egold ingots."
+	wait for 2 second
+	send "Sally: &eBasic attacks&7 are simpler attacks compared to special attacks. All basic attacks knocks opponents away from the player. These attacks can be used by left clicking &eiron ingots, &7but you can also left click any item to perform a &eneutral basic attack."
+	wait for 2 second
+	send "Sally: &7When you get knocked off stage, you can &edouble jump&7 by double clicking your jump button mid-air!"
+	wait for 2 second
+	send "Sally: &7If a &edouble jump&7 isnt enough, use your &eup special &7to recover back onto the stage."
+	wait for 2 second
+	send "Sally: &7There are 3 gamemodes in scuffed smash. &eSmash&7, &eTraining &7and &eZombies&7."
+	wait for 2 second
+	send "Sally: &eSmash&7 is the regular gamemode where you battle other players in a &estock battle."
+	wait for 2 second
+	send "Sally: &eZombies &7is a singleplayer gamemode where you can battle multiple zombies. This gamemode is recommended for collecting &ecoins."
+	wait for 2 second
+	send "Sally: &eTraining &7is a non-competitive gamemode where you can test out characters and attacks against training dummies."
+	wait for 2 second
+	send "Sally: &7Use &ecoins &7to unlock new characters in the &eCharacter List&7."
+	wait for 2 second
+	send "Sally: &7That's everything you need to know about &escuffed smash&7!"
+	wait for 2 second
+	send "Sally: &7Goodbye and have fun!"

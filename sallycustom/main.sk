@@ -1,0 +1,841 @@
+command /console <text>:
+	permission: op
+	trigger:
+		make console execute command "/%arg-1%"
+
+command /abilitygive:
+	permission: op
+	trigger:
+		give 1 of honeycomb of mending named "&b&lAbility" with lore "&fRight click: &7Primary Ability" and "&fLeft click: &7Secondary Ability" and "&fSneak: &7View Abilities" to player
+
+command /comp:
+	trigger:
+		broadcast "&a%player%'s &fAbility Comp:"
+		broadcast "&b%{ability::%player%}% &8&l| &b%{ability2::%player%}% &8&l| &b%{ability3::%player%}%"
+
+function checkxp(p:player):
+	if {xp::%{_p}%} is greater than {level::%{_p}%} * 3 + 9:
+		set {xp::%{_p}%} to 0
+		set {level::%{_p}%} to {level::%{_p}%} + 1
+		set {coins::%{_p}%} to {coins::%{_p}%} + {level::%{_p}%} * 3
+		send "&aYou leveled up to level %{level::%{_p}%}%" to {_p}
+		send "&fYou received &e%{level::%{_p}%} * 3% &fcoins!" to {_p}
+		if {xp::%{_p}%} is greater than {level::%{_p}%} * 3 + 9:
+			checkxp({_p})
+
+function damage(p:entity, radius:number, damage:number):
+	loop all entities in radius {_radius} of {_p}:
+		if helmet of loop-entity is iron helmet or gold helmet:
+			set {_damage} to {_damage} * 0.985
+		if helmet of loop-entity is diamond helmet or netherite helmet:
+			set {_damage} to {_damage} * 0.96
+		if boots of loop-entity is iron boots or gold boots:
+			set {_damage} to {_damage} * 0.99
+		if boots of loop-entity is diamond boots or netherite boots:
+			set {_damage} to {_damage} * 0.97
+		if chestplate of loop-entity is iron chestplate or gold chestplate:
+			set {_damage} to {_damage} * 0.93
+		if chestplate of loop-entity is diamond chestplate or netherite chestplate:
+			set {_damage} to {_damage} * 0.9
+		if leggings of loop-entity is iron leggings or gold leggings:
+			set {_damage} to {_damage} * 0.955
+		if leggings of loop-entity is diamond leggings or netherite leggings:
+			set {_damage} to {_damage} * 0.92
+		loop-entity is not {_p}
+		force {_p} to damage loop-entity by {_damage}
+
+function damageblock(p:entity, radius:number, damage:number, attacker:player):
+	loop all entities in radius {_radius} of {_p}:
+		if helmet of loop-entity is iron helmet or gold helmet:
+			set {_damage} to {_damage} * 0.985
+		if helmet of loop-entity is diamond helmet or netherite helmet:
+			set {_damage} to {_damage} * 0.96
+		if boots of loop-entity is iron boots or gold boots:
+			set {_damage} to {_damage} * 0.99
+		if boots of loop-entity is diamond boots or netherite boots:
+			set {_damage} to {_damage} * 0.97
+		if chestplate of loop-entity is iron chestplate or gold chestplate:
+			set {_damage} to {_damage} * 0.93
+		if chestplate of loop-entity is diamond chestplate or netherite chestplate:
+			set {_damage} to {_damage} * 0.9
+		if leggings of loop-entity is iron leggings or gold leggings:
+			set {_damage} to {_damage} * 0.955
+		if leggings of loop-entity is diamond leggings or netherite leggings:
+			set {_damage} to {_damage} * 0.92
+		loop-entity is not {_p} or {_attacker}
+		force {_attacker} to damage loop-entity by {_damage}
+
+function damageloc(p:location, radius:number, damage:number, attacker:player):
+	loop all entities in radius {_radius} of {_p}:
+		if helmet of loop-entity is iron helmet or gold helmet:
+			set {_damage} to {_damage} * 0.985
+		if helmet of loop-entity is diamond helmet or netherite helmet:
+			set {_damage} to {_damage} * 0.96
+		if boots of loop-entity is iron boots or gold boots:
+			set {_damage} to {_damage} * 0.99
+		if boots of loop-entity is diamond boots or netherite boots:
+			set {_damage} to {_damage} * 0.97
+		if chestplate of loop-entity is iron chestplate or gold chestplate:
+			set {_damage} to {_damage} * 0.93
+		if chestplate of loop-entity is diamond chestplate or netherite chestplate:
+			set {_damage} to {_damage} * 0.9
+		if leggings of loop-entity is iron leggings or gold leggings:
+			set {_damage} to {_damage} * 0.955
+		if leggings of loop-entity is diamond leggings or netherite leggings:
+			set {_damage} to {_damage} * 0.92
+		loop-entity is not {_p} or {_attacker}
+		force {_attacker} to damage loop-entity by {_damage}
+
+function sound(p:player, sound:text, range:number, volume:number, pitch:number):
+	loop all entities in radius {_range} of {_p}:
+		play sound "%{_sound}%" at volume {_volume} and pitch {_pitch} for loop-entity
+
+on chat:
+	set chat format to "&7[LV %{level::%player%}%] &f%player%: &7%message%"
+
+command /zombie <int>:
+	permission: op
+	trigger:
+		loop arg-1 times:
+			spawn adult zombie at location of player 
+		
+on death:
+	play sound "entity.villager.death" at volume 1 and pitch 0.5 for attacker and victim
+
+on ignite:
+	player's held item is not flint and steel
+	cancel event
+
+every 0.2 second:
+	loop all players:
+		if {cd1::%loop-player%} is not 0:
+			set {cd1::%loop-player%} to {cd1::%loop-player%} - 0.2
+			if {cd1::%loop-player%} is 0:
+				set {cd1::%loop-player%} to 0
+				play sound "block.piston.contract" at volume 0.8 and pitch 0.5 for loop-player
+				set {_cd1} to {cd1::%loop-player%}
+				set {_cd2} to {cd2::%loop-player%}
+				if {cd1::%loop-player%} = 0:
+					set {_cd1} to "&a(Ready) &70"
+				if {cd2::%loop-player%} = 0:
+					set {_cd2} to "&a(Ready) &70"
+				send action bar "&f%{ability::%loop-player%}%: &c%{_cd1}%s &8&l| &f%{ability2::%loop-player%}%: &c%{_cd2}%s &8&l| &f%{ability3::%loop-player%}%" to loop-player
+		if {cd2::%loop-player%} is not 0:
+			set {cd2::%loop-player%} to {cd2::%loop-player%} - 0.2
+			if {cd2::%loop-player%} is 0:
+				set {cd2::%loop-player%} to 0
+				play sound "block.piston.contract" at volume 0.8 and pitch 0.5 for loop-player
+				set {_cd1} to {cd1::%loop-player%}
+				set {_cd2} to {cd2::%loop-player%}
+				if {cd1::%loop-player%} = 0:
+					set {_cd1} to "&a(Ready) &70"
+				if {cd2::%loop-player%} = 0:
+					set {_cd2} to "&a(Ready) &70"
+				send action bar "&f%{ability::%loop-player%}%: &c%{_cd1}%s &8&l| &f%{ability2::%loop-player%}%: &c%{_cd2}%s &8&l| &f%{ability3::%loop-player%}%" to loop-player
+		if {cd2::%loop-player%} is -0:
+			set {cd2::%loop-player%} to 0
+		if {cd1::%loop-player%} is -0:
+			set {cd1::%loop-player%} to 0
+				
+command /abilityprimary <text>:
+	permission: op
+	trigger:
+		set {ability::%player%} to arg-1
+		set {cd1::%player%} to 0
+		set {cd2::%player%} to 0
+		send "Set ability to &e%arg-1%"
+
+command /abilitysecondary <text>:
+	permission: op
+	trigger:
+		set {ability2::%player%} to arg-1
+		set {cd1::%player%} to 0
+		set {cd2::%player%} to 0
+		send "Set ability to &e%arg-1%"
+		
+command /abilitypassive <text>:
+	permission: op
+	trigger:
+		set {ability3::%player%} to arg-1
+		set {cd1::%player%} to 0
+		set {cd2::%player%} to 0
+		send "Set ability to &e%arg-1%"
+
+command /reset:
+	permission: op
+	trigger:
+		set {fast forward::%player%} to "&cLocked"
+		set {gun::%player%} to "&cLocked"
+		set {fire hazard::%player%} to "&cLocked"
+		set {explosion::%player%} to "&cLocked"
+		set {whirling steps::%player%} to "&cLocked"
+		set {slam dunk::%player%} to "&cLocked"
+		set {ice throw::%player%} to "&cLocked"
+		set {impulse magnet::%player%} to "&cLocked"
+		set {frosty::%player%} to "&cLocked"
+		set {susinator::%player%} to "&cLocked"
+		set {magnetism::%player%} to "&cLocked"
+		set {jiwoo::%player%} to "&cLocked"
+		set {chicken::%player%} to "&cLocked"
+		set {poop bomb::%player%} to "&cLocked"
+		set {big reveal::%player%} to "&cLocked"
+		set {substitute::%player%} to "&cLocked"
+		set {queen bee::%player%} to "&cLocked"
+		set {protein bar::%player%} to "&cLocked"
+		set {immortalize::%player%} to "&cLocked"
+		set {healing zone::%player%} to "&cLocked"
+		set {spirit soother::%player%} to "&cLocked"
+		set {vengeance::%player%} to "&cLocked"
+		set {survivalist::%player%} to "&cLocked"
+		set {creepy harvest::%player%} to "&cLocked" 
+		set {suicide bomber::%player%} to "&cLocked"
+		set {bulletproof::%player%} to "&cLocked"
+		set {feather falling::%player%} to "&cLocked"
+		set {submarine::%player%} to "&cLocked"
+		set {flutter by::%player%} to "&cLocked"
+		set {explosive waters::%player%} to "&cLocked"
+		set {smoke bomb::%player%} to "&cLocked"
+		set {explosive waters::%player%} to "&cLocked"
+
+command /lock <text>:
+	trigger:
+		set {%arg-1%::%player%} to "&cLocked"
+on join:
+	if {fast forward::%player%} is not set:
+		set {fast forward::%player%} to "&aUnlocked"
+	if {gun::%player%} is not set:
+		set {gun::%player%} to "&cLocked"
+	if {fire hazard::%player%} is not set:
+		set {fire hazard::%player%} to "&cLocked"
+	if {explosion::%player%} is not set:
+		set {explosion::%player%} to "&cLocked"
+	if {explosive waters::%player%} is not set:
+		set {explosive waters::%player%} to "&cLocked"
+	if {slam dunk::%player%} is not set:
+		set {slam dunk::%player%} to "&cLocked"
+	if {ice throw::%player%} is not set:
+		set {ice throw::%player%} to "&cLocked"
+	if {impulse magnet::%player%} is not set:
+		set {impulse magnet::%player%} to "&cLocked"
+	if {frosty::%player%} is not set:
+		set {frosty::%player%} to "&cLocked"
+	if {susinator::%player%} is not set:
+		set {susinator::%player%} to "&cLocked"
+	if {spirit soother::%player%} is not set:
+		set {spirit soother::%player%} to "&cLocked"
+	if {smart bomb::%player%} is not set:
+		set {smart bomb::%player%} to "&cLocked"
+	if {aurorus blaze::%player%} is not set:
+		set {aurorus blaze::%player%} to "&cLocked"
+	if {smoke bomb::%player%} is not set:
+		set {smoke bomb::%player%} to "&cLocked"
+
+
+	if {magnetism::%player%} is not set:
+		set {magnetism::%player%} to "&aUnlocked"
+	if {jiwoo::%player%} is not set:
+		set {jiwoo::%player%} to "&cLocked"
+	if {chicken::%player%} is not set:
+		set {chicken::%player%} to "&cLocked"
+	if {poop bomb::%player%} is not set:
+		set {poop bomb::%player%} to "&cLocked"
+	if {big reveal::%player%} is not set:
+		set {big reveal::%player%} to "&cLocked"
+	if {substitute::%player%} is not set:
+		set {substitute::%player%} to "&cLocked"
+	if {queen bee::%player%} is not set:
+		set {queen bee::%player%} to "&cLocked"
+	if {protein bar::%player%} is not set:
+		set {protein bar::%player%} to "&cLocked"
+	if {immortalize::%player%} is not set:
+		set {immortalize::%player%} to "&cLocked"
+	if {healing zone::%player%} is not set:
+		set {healing zone::%player%} to "&cLocked"
+	if {gale blade::%player%} is not set:
+		set {gale blade::%player%} to "&cLocked"
+	if {sneaky sneakers::%player%} is not set:
+		set {sneaky sneakers::%player%} to "&cLocked"
+
+
+
+	if {vengeance::%player%} is not set:
+		set {vengeance::%player%} to "&aUnlocked"
+	if {survivalist::%player%} is not set:
+		set {survivalist::%player%} to "&cLocked"
+	if {creepy harvest::%player%} is not set:
+		set {creepy harvest::%player%} to "&cLocked"
+	if {suicide bomber::%player%} is not set:
+		set {suicide bomber::%player%} to "&cLocked"
+	if {bulletproof::%player%} is not set:
+		set {bulletproof::%player%} to "&cLocked"
+	if {submarine::%player%} is not set:
+		set {submarine::%player%} to "&cLocked"
+	if {flutter by::%player%} is not set:
+		set {flutter by::%player%} to "&cLocked"
+	if {nature power::%player%} is not set:
+		set {nature power::%player%} to "&cLocked"
+	if {honeycomb::%player%} is not set:
+		set {honeycomb::%player%} to "&cLocked"
+	if {spring::%player%} is not set:
+		set {spring::%player%} to "&cLocked"
+	if {rubber skin::%player%} is not set:
+		set {rubber skin::%player%} to "&cLocked"
+	if {quick climb::%player%} is not set:
+		set {quick climb::%player%} to "&cLocked"
+
+
+	if {level::%player%} is not set:
+		set {level::%player%} to 1
+	if {xp::%player%} is not set:
+		set {xp::%player%} to 0
+
+
+command /primaries:
+	trigger:
+		set {_gui} to a new chest inventory with 3 row with name "&lPrimary Select"
+		set slot (integers from 0 to 100) of {_gui} to barrier named ""
+		set slot (integers from 18 to 26) of {_gui} to yellow stained glass pane
+		set slot 22 of {_gui} to nether star named "&c<-- Back"
+		set slot 0 of {_gui} to blaze powder named "&eFast Forward" with lore "&7Allows the user to quickly dash forward" and "&bCooldown: &76s" and "" and "&cCost: &60⛁" and "&7Status: &f%{fast forward::%player%}%"
+		
+		set slot 1 of {_gui} to bow named "&eGun" with lore "&7The user wields a gun, shoots 3 times" and "&cDamage: &75 x 3" and "&aRange: &7~50" and "&bCooldown: &75s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{gun::%player%}%"
+		
+		set slot 2 of {_gui} to water bucket named "&eExplosive Waters" with lore "&7Damages all entities near the player." and "&7More damage at higher health." and "&cDamage: &71-18" and "&aRange: &77" and "&bCooldown: &712s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{explosive waters::%player%}%"
+		
+		set slot 3 of {_gui} to flint and steel named "&eFire Hazard" with lore "&7All attacks ignite the target for 5s" and "&dDuration: &77s" and "&bCooldown: &714s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{fire hazard::%player%}%"
+		
+		set slot 4 of {_gui} to tnt named "&eExplosion" with lore "&7Explodes, flinging entities around the user" and "&cDamage: &712" and "&aRange: &74" and "&bCooldown: &710s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{explosion::%player%}%"
+		
+		set slot 5 of {_gui} to ice named "&eIce Throw" with lore "&7User throws an ice block which expands and" and "&7suffocates entities within its range" and "&7Homes to enemies" and "&cDamage: &70.5 x 8" and "&aRange: &7~25" and "&dDuration: &74s" and "&bCooldown: &79s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{ice throw::%player%}%"
+		
+		set slot 6 of {_gui} to slimeball named "&eSlam Dunk" with lore "&7Throws target upwards and hits them to the ground" and "&cDamage: &710" and "&bCooldown: &77s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{slam dunk::%player%}%"
+		
+		set slot 7 of {_gui} to end portal frame named "&eImpulse Magnet" with lore "&7Launches a hovering device that pulls in nearby" and "&7entities that come too close" and "&cDamage: &70-10" and "&bCooldown: &78s"  and "" and "&cCost: &6150⛁" and "&7Status: &f%{impulse magnet::%player%}%"
+
+		set slot 8 of {_gui} to snowball named "&eFrosty" with lore "&7Summons a wind of snow, deals damage to entities" and "&7within its range" and "&7Homes to enemies" and "&cDamage: &77" and "&aRange: &7~40" and "&dDuration: &73s" and "&bCooldown: &78s"  and "" and "&cCost: &6150⛁" and "&7Status: &f%{frosty::%player%}%"
+
+		set slot 9 of {_gui} to redstone dust named "&eSusinator" with lore "&7Causes all nearby entities to attack the clicked entity" and "&bCooldown: &78s"  and "" and "&cCost: &6150⛁" and "&7Status: &f%{susinator::%player%}%"
+
+		set slot 10 of {_gui} to magma cream named "&eSpirit Soother" with lore "&7Damages and burns nearby entities" and "&7Damage doubles if under 50%% health" and "&cDamage: &79" and "&aRange: &75" and "&bCooldown: &714s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{spirit soother::%player%}%"
+
+		set slot 11 of {_gui} to crossbow named "&eOrbital Strike" with lore "&7Launches fireball barrage from sky at targeted point" and "&7Wide area of effect" and "&cDamage: &720x6" and "&aRange: &7~200" and "&bCooldown: &760s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{orbital strike::%player%}%"
+
+		set slot 12 of {_gui} to blaze rod named "&eAurorus Blaze" with lore "&7User leaps into the air and shoots" and "&7a burst of flaming arrows" and "&cDamage: &710" and "&aRange: &7~50" and "&bCooldown: &710s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{aurorus blaze::%player%}%"
+
+		set slot 13 of {_gui} to heavy weighted pressure plate named "&eSmart Bomb" with lore "&7Shoots a bomb that can be activated on demand" and "&cDamage: &712" and "&aRange: &710" and "&bCooldown: &72s/7s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{smart bomb::%player%}%"
+
+		set slot 14 of {_gui} to firework star named "&eSmoke Bomb" with lore "&7User turns invisible and gains speed and strength" and "&bCooldown: &710s" and "&dDuration: &76s" and "" and "&cCost: &6150⛁" and "&7Status: &f%{smoke bomb::%player%}%"
+
+		open {_gui} to player 
+
+command /combos:
+	trigger:
+		set {_gui} to a new chest inventory with 2 row with name "&lCombos"
+		set slot (integers from 0 to 100) of {_gui} to barrier named ""
+		set slot (integers from 9 to 26) of {_gui} to yellow stained glass pane
+		set slot 13 of {_gui} to nether star named "&c<-- Back"
+
+		set slot 0 of {_gui} to gold boots named "&eTraveler" with lore "<##00f794>&lPRIMARY &eFast Forward &7+ <##0094f7>&lSECONDARY &eChicken" and "&7- Grants speed I" and "&bCooldown: &7-"	
+
+		set slot 1 of {_gui} to coarse dirt named "&eDirt Lord" with lore "<##0094f7>&lSECONDARY &eDirt Lord &7+ <##fcba03>&lPASSIVE &eNature Power" and "&7- Poop Bomb becomes grass" and "&7- Creates trail of grass mid-air" and "&bCooldown: &77s"
+
+		set slot 2 of {_gui} to end crystal named "&ePowered Magnet" with lore "<##00f794>&lPRIMARY &eImpulse Magnet &7+ <##0094f7>&lSECONDARY &eGale Blade" and "&7- Gale Blade increases speed of Impulse Magnet" and "&bCooldown: &7-"	
+
+		set slot 3 of {_gui} to honeycomb named "&eBeekeeper" with lore "<##0094f7>&lSECONDARY &eQueen Bee &7+ <##fcba03>&lPASSIVE &eHoneycomb" and "&7- Summons a bee when damaged" and "&bCooldown: &7-"
+
+		set slot 4 of {_gui} to lily pad named "&eDancing Lotus" with lore "<##00f794>&lPRIMARY &eExplosive Waters &7+ <##0094f7>&lSECONDARY &eWhirling Steps" and "&7- +2 Hearts" and "&bCooldown: &7-"
+
+		set slot 5 of {_gui} to coarse dirt named "&eExplosive Diarrhea" with lore "<##0094f7>&lSECONDARY &eDirt Lord &7+ <##fcba03>&lPASSIVE &eSuicide Bomber" and "&7- Poop Bomb now propels user forward" and "&7- Death explosion radius +2" and "&7- Sneaking for a long time makes you fart" and "&bCooldown: &77s"
+
+		set slot 6 of {_gui} to glass bottle named "&eNinja" with lore "<##00f794>&lPRIMARY &eSmoke Bomb &7+ <##0094f7>&lSECONDARY &eSubstitute" and "&7- Turns invisible when sneaking" and "&bCooldown: &7-"
+
+		open {_gui} to player 
+
+on inventory click:
+	if name of event-inventory is "&lCombos":
+		cancel event
+		if index of event-slot = 13:
+			make player execute command "/abilities"
+
+on inventory click:
+	if name of event-inventory is "&lPrimary Select":
+		cancel event
+		if index of event-slot = 22:
+			make player execute command "/abilities"
+
+
+		if index of event-slot = 0:
+			set {_ability} to "Fast Forward"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 1:
+			set {_ability} to "Gun"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 2:
+			set {_ability} to "Explosive Waters"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 3:
+			set {_ability} to "Fire Hazard"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 4:
+			set {_ability} to "Explosion"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 5:
+			set {_ability} to "Ice Throw"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 6:
+			set {_ability} to "Slam Dunk"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 7:
+			set {_ability} to "Impulse Magnet"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 8:
+			set {_ability} to "Frosty"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 9:
+			set {_ability} to "Susinator"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 10:
+			set {_ability} to "Spirit Soother"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 12:
+			set {_ability} to "Aurorus Blaze"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 13:
+			set {_ability} to "Smart Bomb"
+			make player execute command "/set primary %{_ability}%"
+		if index of event-slot = 14:
+			set {_ability} to "Smoke Bomb"
+			make player execute command "/set primary %{_ability}%"
+
+	if name of event-inventory is "&lSecondary Select":
+		cancel event
+		if index of event-slot = 22:
+			make player execute command "/abilities"
+
+		if index of event-slot = 0:
+			set {_ability} to "Magnetism"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 1:
+			set {_ability} to "Jiwoo"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 2:
+			set {_ability} to "Chicken"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 3:
+			set {_ability} to "Poop Bomb"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 4:
+			set {_ability} to "Big Reveal"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 5:
+			set {_ability} to "Substitute"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 6:
+			set {_ability} to "Queen Bee"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 7:
+			set {_ability} to "Protein Bar"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 8:
+			set {_ability} to "Immortalize"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 9:
+			set {_ability} to "Healing Zone"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 10:
+			set {_ability} to "Whirling Steps"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 11:
+			set {_ability} to "Gale Blade"
+			make player execute command "/set secondary %{_ability}%"
+		if index of event-slot = 12:
+			set {_ability} to "Sneaky Sneakers"
+			make player execute command "/set secondary %{_ability}%"
+
+	if name of event-inventory is "&lPassive Select":
+		cancel event
+		if index of event-slot = 22:
+			make player execute command "/abilities"
+
+		if index of event-slot = 0:
+			set {_ability} to "Vengeance"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 1:
+			set {_ability} to "Survivalist"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 2:
+			set {_ability} to "Creepy Harvest"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 3:
+			set {_ability} to "Suicide Bomber"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 4:
+			set {_ability} to "Bulletproof"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 5:
+			set {_ability} to "Feather Falling"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 6:
+			set {_ability} to "Submarine"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 7:
+			set {_ability} to "Flutter By"
+			make player execute command "/set passive %{_ability}%"
+
+		if index of event-slot = 8:
+			set {_ability} to "Nature Power"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 9:
+			set {_ability} to "Rubber Skin"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 10:
+			set {_ability} to "Honeycomb"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 11:
+			set {_ability} to "Spring"
+			make player execute command "/set passive %{_ability}%"
+		if index of event-slot = 12:
+			set {_ability} to "Quick Climb"
+			make player execute command "/set passive %{_ability}%"
+
+	if name of event-inventory is "&lAbility Navigator":
+		cancel event
+		if index of event-slot = 11:
+			make player execute command "/primaries"
+		if index of event-slot = 12:
+			make player execute command "/secondaries"
+		if index of event-slot = 14:
+			make player execute command "/passives"
+		if index of event-slot = 15:
+			make player execute command "/combos"
+
+command /secondaries:
+	trigger:
+		set {_gui} to a new chest inventory with 3 row with name "&lSecondary Select"
+		set slot (integers from 0 to 100) of {_gui} to barrier named ""
+		set slot (integers from 18 to 26) of {_gui} to yellow stained glass pane
+		set slot 22 of {_gui} to nether star named "&c<-- Back"
+		set slot 0 of {_gui} to redstone block named "&eMagnetism" with lore "&7Pulls all nearby entities inward" and "&aRange: &710" and "&bCooldown: &78s"  and "" and "&cCost: &60⛁" and "&7Status: &f%{magnetism::%player%}%"
+		
+		set slot 1 of {_gui} to eye of ender named "&eJiwoo's Math Book" with lore "&7Holds all the facts in the universe, " and "&7mind controls all nearby entities to follow the player" and "&aRange: &713" and "&bCooldown: &713s"  and "" and "&cCost: &6100⛁" and "&7Status: &f%{jiwoo::%player%}%"
+		
+		set slot 2 of {_gui} to egg named "&eChicken Rider" with lore "&7Lets the user ride a chicken" and "&dDuration: &76s" and "&bCooldown: &712s"  and "" and "&cCost: &6100⛁" and "&7Status: &f%{chicken::%player%}%"
+		
+		set slot 3 of {_gui} to dirt named "&ePoop Bomb" with lore "&7User throws a dirt bomb, poisoning the target" and "&cDamage: &71 x 2" and "&aRange: &7~10" and "&bCooldown: &72s"  and "" and "&cCost: &6100⛁" and "&7Status: &f%{poop bomb::%player%}%"
+		
+		set slot 4 of {_gui} to spyglass named "&eBig Reveal" with lore "&7Reveals all entities in a 35 block radius" and "&dDuration: &75s" and "&bCooldown: &710s"  and "" and "&cCost: &6100⛁" and "&7Status: &f%{big reveal::%player%}%"
+		
+		set slot 5 of {_gui} to armor stand named "&eSubstitute" with lore "&7Creates a substitute that distracts mobs." and "&7Slows and blinds anyone who destroys it." and "&dDuration: &76s" and "&bCooldown: &78s"  and "" and "&cCost: &6100⛁" and "&7Status: &f%{substitute::%player%}%"
+		
+		set slot 6 of {_gui} to honeycomb named "&eQueen Bee" with lore "&7Spawns 4 bees that defends user against the nearest entity" and "&cDamage: &72.5 x 4" and "&bCooldown: &715s"  and "" and "&cCost: &6100⛁" and "&7Status: &f%{queen bee::%player%}%"
+
+		set slot 7 of {_gui} to dried kelp named "&eProtein Bar" with lore "&7Recovers 1 hunger point and grants speed" and "&7to the user" and "&dDuration: &72.5s" and "&bCooldown: &710s"  and "" and "&cCost: &6100⛁" and "&7Status: &f%{protein bar::%player%}%"
+
+		set slot 8 of {_gui} to diamond chestplate named "&eImmortalize" with lore "&7User becomes immortal for 2 seconds" and "&7but can't move or attack" and "&dDuration: &72s" and "&bCooldown: &710s"  and "" and "&cCost: &6100⛁" and "&7Status: &f%{immortalize::%player%}%"
+
+		set slot 9 of {_gui} to golden apple named "&eHealing Zone" with lore "&7User drops a healing potion on the ground" and "&7and regenerates health to players in range" and "&aRange: &75" and "&dDuration: &75s" and "&bCooldown: &714s"  and "" and "&cCost: &6100⛁" and "&7Status: &f%{healing zone::%player%}%"
+
+		set slot 10 of {_gui} to water bottle named "&eWhirling Steps" with lore "&7Creates a water barrier around user" and "&7More damage the higher the user's health" and "&cDamage: &72 x 24" and "&aRange: &75" and "&dDuration: &76s" and "&bCooldown: &712s" and "" and "&cCost: &6100⛁" and "&7Status: &f%{whirling steps::%player%}%"
+
+		set slot 11 of {_gui} to wooden sword named "&eGale Blade" with lore "&7Pushes all entities in a nearby radius forward." and "&71 second delay" and "&aRange: &76" and "&bCooldown: &79s" and "" and "&cCost: &6100⛁" and "&7Status: &f%{gale blade::%player%}%"
+
+		set slot 12 of {_gui} to iron boots named "&eSneaky Sneakers" with lore "&7Sets a checkpoint at the player." and "&7Activate it again to teleport to the checkpoint." and "&bCooldown: &78s" and "" and "&cCost: &6100⛁" and "&7Status: &f%{sneaky sneakers::%player%}%"
+		
+		open {_gui} to player 
+
+command /passives:
+	trigger:
+		set {_gui} to a new chest inventory with 3 row with name "&lPassive Select"
+		set slot (integers from 0 to 100) of {_gui} to barrier
+		set slot (integers from 18 to 26) of {_gui} to yellow stained glass pane
+		set slot 22 of {_gui} to nether star named "&c<-- Back"
+		set slot 0 of {_gui} to iron sword named "&eVengeance" with lore "&7Deals an additional 15%% for every attack" and "&bCooldown: &7-"  and "" and "&cCost: &60⛁" and "&7Status: &f%{magnetism::%player%}%"
+		set slot 1 of {_gui} to cooked beef named "&eSurvivalist" with lore "&7Hunger bar always stays above 60%%" and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{survivalist::%player%}%"
+		set slot 2 of {_gui} to red dye named "&eCreepy Harvest" with lore "&7User gains 25%% max health of killed victim" and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{creepy harvest::%player%}%"
+		set slot 3 of {_gui} to fire charge named "&eSuicide Bomber" with lore "&7Explodes when killed" and "&cDamage: &710" and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{suicide bomber::%player%}%"
+		set slot 4 of {_gui} to arrow named "&eBulletproof" with lore "&7User becomes immune to projectiles" and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{bulletproof::%player%}%"
+		set slot 5 of {_gui} to feather named "&eFeather Falling" with lore "&7User becomes immune to fall damage" and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{feather falling::%player%}%"
+		set slot 6 of {_gui} to seagrass named "&eSubmarine" with lore "&7User propells forward in water" and "&7and becomes immune to drowning" and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{submarine::%player%}%"
+		set slot 7 of {_gui} to nether wart named "&eFlutter By" with lore "&7If below 50%% HP, damage increases by 25%%" and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{flutter by::%player%}%"
+		set slot 8 of {_gui} to grass named "&eNature Power" with lore "&7User gains speed and jump boost when" and "&7walking on grass" and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{nature power::%player%}%"
+		set slot 9 of {_gui} to lime stained glass named "&eRubber Skin" with lore "&7User knocks enemies back whenever they damage them" and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{rubber skin::%player%}%"
+		set slot 10 of {_gui} to beehive named "&eHoneycomb" with lore "&7User survives a killing attack on 1 heart" and "&7if hunger bar is full, loses 7 hunger points." and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{honeycomb::%player%}%"
+		set slot 11 of {_gui} to rabbit's foot named "&eSpring" with lore "&7User travels higher and moves faster when jumping." and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{spring::%player%}%"
+		set slot 12 of {_gui} to ladder named "&eQuick Climb" with lore "&7User climbs faster on scaffolding, ladders and vines." and "&bCooldown: &7-"  and "" and "&cCost: &675⛁" and "&7Status: &f%{quick climb::%player%}%"
+		open {_gui} to player
+		
+
+command /abilities:
+	trigger:
+		set {_gui} to a new chest inventory with 3 row with name "&lAbility Navigator"
+		set slot (integers from 0 to 100) of {_gui} to white stained glass pane
+		set slot 11 of {_gui} to diamond sword of mending named "&ePrimaries" with lore "&7Click to view all primary abilities"
+		set slot 12 of {_gui} to iron sword of mending named "&eSecondaries" with lore "&7Click to view all secondaries abilities"
+		set slot 13 of {_gui} to clock of mending named "&eBalance: &f%{coins::%player%}%⛁"
+		set slot 15 of {_gui} to golden sword of mending named "&eCombos" with lore "&7Click to view all ability combos"
+		set slot 14 of {_gui} to wooden sword of mending named "&ePassives" with lore "&7Click to view all passive abilities"
+		open {_gui} to player
+
+
+on sneak toggle:
+	if player's held item is honeycomb:
+		set {_cd1} to {cd1::%player%}
+		set {_cd2} to {cd2::%player%}
+		if {cd1::%player%} = 0:
+			set {_cd1} to "&a(Ready) &70"
+		if {cd2::%player%} = 0:
+			set {_cd2} to "&a(Ready) &70"
+		send action bar "&f%{ability::%player%}%: &c%{_cd1}%s &8&l| &f%{ability2::%player%}%: &c%{_cd2}%s &8&l| &f%{ability3::%player%}%" to player
+		
+command /set <text> <text>:
+	trigger:
+		if arg-1 is "Primary" or "Secondary" or "Passive":
+			set {_ability} to arg-2
+			if arg-1 is "Primary":
+				if {%{_ability}%::%player%} is "&aUnlocked":
+					set {ability::%player%} to arg-2
+					send "&fSuccessfully switched your &b%arg-1% &fability to &b%arg-2%"
+				else:
+					if {coins::%player%} is greater than 149:
+						set {%{_ability}%::%player%} to "&aUnlocked"
+						set {ability::%player%} to arg-2
+						send "&aSuccessfully purchased &b%arg-2%!"
+						send "&fSuccessfully switched your &b%arg-1% &fability to &b%arg-2%"
+						set {coins::%player%} to {coins::%player%} - 150
+					else:
+						send "&cYou don't have enough coins to purchase this ability!"
+
+
+			if arg-1 is "Secondary":
+				if {%{_ability}%::%player%} is "&aUnlocked":
+					set {ability2::%player%} to arg-2
+					send "&fSuccessfully switched your &b%arg-1% &fability to &b%arg-2%"
+				else:
+					if {coins::%player%} is greater than 99:
+						set {%{_ability}%::%player%} to "&aUnlocked"
+						set {ability2::%player%} to arg-2
+						send "&aSuccessfully purchased &b%arg-2%!"
+						send "&fSuccessfully switched your &b%arg-1% &fability to &b%arg-2%"
+						set {coins::%player%} to {coins::%player%} - 100
+					else:
+						send "&cYou don't have enough coins to purchase this ability!"
+
+
+			if arg-1 is "Passive":
+				if {%{_ability}%::%player%} is "&aUnlocked":
+					set {ability3::%player%} to arg-2
+					send "&fSuccessfully switched your &b%arg-1% &fability to &b%arg-2%"
+				else:
+					if {coins::%player%} is greater than 74:
+						set {%{_ability}%::%player%} to "&aUnlocked"
+						set {ability3::%player%} to arg-2
+						send "&aSuccessfully purchased &b%arg-2%!"
+						send "&fSuccessfully switched your &b%arg-1% &fability to &b%arg-2%"
+						set {coins::%player%} to {coins::%player%} - 75
+					else:
+						send "&cYou don't have enough coins to purchase this ability!"
+		else:
+			send "&cUsage: /set <primary/secondary/passive> <ability>"
+
+command /coin <player> <integer>:
+	permission: op
+	trigger:
+		set {coins::%arg-1%} to {coins::%arg-1%} + arg-2
+
+command /coins:
+	trigger:
+		send "You currently have &e%{coins::%player%}% &fcoins"
+
+
+on tab complete of "/set":
+	set tab completions for position 1 to "Primary", "Passive" and "Secondary"
+	if tab arg-1 = "Primary":
+		set tab completions for position 2 to "Fast Forward", "Gun", "Explosive Waters", "Fire Hazard", "Explosion", "Impulse Magnet", "Ice Throw", "Frosty", "Susinator", "Spirit Soother" and "Slam Dunk"
+	if tab arg-1 = "Secondary":
+		set tab completions for position 2 to "Magnetism", "Whirling Steps", "Jiwoo", "Chicken", "Poop Bomb", "Big Reveal", "Protein Bar", "Queen Bee", "Immortalize", "Healing Zone" and "Substitute"
+	if tab arg-1 = "Passive":
+		set tab completions for position 2 to "Vengeance", "Nature Power", "Spring", "Rubber Skin", "Honeycomb", "Survivalist", "Creepy Harvest", "Bulletproof", "Suicide Bomber", "Submarine", "Flutter By" and "Feather Falling"
+
+
+every 0.2 second:
+	loop all players:
+		set title of loop-player's scoreboard to "&d&lSally&f&lCustom"
+		wait a tick
+		if {cd1::%loop-player%} is 0:
+			set line 8 of loop-player's scoreboard to colored "&a%{cd1::%loop-player%}%s &8&l| &r%{ability::%loop-player%}%"
+		else:
+			set line 8 of loop-player's scoreboard to colored "&c%{cd1::%loop-player%}%s &8&l| &r%{ability::%loop-player%}%"
+		if {cd2::%loop-player%} is 0:
+			set line 7 of loop-player's scoreboard to colored "&a%{cd2::%loop-player%}%s &8&l| &r%{ability2::%loop-player%}%"
+		else:
+			set line 7 of loop-player's scoreboard to colored "&c%{cd2::%loop-player%}%s &8&l| &r%{ability2::%loop-player%}%"
+		set line 6 of loop-player's scoreboard to colored "&a0s &8&l| &r%{ability3::%loop-player%}%"
+		set line 5 of loop-player's scoreboard to colored ""
+		set line 4 of loop-player's scoreboard to colored "&6%{coins::%loop-player%}%⛁"
+		set line 3 of loop-player's scoreboard to colored ""
+		set {_lv} to {level::%loop-player%} * 3 + 10
+		set {_e} to {xp::%loop-player%} / {_lv} * 100
+		set {_e} to round({_e})
+		set line 2 of loop-player's scoreboard to colored "&eLVL: &f%{level::%loop-player%}% &7(%{_e}%%%)"
+		if {_e} is 0:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &7&l|||||||||&7&l| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+		if {_e} is greater than 0:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &7&l|||||||||&7&l| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+		if {_e} is greater than 10:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &f&l|&7&l||||||||| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+		if {_e} is greater than 20:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &f&l||&7&l|||||||| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+		if {_e} is greater than 30:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &f&l|||&7&l||||||| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+		if {_e} is greater than 40:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &f&l||||&7&l|||||| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+		if {_e} is greater than 50:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &f&l|||||&7&l||||| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+		if {_e} is greater than 60:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &f&l||||||&7&l|||| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+		if {_e} is greater than 70:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &f&l|||||||&7&l||| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+		if {_e} is greater than 80:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &f&l||||||||&7&l|| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+		if {_e} is greater than 90:
+			set line 1 of loop-player's scoreboard to colored "&aXP: &f&l|||||||||&7&l| &f%{xp::%loop-player%}%/%{level::%loop-player%} * 3 + 10%"
+
+on drop:
+	if event-item is honeycomb of mending named "&b&lAbility":
+		cancel event
+
+on inventory click:
+	event-item is honeycomb of mending named "&b&lAbility":
+		cancel event
+
+command /level <player> <integer>:
+	trigger:
+		set {level::%arg-1%} to arg-2
+		set {xp::%arg-1%} to 0
+
+
+command /abilityslot <integer>:
+	trigger:
+		if arg-1 is 1, 2, 3, 4, 5, 6, 7, 8 or 9:
+			set {_slot} to arg 1 - 1
+			if slot {_slot} of player's inventory is air:
+				remove 1 of honeycomb of mending named "&b&lAbility" from player
+				set slot {_slot} of player's inventory to honeycomb of mending named "&b&lAbility" with lore "&fRight click: &7Primary Ability" and "&fLeft click: &7Secondary Ability" and "&fSneak: &7View Abilities"
+			else:
+				send "&cMake sure there isn't an item in the selected slot"
+
+		else:
+			send "&cChoose a slot number between 1 and 9"
+
+command /clean:
+	permission: op
+	trigger:
+		clear player's inventory
+
+command /tutorial:
+	trigger:
+		send "Sally: &7Welcome to SallyCustom!"
+		wait for 2 second
+		send "Sally: &7You have 3 abilities: &ePrimaries&7, &eSecondaries &7and &ePassives"
+		wait for 3 second
+		send "Sally: &7You activate your primary ability by &eright &7clicking the honeycomb in your inventory"
+		wait for 3 second
+		send "Sally: &7You activate your secondary ability by &eleft &7clicking the honeycomb in your inventory"
+		wait for 3 second
+		send "Sally: &7Your passive ability will &ealways be activated"
+		wait for 3 second
+		send "Sally: &7&eSneak&7 while holding the honeycomb to view your ability cooldown times"
+		wait for 3 second
+		send "Sally: &7You can also view cooldowns and your coins on the &esidebar"
+		wait for 3 second
+		send "Sally: &7&eCoins &7are used to purchase abilities from &e/abilities"
+		wait for 3 second
+		send "Sally: &7You can obtain coins by &edefeating mobs, leveling up and fighting in sieges"
+		wait for 3 second
+		send "Sally: &7Use &e/irontransfer &7and &e/diamondtransfer &7to transfer irons and diamonds into coins"
+		wait for 3 second
+		send "Sally: &7Certain abilities work well with each other, so it's recommended to &emix and match&7 them with each other"
+		wait for 3 second
+		send "Sally: &7View the leaderboards using &e/leaderboards"
+		wait for 3 second
+		send "Sally: &7Change the slot number of your honeycomb using &e/abilityslot"
+		wait for 3 second
+		send "Sally: &7Change and view all abilities using &e/abilities"
+		wait for 3 second
+		send "Sally: &7Manually edit your ability setup using &e/set"
+		wait for 3 second
+		send "Sally: &7Have fun!"
+
+on first join:
+	make player execute command "/tutorial"
+	set {coins::%player%} to 100
+	set slot 0 of player's inventory to honeycomb of mending named "&b&lAbility" with lore "&fRight click: &7Primary Ability" and "&fLeft click: &7Secondary Ability" and "&fSneak: &7View Abilities"
+	set {daily::%player%} to 0
+	set {ability::%player%} to "Fast Forward"
+	set {ability2::%player%} to "Magnetism"
+	set {ability3::%player%} to "Vengeance"
+	set {deaths::%player%} to 0
+	set {cd1::%player%} to 0
+	set {cd2::%player%} to 0
+	set {cd3::%player%} to 0
+	set {kills::%player%} to 0
+
+command /playreset:
+	trigger:
+		set {ability::%player%} to "Fast Forward"
+		set {ability2::%player%} to "Magnetism"
+		set {ability3::%player%} to "Vengeance"
+		set {deaths::%player%} to 0
+		set {cd1::%player%} to 0
+		set {cd2::%player%} to 0
+		set {cd3::%player%} to 0
+		set {kills::%player%} to 0
+
+on join:
+	play sound "entity.firework.twinkle" at volume 1 and pitch 1 for all players
+	wait for 0.5 seconds
+	send ""
+	send "&d&lSally&f&lCustom &c[v1.0]"
+	send ""
+	send "&e&lWelcome Back!"
+	send "&fUpdates & News:"
+	send "&7Global Server Launch!"
+	send ""
+	send "Remember to claim your daily rewards!"
+	send "&e/daily"
+	send ""
+
+command /spawn:
+	trigger:
+		send "&bYou will be teleported in 5 seconds..."
+		apply blindness to player for 5 seconds
+		apply slowness 10 to player for 5 seconds
+		wait for 2 seconds
+		send "&bYou will be teleported in 3 seconds..."
+		wait for 1 seconds
+		send "&bYou will be teleported in 2 seconds..."
+		wait for 1 seconds
+		send "&bYou will be teleported in 1 second..."
+		wait for 1 seconds
+		teleport player to location -806.5, 64, 490.5 in world "world"
+
+command /arena:
+	trigger:
+		apply blindness to player for 1 seconds
+		apply slowness 10 to player for 1 seconds
+		send "&bYou will be teleported in 1 second..."
+		wait for 1 seconds
+		teleport player to location -67, -52, 47 in world "arena"
+
+on break:
+	if player's world is "arena":
+		event-block is not end stone brick wall
+		player's gamemode is not creative
+		cancel event
+		send "&cyou cant break stuff lol"
+
+on place:
+	if player's world is "arena":
+		player's gamemode is not creative
+		cancel event
+		send "&cyou cant place stuff lol"

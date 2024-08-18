@@ -1,0 +1,39 @@
+command /freeze <player>:
+	permission: op
+	trigger:
+		send "Successfully froze %arg-1%" to player
+		set {freeze::%player's uuid%} to true
+
+command /unfreeze <player>:
+	permission: op
+	trigger:
+		send "Successfully unfroze %arg-1%" to player
+		clear {freeze::%player's uuid%}
+
+on player move:
+	if {freeze::%player's uuid%} is true:
+		cancel event
+
+on left click:
+	if {freeze::%player's uuid%} is true:
+		cancel event
+
+on right click:
+	if {freeze::%player's uuid%} is true:
+		cancel event
+
+on inventory click:
+	if {freeze::%player's uuid%} is true:
+		cancel event
+
+on drop:
+	if {freeze::%player's uuid%} is true:
+		cancel event
+
+command /plugins:
+	aliases: pl 
+	trigger:
+		send "&fSally: &7its a secret"
+
+on join:
+	

@@ -1,0 +1,215 @@
+command /daily:
+	trigger:
+		set {_gui} to a new chest inventory with 3 row with name "&lDaily Rewards"
+		set {_key} to ghast spawn egg
+		enchant {_key} with mending 1
+		set {_2} to tripwire hook
+		enchant {_2} with mending 1
+		set slot 0 of {_gui} to iron ingot of mending 1 named "&e&lDay 1" with lore "&f16 iron, 16 coal"
+		set slot 1 of {_gui} to experience bottle of mending 1 named "&e&lDay 2" with lore "&f32 experience bottles, 1 common key" 
+		set slot 2 of {_gui} to diamond of mending 1 named "&e&lDay 3" with lore "&f6 diamonds, 1 spirit egg"
+		set slot 3 of {_gui} to netherite ingot of mending 1 named "&e&lDay 4" with lore "&f4 ancient debris" 
+		set slot 4 of {_gui} to totem of undying of mending 1 named "&e&lDay 5" with lore "&ftotem of undying" 
+		set slot 5 of {_gui} to experience bottle of mending 1 named "&e&lDay 6" with lore "&f64 experience bottles, 1 great key" 
+		set slot 6 of {_gui} to {_key} named "&e&lDay 7" with lore "&f8 spirit eggs"
+		set slot 7 of {_gui} to {_2} named "&e&lDay 8" with lore "&f3 great keys"
+		set slot 8 of {_gui} to diamond of mending 1 named "&e&lDay 9" with lore "&f8 diamonds, 2 netherite ingots" 
+		set slot 9 of {_gui} to villager spawn egg of mending 1 named "&e&lDay 10" with lore "&f3 villager spawn eggs" 
+		set slot 10 of {_gui} to totem of undying of mending 1 named "&e&lDay 11" with lore "&f2 totems of undying"
+		set slot 11 of {_gui} to enchanted golden apple of mending 1 named "&e&lDay 12" with lore "&f2 enchanted golden apples"
+		set slot 12 of {_gui} to conduit of mending 1 named "&e&lDay 13" with lore "&fConduit" 
+		set slot 13 of {_gui} to trident of mending 1 named "&e&lDay 14" with lore "&fTrident"
+		set slot 14 of {_gui} to {_2} named "&e&lDay 15" with lore "&f3 great keys"
+		set slot 15 of {_gui} to dragon head of mending 1 named "&e&lDay 16" with lore "&fDragon head" 
+		set slot 16 of {_gui} to emerald block of mending 1 named "&e&lDay 17" with lore "&f32 emerald blocks"
+		set slot 17 of {_gui} to {_2} named "&e&lDay 18" with lore "&f&lLEGENDARY CRATE KEY" 
+		set slot 18 of {_gui} to red glass pane named "&e"
+		set slot 19 of {_gui} to red glass pane named "&e"
+		set slot 20 of {_gui} to red glass pane named "&e"
+		set slot 21 of {_gui} to red glass pane named "&e"
+		set slot 22 of {_gui} to nether star named "&a&lYou are on day:" with lore "&f&l- &e&l%{daily.%player%::daily}% &f&l-" and "&7Do /dailyclaim to claim your daily reward" and "&7Make sure you leave space in your inventory!"
+		set slot 23 of {_gui} to red glass pane named "&e"
+		set slot 24 of {_gui} to red glass pane named "&e"
+		set slot 25 of {_gui} to red glass pane named "&e"
+		set slot 26 of {_gui} to red glass pane named "&e"
+		open {_gui} to player
+
+command /dailyclaim:
+	cooldown: 24 hours
+	cooldown message: &cClaim your daily reward tomorrow!
+	trigger:
+		play sound "entity.player.levelup" with volume 1 and pitch 0.5 to all players
+		broadcast "&b&l%player% &eclaimed their &lday %{daily.%player%::daily} + 1%&e reward!"
+		set {_e} to tripwire hook
+		set {_eg} to ghast spawn egg
+		enchant {_e} with mending
+		enchant {_eg} with mending
+		if {daily.%player%::daily} is not set:
+			set {daily.%player%::daily} to 1
+			give 16 of iron ingot to player
+			give 16 of coal to player
+			send "&aYou have claimed your day 1 reward!"
+			stop
+		if {daily.%player%::daily} is 1:
+			set {daily.%player%::daily} to 2
+			give 32 of experience bottle to player
+			give 1 of {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward" to player
+			send "&aYou have claimed your day 2 reward!"
+			stop
+		if {daily.%player%::daily} is 2:
+			set {daily.%player%::daily} to 3
+			give 6 of diamond to player
+			set {_e} to ghast spawn egg
+			enchant {_e} with mending
+			give 1 of {_e} named "&f&lSpirit &7&lEgg" to player
+			send "&aYou have claimed your day 3 reward!"
+			stop
+		if {daily.%player%::daily} is 3:
+			set {daily.%player%::daily} to 4
+			give 4 of ancient debris to player
+			send "&aYou have claimed your day 4 reward!"
+			stop
+		if {daily.%player%::daily} is 4:
+			set {daily.%player%::daily} to 5
+			give 1 of totem of undying to player
+			send "&aYou have claimed your day 5 reward!"
+			stop
+		if {daily.%player%::daily} is 5:
+			set {daily.%player%::daily} to 6
+			give 64 of experience bottle to player
+			give 1 of {_e} named "&b&lGreat Crate Key" to player
+			send "&aYou have claimed your day 6 reward!"
+			stop
+		if {daily.%player%::daily} is 6:
+			set {daily.%player%::daily} to 7
+			give 8 of {_eg} named "&f&lSpirit &7&lEgg" to player
+			send "&aYou have claimed your day 7 reward!"
+			stop
+		if {daily.%player%::daily} is 7:
+			set {daily.%player%::daily} to 8
+			give 3 of {_e} named "&b&lGreat Crate Key" to player
+			send "&aYou have claimed your day 8 reward!"
+			stop
+		if {daily.%player%::daily} is 8:
+			set {daily.%player%::daily} to 9
+			give 8 of diamond to player
+			give 2 of netherite ingot to player
+			send "&aYou have claimed your day 9 reward!"
+			stop
+		if {daily.%player%::daily} is 9:
+			set {daily.%player%::daily} to 10
+			give 3 of villager spawn egg to player
+			send "&aYou have claimed your day 10 reward!"
+			stop
+		if {daily.%player%::daily} is 10:
+			set {daily.%player%::daily} to 11
+			give 2 of totem of undying to player
+			send "&aYou have claimed your day 11 reward!"
+			stop
+		if {daily.%player%::daily} is 11:
+			set {daily.%player%::daily} to 12
+			give 2 of enchanted golden apple to player
+			send "&aYou have claimed your day 12 reward!"
+			stop
+		if {daily.%player%::daily} is 12:
+			set {daily.%player%::daily} to 13
+			give 1 of conduit to player
+			send "&aYou have claimed your day 13 reward!"
+			stop
+		if {daily.%player%::daily} is 13:
+			set {daily.%player%::daily} to 14
+			give 1 of trident to player
+			send "&aYou have claimed your day 14 reward!"
+			stop
+		if {daily.%player%::daily} is 14:
+			set {daily.%player%::daily} to 15
+			give 3 of {_e} named "&b&lGreat Crate Key" to player
+			send "&aYou have claimed your day 15 reward!"
+			stop
+		if {daily.%player%::daily} is 15:
+			set {daily.%player%::daily} to 16
+			give 1 of dragon head to player
+			send "&aYou have claimed your day 16 reward!"
+			stop
+		if {daily.%player%::daily} is 16:
+			set {daily.%player%::daily} to 17
+			give 32 of emerald block to player
+			send "&aYou have claimed your day 17 reward!"
+			stop
+		if {daily.%player%::daily} is 17:
+			set {daily.%player%::daily} to 18
+			give 1 of {_e} named "&f&k&lqwer &e&lLegendary Crate Key &f&k&lqwer" to player
+			send "&aYou have claimed your day 18 reward!"
+			stop
+
+on join:
+	send ""
+	send "&e&lHey there!"
+	#send "&bRemember to check if you have daily rewards available!"
+	#send "&b&l/daily"
+	send ""
+
+command /setdaily [<player>] [<integer>]:
+	trigger:
+		set {daily.%arg-1%::daily} to arg-2
+
+command /resetcooldowndaily:
+	trigger:
+		clear {daily.%player%::daily}
+	
+on inventory click:
+	if name of event-inventory is "&lDaily Rewards":
+		if index of event-slot = 0:
+			cancel event
+		if index of event-slot = 1:
+			cancel event
+		if index of event-slot = 2:
+			cancel event
+		if index of event-slot = 3:
+			cancel event
+		if index of event-slot = 4:
+			cancel event
+		if index of event-slot = 5:
+			cancel event
+		if index of event-slot = 6:
+			cancel event
+		if index of event-slot = 7:
+			cancel event
+		if index of event-slot = 8:
+			cancel event
+		if index of event-slot = 9:
+			cancel event
+		if index of event-slot = 10:
+			cancel event
+		if index of event-slot = 11:
+			cancel event
+		if index of event-slot = 12:
+			cancel event
+		if index of event-slot = 13:
+			cancel event
+		if index of event-slot = 14:
+			cancel event
+		if index of event-slot = 15:
+			cancel event
+		if index of event-slot = 16:
+			cancel event
+		if index of event-slot = 17:
+			cancel event
+		if index of event-slot = 18:
+			cancel event
+		if index of event-slot = 19:
+			cancel event
+		if index of event-slot = 20:
+			cancel event
+		if index of event-slot = 21:
+			cancel event
+		if index of event-slot = 22:
+			cancel event
+		if index of event-slot = 23:
+			cancel event
+		if index of event-slot = 24:
+			cancel event
+		if index of event-slot = 25:
+			cancel event
+		if index of event-slot = 26:
+			cancel event

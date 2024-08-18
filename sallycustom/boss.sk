@@ -1,0 +1,440 @@
+every hour:
+	if amount of all players is more than 0:
+		loop all zombies:
+			loop-zombie's name is "&cMega Zombie"
+			kill loop-zombie
+		loop all zombies:
+			loop-zombie's name is "&cFrowosty"
+			kill loop-zombie
+		loop all skeletons:
+			loop-skeleton's name is "&cPrepe"
+			kill loop-skeleton
+		set {_d} to random integer between 1 and 3
+		if {_d} is 1:
+			make console execute command "/boss mega zombie"
+		if {_d} is 2:
+			make console execute command "/boss prepe"
+		if {_d} is 3:
+			make console execute command "/boss frowosty"
+
+
+command /boss <text>:
+	permission: op
+	trigger:
+		play sound "block.end_portal.spawn" at volume 1 and pitch 1 for all players
+		if arg-1 is "Mega Zombie":
+			broadcast ""
+			broadcast "&c&lA &7COMMON &c&lMega Zombie has spawned at &f/arena"
+			broadcast ""
+			spawn an adult zombie at location -48, -52, 46 in world "arena"
+			equip last spawned zombie with diamond helmet of unbreaking 1
+			equip last spawned zombie with diamond chestplate of unbreaking 1
+			equip last spawned zombie with diamond leggings of unbreaking 1
+			equip last spawned zombie with diamond boots of unbreaking 1
+			set last spawned zombie's max health to 100
+			set last spawned zombie's health to last spawned zombie's max health
+			apply speed 4 to last spawned entity for 999999 seconds
+			apply glowing to last spawned entity for 999999 seconds
+			set last spawned entity's held item to diamond sword of sharpness 1
+			set name of last spawned entity to "&cMega Zombie"
+			set {BossBarEntity} to last spawned entity
+			set {BossBarEntityName} to name of last spawned entity
+			set {_Bar} to new boss bar named "mybar"
+			add all players to boss bar players of {_Bar}
+		if arg-1 is "Prepe":
+			broadcast ""
+			broadcast "&c&lA &7COMMON &c&lPrepe has spawned at &f/arena"
+			broadcast ""
+			spawn a skeleton at location -48, -52, 46 in world "arena"
+			equip last spawned skeleton with ("Franport" parsed as offline player)'s skull
+			equip last spawned skeleton with iron chestplate of unbreaking 1
+			equip last spawned skeleton with iron leggings of unbreaking 1
+			equip last spawned skeleton with iron boots of unbreaking 1
+			set last spawned skeleton's max health to 100
+			set last spawned skeleton's health to last spawned skeleton's max health
+			apply speed 6 to last spawned entity for 999999 seconds
+			apply glowing to last spawned entity for 999999 seconds
+			set last spawned entity's held item to bow of punch 10
+			set name of last spawned entity to "&cPrepe"
+			set {BossBarEntity} to last spawned entity
+			set {BossBarEntityName} to name of last spawned entity
+			set {_Bar} to new boss bar named "mybar"
+			add all players to boss bar players of {_Bar}
+		if arg-1 is "Frowosty":
+			broadcast ""
+			broadcast "&c&lA &eRARE &c&lFrowosty has spawned at &f/arena"
+			broadcast ""
+			spawn a zombie at location -48, -52, 46 in world "arena"
+			equip last spawned zombie with ("Frowostyy" parsed as offline player)'s skull
+			equip last spawned zombie with leather chestplate of unbreaking 10
+			equip last spawned zombie with leather leggings of unbreaking 10
+			equip last spawned zombie with leather boots of unbreaking 10
+			set last spawned zombie's max health to 200
+			set last spawned zombie's health to last spawned zombie's max health
+			apply speed 5 to last spawned entity for 999999 seconds
+			apply glowing to last spawned entity for 999999 seconds
+			set last spawned entity's held item to diamond axe of knockback 2
+			set name of last spawned entity to "&cFrowosty"
+			set {BossBarEntity} to last spawned entity
+			set {BossBarEntityName} to name of last spawned entity
+			set {_Bar} to new boss bar named "mybar"
+			add all players to boss bar players of {_Bar}
+		if arg-1 is "Bobathy":
+			broadcast ""
+			broadcast "&c&lA &eRARE &c&lBobathy has spawned at &f/arena"
+			broadcast ""
+			spawn a husk at location -48, -52, 46 in world "arena"
+			equip last spawned husk with ("FlipperDipper96" parsed as offline player)'s skull
+			equip last spawned husk with leather leggings
+			set last spawned husk's max health to 200
+			set last spawned husk's health to last spawned husk's max health
+			apply slowness 2 to last spawned entity for 999999 seconds
+			set last spawned entity's held item to wooden hoe of sharpness 15
+			apply glowing to last spawned entity for 999999 seconds
+			set name of last spawned entity to "&cBobathy"
+			set {BossBarEntity} to last spawned entity
+			set {BossBarEntityName} to name of last spawned entity
+			set {_Bar} to new boss bar named "mybar"
+			add all players to boss bar players of {_Bar}
+		if arg-1 is "John lee":
+			broadcast ""
+			broadcast "&c&lA &6LEGENDARY &c&lJohn Lee has spawned at &f/arena"
+			broadcast ""
+			spawn a wither skeleton at location -48, -52, 46 in world "arena"
+			equip last spawned wither skeleton with ("Mirindaa" parsed as offline player)'s skull
+			equip last spawned wither skeleton with leather chestplate of unbreaking 10
+			equip last spawned wither skeleton with leather leggings of unbreaking 10
+			equip last spawned wither skeleton with leather boots of unbreaking 10
+			dye last spawned wither skeleton's chestplate black
+			dye last spawned wither skeleton's leggings black
+			dye last spawned wither skeleton's boots black
+			set last spawned wither skeleton's max health to 200
+			set last spawned wither skeleton's health to last spawned wither skeleton's max health
+			apply speed 3 to last spawned entity for 999999 seconds
+			apply glowing to last spawned entity for 999999 seconds
+			set last spawned entity's held item to stick of knockback 5 and sharpness 5
+			set name of last spawned entity to "&cJohn Lee"
+			set {BossBarEntity} to last spawned entity
+			set {BossBarEntityName} to name of last spawned entity
+			set {_Bar} to new boss bar named "mybar"
+			add all players to boss bar players of {_Bar}
+
+every second:
+	if boss bar named "mybar" is set:
+		set {_Bar} to boss bar named "mybar"
+		set {_TimesFactor} to 100 / (max health of {BossBarEntity})
+		set {_Progress} to health of {BossBarEntity} * {_TimesFactor} # This is to get the health out of 100.
+		#set boss bar progress of {_Bar} to {_Progress}
+		set boss bar title of {_Bar} to "&c&l%{BossBarEntityName}%"
+		set boss bar color of {_Bar} to red
+		set boss bar style of {_Bar} to segmented 10
+		if {_Progress} <= 0:
+			wait 2 seconds
+			delete {BossBarEntity}
+			delete boss bar named "mybar"
+
+on skript start:
+	delete boss bar named "mybar"
+
+command /removebossbar:
+	permission: op
+	trigger:
+		delete boss bar named "mybar"
+
+on join:
+	if boss bar named "mybar" is not set:
+		add player to boss bar players of boss bar named "mybar"
+
+
+every 14 seconds:
+	set {_e} to random integer between 1 and 2
+	if {_e} is 1:
+		loop all zombies:
+			name of loop-zombie is "&cFrowosty"
+			loop-zombie exists
+			loop all blocks in radius 3 of loop-zombie:
+				show snow block breaking at loop-block
+			send title "" with subtitle "&cFrowosty is readying &f'Twitch Raid'" to all players in world "arena"
+			wait for 2 seconds
+			loop (random integer between 1 and 3) times:
+				spawn a baby zombie at loop-zombie
+				set name of last spawned entity to "&cTwitch Viewer"
+				equip last spawned zombie with ("noob" parsed as offline player)'s skull
+			make 500 of spit using 1 at loop-zombie
+			damage(loop-zombie, 6, 8)
+	if {_e} is 2:
+		loop all zombies:
+			name of loop-zombie is "&cFrowosty"
+			loop-zombie exists
+			loop all blocks in radius 3 of loop-zombie:
+				show snow block breaking at loop-block
+			send title "" with subtitle "&cFrowosty is readying &f'Frosted Feet'" to all players in world "arena"
+			wait for 2 seconds
+			make 500 of spit using 1 at loop-zombie
+			damage(loop-zombie, 10, 10)
+			loop all players in radius 10 of loop-zombie:
+				sound(loop-player, "block.amethyst_cluster.break", 10, 2, 1.5)
+				make loop-player home towards loop-zombie
+				apply slowness 5 to loop-player for 4 seconds
+				apply weakness 2 to loop-player for 4 seconds
+				set {_e} to location of loop-player
+				stop
+
+every 14 seconds:
+	set {_e} to random integer between 1 and 2
+	if {_e} is 1:
+		loop all husks:
+			name of loop-husk is "&cBobathy"
+			loop-husk exists
+			loop all blocks in radius 3 of loop-husk:
+				show mob spawner flames at loop-block
+			send title "" with subtitle "&cMega Zombie is readying &f'Bobathy's Special Attack'" to all players in world "arena"
+			wait for 2 seconds
+			make 500 of end rod using 1 at loop-husk
+			loop all players in radius 32 of loop-husk:
+				loop 2 times:
+					loop-player exists
+					teleport loop-husk to loop-player
+					damage(loop-husk, 3, 0.5)
+					teleport loop-player to loop-player
+					push loop-player upwards at speed 1.2
+					make 100 of smoke using 1 at loop-husk
+					sound(loop-player, "entity.zombie.break_wooden_door", 10, 0.5, 1)
+					wait for 0.4 second
+
+					loop-player exists
+					teleport loop-husk to loop-player
+					damage(loop-husk, 3, 0.5)
+					teleport loop-player to loop-player
+					push loop-player downwards at speed 0.1
+					teleport loop-husk to loop-player
+					make 100 of smoke using 1 at loop-husk
+					sound(loop-player, "entity.zombie.break_wooden_door", 10, 0.5, 1)
+					wait for 0.6 second
+				stop
+	if {_e} is 2:
+		loop all husks:
+			name of loop-husk is "&cBobathy"
+			loop-husk exists
+			loop all blocks in radius 3 of loop-husk:
+				show mob spawner flames at loop-block
+			send title "" with subtitle "&cBobathy is readying &f'Get over here!'" to all players in world "arena"
+			wait for 2 seconds
+			damage(last spawned entity, 16, 6)
+			make 500 of damage indicator using 1 at loop-husk
+			loop all players in radius 16 of loop-husk:
+				loop 8 times:
+					make loop-player home towards loop-husk normally
+					sound(loop-player, "entity.zombie.break_wooden_door", 10, 0.5, 1.5)
+					show mob spawner flames at loop-player
+					wait for 0.5 second
+
+every 14 seconds:
+	set {_e} to random integer between 1 and 2
+	if {_e} is 1:
+		loop all zombies:
+			name of loop-zombie is "&cMega Zombie"
+			loop-zombie exists
+			loop all blocks in radius 3 of loop-zombie:
+				show mob spawner flames at loop-block
+			send title "" with subtitle "&cMega Zombie is readying &f'Toxic Burst'" to all players in world "arena"
+			wait for 2 seconds
+			loop all players in radius 6 of loop-zombie:
+				apply poison to loop-player for 4 seconds
+			loop all players in radius 16 of loop-zombie:
+				sound(loop-player, "entity.zombie.break_wooden_door", 10, 0.7, 0.5)
+			make 500 of spit using 1 at loop-zombie
+			damage(loop-zombie, 6, 8)
+	if {_e} is 2:
+		loop all zombies:
+			name of loop-zombie is "&cMega Zombie"
+			loop-zombie exists
+			loop all blocks in radius 3 of loop-zombie:
+				show mob spawner flames at loop-block
+			send title "" with subtitle "&cMega Zombie is readying &f'Speed Boost'" to all players in world "arena"
+			wait for 2 seconds
+			apply speed 10 to loop-zombie for 4 seconds
+			loop all players in radius 16 of loop-zombie:
+				sound(loop-player, "entity.zombie.break_wooden_door", 10, 0.7, 2)
+			loop 20 times:
+				show mob spawner flames at loop-zombie
+				wait for 0.2 seconds
+			remove speed from loop-zombie
+			apply speed 4 to loop-zombie for 999999999 seconds
+
+every 14 seconds:
+	set {_e} to random integer between 1 and 2
+	if {_e} is 1:
+		loop all skeletons:
+			name of loop-skeleton is "&cPrepe"
+			loop-skeleton exists
+			loop all blocks in radius 3 of loop-skeleton:
+				show smoke at loop-block
+			send title "" with subtitle "&cPrepe is readying &f'Burst Shot'" to all players in world "arena"
+			wait for 2 seconds
+			make 500 of spit using 1 at loop-skeleton
+			loop 30 times:
+				make loop-skeleton shoot an arrow at speed 2
+				wait for 0.1 seconds
+			damage(loop-skeleton, 6, 8)
+	if {_e} is 2:
+		loop all skeletons:
+			name of loop-skeleton is "&cPrepe"
+			loop-skeleton exists
+			loop all blocks in radius 3 of loop-skeleton:
+				show smoke at loop-block
+			send title "" with subtitle "&cPrepe is readying &f'Arrow Explosion'" to all players in world "arena"
+			wait for 2 seconds
+			make 500 of smoke using 1 at loop-skeleton
+			loop all players in radius 10 of loop-skeleton:
+				apply nausea 10 to loop-player for 4 seconds
+				apply wither 2 to loop-player for 3 seconds
+			loop 3 times:
+				loop all blocks in radius 4 of loop-skeleton:
+					spawn an arrow at loop-block
+					set {_v} to vector between last spawned arrow and loop-skeleton
+					push last spawned arrow {_v} at speed -1.2
+				wait for 0.5 seconds
+			damage(loop-skeleton, 4, 2)
+
+
+every 14 seconds:
+	set {_e} to random integer between 1 and 1
+	if {_e} is 1:
+		loop all wither skeletons:
+			name of loop-wither skeleton is "&cJohn Lee"
+			loop-wither skeleton exists
+			make 100 of flame at {_loc} with offset vector(2, 2, 2) with extra 0.5
+			send title "" with subtitle "&cJohn lee is readying &f'Flutter Storm'" to all players in world "arena"
+			wait for 2 seconds
+			make 500 of flame using 1 at loop-wither skeleton
+			loop all players in radius 20 of loop-wither skeleton:
+				loop-player exists
+				spawn a bat at loop-wither skeleton
+				apply invisibility to last spawned entity for 99999 seconds
+				make loop-wither skeleton ride last spawned entity
+				loop 15 times:
+					set {_v} to vector between loop-wither skeleton and loop-player
+					set loop-wither skeleton's target to loop-player
+					make loop-wither skeleton shoot a fireball at speed 1
+					push last spawned entity {_v} at speed 1
+					wait for 0.2 seconds
+				kill last spawned entity
+				stop
+	if {_e} is 2:
+		loop all skeletons:
+			name of loop-skeleton is "&cPrepe"
+			loop-skeleton exists
+			loop all blocks in radius 3 of loop-skeleton:
+				show smoke at loop-block
+			send title "" with subtitle "&cPrepe is readying &f'Arrow Explosion'" to all players in world "arena"
+			wait for 2 seconds
+			make 500 of smoke using 1 at loop-skeleton
+			loop all players in radius 10 of loop-skeleton:
+				apply nausea 10 to loop-player for 4 seconds
+				apply wither 2 to loop-player for 3 seconds
+			loop 3 times:
+				loop all blocks in radius 4 of loop-skeleton:
+					spawn an arrow at loop-block
+					set {_v} to vector between last spawned arrow and loop-skeleton
+					push last spawned arrow {_v} at speed -1.2
+				wait for 0.5 seconds
+			damage(loop-skeleton, 4, 2)
+
+
+every 3 seconds:
+	loop all zombies:
+		name of loop-zombie is "&cMega Zombie"
+		loop all players in radius 15 of loop-zombie:
+			set {_v} to vector between loop-zombie and loop-player
+			push loop-zombie {_v} at speed 1.5
+			push loop-zombie upwards at speed 0.4
+			apply slow falling to loop-zombie for 3 seconds
+on damage of zombie:
+	if name of victim is "&cMega Zombie":
+		set damage to damage * 2
+
+on damage:
+	if name of attacker is "&cJohn Lee":
+		wait a tick
+		remove wither from victim
+
+on death of zombie:
+	if name of victim is "&cMega Zombie":
+		cancel drops
+		set {xp::%attacker%} to {xp::%attacker%} + 50
+		set {coins::%attacker%} to {coins::%attacker%} + 50
+		send "&aYou gained 50 xp and 50 coins for killing the boss!" to attacker
+		broadcast "&bAll participants received 30 xp and 30 coins"
+		checkxp(attacker)
+		broadcast "&a%attacker% &fhas killed the &cMega Zombie!"
+		loop all players in world "arena":
+			loop-player is not attacker
+			set {xp::%loop-player%} to {xp::%loop-player%} + 30
+			set {coins::%loop-player%} to {coins::%loop-player%} + 30
+			checkxp(loop-player)
+		make 300 of flame at victim
+		make 300 of spit at victim
+		loop 3 times:
+			play sound "entity.firework_rocket.launch" at volume 1 and pitch 1 for all players
+			wait for 0.6 seconds
+	if name of victim is "&cFrowosty":
+		cancel drops
+		set {xp::%attacker%} to {xp::%attacker%} + 75
+		set {coins::%attacker%} to {coins::%attacker%} + 75
+		send "&aYou gained 75 xp and 75 coins for killing the boss!" to attacker
+		broadcast "&bAll participants received 30 xp and 30 coins"
+		checkxp(attacker)
+		broadcast "&a%attacker% &fhas killed &cFrowosty!"
+		loop all players in world "arena":
+			loop-player is not attacker
+			set {xp::%loop-player%} to {xp::%loop-player%} + 40
+			set {coins::%loop-player%} to {coins::%loop-player%} + 40
+			checkxp(loop-player)
+		make 300 of flame at victim
+		make 300 of spit at victim
+		loop 3 times:
+			play sound "entity.firework_rocket.launch" at volume 1 and pitch 1 for all players
+			wait for 0.6 seconds
+	if name of victim is "&cTwitch Viewer":
+		clear drops
+
+on death of skeleton:
+	if name of victim is "&cPrepe":
+		cancel drops
+		set {xp::%attacker%} to {xp::%attacker%} + 50
+		set {coins::%attacker%} to {coins::%attacker%} + 50
+		send "&aYou gained 50 xp and 50 coins for killing the boss!" to attacker
+		checkxp(attacker)
+		broadcast "&a%attacker% &fhas killed &cPrepe!"
+		broadcast "&bAll participants received 30 xp and 30 coins"
+		loop all players in world "arena":
+			loop-player is not attacker
+			set {xp::%loop-player%} to {xp::%loop-player%} + 30
+			set {coins::%loop-player%} to {coins::%loop-player%} + 30
+			checkxp(loop-player)
+		make 300 of flame at victim
+		make 300 of spit at victim
+		loop 3 times:
+			play sound "entity.firework_rocket.launch" at volume 1 and pitch 1 for all players
+			wait for 0.6 seconds
+
+on death of husk:
+	if name of victim is "&cBobathy":
+		cancel drops
+		set {xp::%attacker%} to {xp::%attacker%} + 50
+		set {coins::%attacker%} to {coins::%attacker%} + 50
+		send "&aYou gained 50 xp and 50 coins for killing the boss!" to attacker
+		checkxp(attacker)
+		broadcast "&a%attacker% &fhas killed &cPrepe!"
+		broadcast "&bAll participants received 30 xp and 30 coins"
+		loop all players in world "arena":
+			loop-player is not attacker
+			set {xp::%loop-player%} to {xp::%loop-player%} + 30
+			set {coins::%loop-player%} to {coins::%loop-player%} + 30
+			checkxp(loop-player)
+		make 300 of flame at victim
+		make 300 of spit at victim
+		loop 3 times:
+			play sound "entity.firework_rocket.launch" at volume 1 and pitch 1 for all players
+			wait for 0.6 seconds

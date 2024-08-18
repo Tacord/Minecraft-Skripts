@@ -1,0 +1,31 @@
+on death of player:
+	if {death Explosive Waters::%attacker%} is true:
+		set death message to "%victim% was swept away by %attacker%"
+	if {firehazard::%attacker%} is true:
+		set death message to "%victim% was vaporized by %attacker%"
+	if {death Explosion::%attacker%} is true:
+		set death message to "%victim% was blown up into smithereens by %attacker%"
+	if {death Frosty::%attacker%} is true:
+		set death message to "%victim% was knocked out by a giant snowball thrown by %attacker%"
+	if {death Spirit Soother::%attacker%} is true:
+		set death message to "%victim% was sent to the Funeral Parlor by %attacker%"
+	if {death Whirling Steps::%attacker%} is true:
+		set death message to "%victim% was washed away by %attacker%"
+	if {death Landmine::%attacker%} is true:
+		set death message to "%victim% was blown up by a hidden landmine from %attacker%"
+	if {death Aurorus Blaze::%attacker%} is true:
+		set death message to "%victim% was shot by a firework from %attacker%"
+	if {death Orbital Strike::%attacker%} is true:
+		set death message to "%victim% was shot by an explosive meteor from %attacker%"
+	if {death Technoblade::%attacker%} is true:
+		set death message to "%victim% was slaughtered by Technoblade and %attacker%"
+
+on join:
+	clear {death Explosion::%player%}
+
+on respawn:
+	boss bar named "mybar" is not set
+	if player's world is "arena":
+		wait for 0.1 second
+		teleport player to location -67, -52, 47 in world "arena"
+		send "&c&lYou died! &fTo teleport back to spawn, type /spawn!"

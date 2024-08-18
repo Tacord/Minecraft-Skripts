@@ -1,0 +1,201 @@
+every 55 minutes:
+	broadcast "&a&lA keyall event will happen in &e&l5 minutes!"
+	wait 4 minutes
+	broadcast "&a&lA keyall event will happen in &e&l1 minute!"
+	wait for 50 seconds
+	broadcast "&a&lA keyall event will happen in &e&l10 seconds!"
+	wait for 10 seconds
+	set {_e} to tripwire hook
+	enchant {_e} with mending
+	give 1 of {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward" to all players
+
+command /nametag:
+	trigger:
+		if player's level is greater than 0:
+			broadcast "&d&l%player% &dbought a nametag"
+			give 1 of name tag to player
+			make console execute command "/xp add %player% -1 levels"
+
+command /armor:
+	trigger:
+		give 1 of leather helmet of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+		give 1 of leather chestplate of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+		give 1 of leather leggings of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+		give 1 of leather boots of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+
+command /leveltrader [<integer>]:
+	aliases: /lt
+	trigger:
+		set {_level} to arg-1
+		if {_level} is greater than player's level:
+			send "&cYou don't have enough levels!"
+		else:
+			send "&aSuccessfully gave level bottles"
+			set player's level to player's level - {_level}
+			set {_e} to glass bottle
+			enchant {_e} with mending
+			give {_level} of {_e} named "&dBottle of Levels" to player
+
+on right click:
+	set {_e} to glass bottle
+	enchant {_e} with mending
+	if player's tool is {_e} named "&dBottle of Levels":
+		set player's level to player's level + 1
+		remove 1 of {_e} from player
+
+command /netheritetransfer:
+	aliases: /nt
+	trigger:
+		if player's tool is 4 ancient debris:
+			remove 4 of ancient debris from player
+			set {_e} to tripwire hook
+			enchant {_e} with mending
+			wait for 0.05 seconds
+			give 1 of {_e} named "&b&lGreat Crate Key" with lore "&7Right click to redeem reward" to player
+		else:
+			send "&cPlease hold 4 ancient debris in your hand"
+
+command /key <text>:
+	permission: op
+	trigger:
+		if arg-1 is "1":
+			set {_e} to tripwire hook
+			enchant {_e} with mending
+			give 1 of {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward" to player
+		if arg-1 is "2":
+			set {_e} to tripwire hook
+			enchant {_e} with mending
+			give 1 of {_e} named "&b&lGreat Crate Key" with lore "&7Right click to redeem reward" to player
+		if arg-1 is "3":
+			set {_e} to tripwire hook
+			enchant {_e} with mending
+			give 1 of {_e} named "&e&lLegendary Crate Key" with lore "&7Right click to redeem reward" to player
+
+on craft:
+	set {_e} to nether star
+	enchant {_e} with mending
+	if event-item is {_e} named "&e&lLegendary Crate Key" with lore "&7Right click to redeem reward":
+		cancel event
+
+command /keyall <text>:
+	permission: op
+	trigger:
+		if arg-1 is "1":
+			set {_e} to tripwire hook
+			enchant {_e} with mending
+			give 1 of {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward" to all players
+		if arg-1 is "2":
+			set {_e} to tripwire hook
+			enchant {_e} with mending
+			give 1 of {_e} named "&b&lGreat Crate Key" with lore "&7Right click to redeem reward" to all players
+		if arg-1 is "3":
+			set {_e} to slime ball
+			enchant {_e} with mending
+			give 1 of {_e} named "&e&lLegendary Crate Key" with lore "&7Right click to redeem reward" to all players
+
+on right click with tripwire hook:
+	set {_e} to tripwire hook
+	enchant {_e} with mending
+	if player's tool is {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward":
+		cancel event
+		set {_a} to random integer between 1 and 7
+		play sound "block.note_block.xylophone" with volume 1 for all players 
+		remove 1 of {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward" from player
+		if {_a} is 1:
+			broadcast "&b&l%player% &ehas unlocked a Spirit Egg from Common Crate Key!"
+			set {_key} to ghast spawn egg
+			enchant {_key} with mending
+			give 1 of {_key} named "&f&lSpirit &7&lEgg" to player
+		if {_a} is 2:
+			broadcast "&b&l%player% &ehas unlocked 10 iron ingot from Common Crate Key!"
+			give 10 of iron ingot to player
+		if {_a} is 3:
+			broadcast "&b&l%player% &ehas unlocked 2 diamond from Common Crate Key!"
+			give 2 of diamond to player
+		if {_a} is 4:
+			broadcast "&b&l%player% &ehas unlocked 1 Common Crate Keys from Common Crate Key!"
+			give 1 of {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward" to player
+		if {_a} is 5:
+			broadcast "&b&l%player% &ehas unlocked 10 emerald from Common Crate Key!"
+			give 10 of emerald to player
+		if {_a} is 6:
+			broadcast "&b&l%player% &ehas unlocked 16 experience bottles from Common Crate Key!"
+			give 16 of experience bottle to player
+		if {_a} is 7:
+			broadcast "&b&l%player% &ehas unlocked 16 coal from Common Crate Key!"
+			give 16 of coal to player
+
+on right click:
+	set {_e} to tripwire hook
+	enchant {_e} with mending
+	if player's tool is {_e} named "&b&lGreat Crate Key" with lore "&7Right click to redeem reward":
+		cancel event
+		set {_a} to random integer between 1 and 7
+		play sound "block.note_block.xylophone" with volume 1 for all players 
+		remove 1 of {_e} named "&b&lGreat Crate Key" with lore "&7Right click to redeem reward" from player
+		if {_a} is 1:
+			broadcast "&b&l%player% &ehas unlocked 3 Spirit Eggs from Great Crate Key!"
+			set {_key} to ghast spawn egg
+			enchant {_key} with mending
+			give 3 of {_key} named "&f&lSpirit &7&lEgg" to player
+		if {_a} is 2:
+			broadcast "&b&l%player% &ehas unlocked 16 diamonds from Great Crate Key!"
+			give 16 of diamond to player
+		if {_a} is 3:
+			broadcast "&b&l%player% &ehas unlocked 1 totem of undying from Great Crate Key!"
+			give 1 of totem of undying to player
+		if {_a} is 4:
+			broadcast "&b&l%player% &ehas unlocked 3 Common Crate Keys from Great Crate Key!"
+			give 3 of {_e} named "&a&lCommon Crate Key" with lore "&7Right click to redeem reward" to player
+		if {_a} is 5:
+			broadcast "&b&l%player% &ehas unlocked 12 emerald blocks from Great Crate Key!"
+			give 12 of emerald block to player
+		if {_a} is 6:
+			broadcast "&b&l%player% &ehas unlocked 64 experience bottles from Great Crate Key!"
+			give 64 of experience bottle to player
+		if {_a} is 7:
+			broadcast "&b&l%player% &ehas unlocked 1 random custom armor from Great Crate Key!"
+			set {_b} to random integer between 1 and 4
+			if {_b} is 1:
+				give 1 of leather helmet of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+			if {_b} is 2:
+				give 1 of leather chestplate of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+			if {_b} is 3:
+				give 1 of leather leggings of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+			if {_b} is 4:
+				give 1 of leather boots of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+
+on right click:
+	set {_e} to tripwire hook
+	enchant {_e} with mending
+	if player's tool is {_e} named "&e&lLegendary Crate Key" with lore "&7Right click to redeem reward":
+		cancel event
+		set {_a} to random integer between 1 and 7
+		play sound "block.note_block.xylophone" with volume 1 for all players 
+		remove 1 of {_e} named "&e&lLegendary Crate Key" with lore "&7Right click to redeem reward" from player
+		if {_a} is 1:
+			broadcast "&b&l%player% &ehas unlocked 5 great crate keys from Legendary Crate Key!"
+			set {_key} to tripwire hook
+			enchant {_key} with mending
+			give 5 of {_key} named "&b&lGreat Crate Key" to player
+		if {_a} is 2:
+			broadcast "&b&l%player% &ehas unlocked 1 trident from Legendary Crate Key!"
+			give 1 of trident to player
+		if {_a} is 3:
+			broadcast "&b&l%player% &ehas unlocked 3 wither heads from Legendary Crate Key!"
+			give 3 of wither skeleton skull to player
+		if {_a} is 4:
+			broadcast "&b&l%player% &ehas unlocked 1 nether star from Legendary Crate Key!"
+			give 1 of nether star to player
+		if {_a} is 5:
+			broadcast "&b&l%player% &ehas unlocked custom armor from Legendary Crate Key!"
+			give 1 of leather helmet of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+			give 1 of leather chestplate of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+			give 1 of leather leggings of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+			give 1 of leather boots of protection 8 and mending and unbreaking 8 named "&e&lMEGA ARMOR" to player
+		if {_a} is 6:
+			broadcast "&b&l%player% &ehas unlocked 1 elytra from Legendary Crate Key!"
+			give 1 of elytra to player
+		if {_a} is 7:
+			broadcast "&b&l%player% &ehas unlocked 5 god apples from Legendary Crate Key!"
+			give 5 of enchanted golden apple to player

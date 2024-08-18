@@ -1,0 +1,416 @@
+on left click with honeycomb:
+	cancel event
+	if {cd2::%player%} is 0:
+		if {ability2::%player%} is "Jiwoo":
+			set {cd2::%player%} to 13
+			sound(player, "entity.horse.death", 10, 1, 0.5)
+			set {_loc} to player's location
+			loop 10 times:
+				loop all entities in radius 10 of {_loc}:
+					loop-entity is not player
+					make loop-entity home towards {_loc} normally
+					apply weakness 3 to loop-entity for 0.6 seconds
+					make 5 of flame at {_loc} with offset vector(2, 2, 2) with extra 0.5
+				loop all blocks in radius 10 of {_loc}:
+					block below loop-block is not air
+					show red dust at loop-block
+				sound(player, "entity.enderman.teleport", 10, 1, 0.5)
+				wait for 0.5 seconds
+		
+
+		if {ability2::%player%} is "Whirling Steps":
+			set {cd2::%player%} to 12
+			set {death Whirling Steps::%player%} to true
+			if player is sneaking:
+				send title "&e" with subtitle "<##63C5FF>Whirling &cBlades" to player for 0.1 second
+				sound(player, "entity.warden.sonic_boom", 10, 0.5, 2)
+				set {Whirling Blades Attack::%player%} to true
+				wait for 7 seconds
+				clear {Whirling Blades Attack::%player%}
+				clear {death Whirling Steps::%player%}
+			else:
+				send title "&e" with subtitle "<##63C5FF>Whirling &bSteps" to player for 0.1 second
+				sound(player, "entity.warden.listening", 10, 1, 2)
+				loop 6 times:
+					set {Whirling Steps Attack::%player%} to true
+					loop all blocks in radius 5 of player:
+						block below loop-block is not air
+						loop 3 times:
+							show water splash at loop-block
+						show water bubble at loop-block
+					sound(player, "entity.generic.swim", 10, 1, 1)
+					wait for 1.5 seconds
+				clear {death Whirling Steps::%player%}
+				clear {Whirling Steps Attack::%player%}
+
+
+
+		if {ability2::%player%} is "Chicken":
+			set {cd2::%player%} to 14
+			spawn chicken at location of player
+			set name of last spawned entity to "Chicken Rider"
+			make player ride last spawned chicken
+			loop 16 times:
+				if player's facing is not up or down:
+					push last spawned chicken in direction of player at speed 0.2
+					push last spawned chicken upwards at speed 0.3
+				if player's facing is up:
+					push last spawned chicken in direction of player at speed 0.4
+				if player's facing is down:
+					push last spawned chicken in direction of player at speed 0.35
+				wait for 0.25 seconds
+			loop 3 times:
+				sound(player, "entity.chicken.egg", 10, 1, 1)
+				loop 4 times:
+					if player's facing is not up or down:
+						push last spawned chicken in direction of player at speed 0.2
+						push last spawned chicken upwards at speed 0.1
+					if player's facing is up:
+						push last spawned chicken in direction of player at speed 0.3
+					if player's facing is down:
+						push last spawned chicken in direction of player at speed 0.65
+					wait for 0.25 seconds
+			kill last spawned chicken
+		
+		if {ability2::%player%} is "Magnetism":
+			set {cd2::%player%} to 8
+			sound(player, "block.grass.break", 10, 1, 1)
+			loop all entities in radius 14 of player:
+				loop-entity is not player
+				teleport loop-entity to player
+			loop all blocks in radius 10 of player:
+				block below loop-block is not air:
+					show dirt breaking at loop-block
+
+
+		if {ability2::%player%} is "Poop Bomb":
+			if {ability3::%player%} is "Suicide Bomber":
+				set {cd2::%player%} to 7
+				send title "" with subtitle "&fExplosive Diarrhea Combo &aACTIVATED" to player for 0.1 second
+				spawn "falling dirt" parsed as entity type at block above player
+				if player's facing is not up:
+					push last spawned entity in direction of player at speed 1
+				else:
+					push last spawned entity in direction of player at speed 0.6
+				make player ride last spawned entity
+				loop 20 times:
+					push last spawned entity upwards at speed 0.08
+					sound(player, "entity.piglin.hurt", 10, 0.5, 0.5)
+					sound(player, "entity.firework_rocket.launch", 10, 0.5, 2)
+					loop all blocks in radius 3 of last spawned entity:
+						show brown dust at loop-block
+					show explosion at last spawned entity
+					if block below last spawned entity is not air:
+						kill last spawned entity
+						stop
+					if block at last spawned entity is dirt:
+						set block at last spawned entity to air
+						stop
+					wait for 0.1 seconds
+				kill last spawned entity
+				apply slow falling to player for 1 second
+				push player downwards at speed 0.5
+
+			else if {ability3::%player%} is "Nature Power":
+				set {cd2::%player%} to 7
+				send title "" with subtitle "&fDirt Lord Combo &aACTIVATED" to player for 0.1 second
+				apply slow falling to player for 0.2 seconds
+				loop 65 times:
+					if block below player is air:
+						show dirt breaking at player
+						set {_loc} to block below player
+						set block below player to grass block
+						sound(player, "block.grass.break", 10, 0.3, 1)
+					if block below block infront player is air:
+						show dirt breaking at player
+						set {_loc2} to block below block infront player
+						set block below block infront player to grass block
+						sound(player, "block.grass.break", 10, 0.3, 1)
+					wait for 0.05 seconds
+					if block at {_loc} is grass block:
+						set block at {_loc} to air
+					if block at {_loc2} is grass block:
+						set block at {_loc2} to air
+				apply slow falling to player for 1 second
+				wait a tick
+				push player downwards at speed 0.5
+
+			else:
+				set {cd2::%player%} to 2
+				sound(player, "block.grass.break", 10, 1, 1)
+				spawn "falling dirt" parsed as entity type at block above player
+				push last spawned entity in direction of player at speed 1
+				wait for 0.7 second
+				show large explosion at block above last spawned entity
+				play sound "entity.generic.explode" at volume 1 and pitch 1 for player
+				loop all blocks in radius 3 of last spawned entity:
+					block below loop-block is not air
+					show brown dust at loop-block
+				loop all entities in radius 3 of last spawned entity:
+					loop-entity is not player
+					apply poison 2 to loop-entity for 2 seconds
+					apply weakness 2 to loop-entity for 2 seconds
+				kill last spawned entity
+				if block at last spawned entity is dirt:
+					set block at last spawned entity to air
+		
+		if {ability2::%player%} is "Protein Bar":
+			set {cd2::%player%} to 10
+			sound(player, "entity.player.burp", 10, 1, 1)
+			apply saturation to player for 0.1 seconds
+			apply speed to player for 2.5 seconds
+		
+		if {ability2::%player%} is "Queen Bee":
+			set {cd2::%player%} to 15
+			sound(player, "entity.bee.loop_aggressive", 10, 1, 1)
+			push player backwards at speed 0.5
+			push player upwards at speed 0.3
+			apply slow falling to player for 2 seconds
+			loop all entities in radius 14 of player:
+				loop-entity is not player or wolf or cat
+				set {_dist} to (distance between {_player} and loop-entity *1000) + (random integer between 0 and 999)/1000
+				set {_list::%{_dist}%} to loop-entity
+				show mob spawner flames at loop-entity
+			loop 4 times:
+				spawn bee at location of player
+				set last spawned bee's target to the first element of {_list::*}
+				set the first element of {_list::*} to {_e}
+				set {_e}'s target to last spawned bee
+				apply wither 2 to last spawned bee for 9999 seconds
+			stop
+			
+			
+		if {ability2::%player%} is "Immortalize":
+			set {cd2::%player%} to 10
+			sound(player, "entity.wither.death", 10, 0.3, 1)
+			set {immortal::%player%} to true
+			wait for 8 second
+			clear {immortal::%player%}
+			sound(player, "entity.wither.shoot", 10, 0.2, 0.5)
+		
+		if {ability2::%player%} is "Substitute":
+			set {cd2::%player%} to 8
+			make 200 of spit using 1 above player
+			sound(player, "entity.elder_guardian.death", 10, 0.7, 1)
+			apply speed 2 to player for 2 seconds
+			apply invisibility to player for 2 seconds
+			spawn an armor stand at location of player
+			set name of last spawned entity to "Substitute"
+			set helmet of last spawned entity to player's skull
+			set chestplate of last spawned entity to leather chestplate
+			set leggings of last spawned entity to leather leggings
+			set boots of last spawned entity to leather boots
+			show mob spawner flames at location of player
+			loop all entities in radius 15 of last spawned entity:
+				set loop-entity's target to last spawned entity
+			wait for 5 seconds
+			kill last spawned armor stand
+			loop all entities in radius 15 of last spawned entity:
+				clear loop-entity's target
+			
+		
+		if {ability2::%player%} is "Healing Zone":
+			set {cd2::%player%} to 14
+			sound(player, "entity.splash_potion.throw", 10, 1, 1)
+			wait for 0.4 seconds
+			sound(player, "entity.splash_potion.break", 10, 1, 1)
+			set {_e} to location of player
+			loop 10 times:
+				loop all blocks in radius 6 of {_e}:
+					block below loop-block is not air
+					show potion swirl at loop-block
+				loop all entities in radius 6 of {_e}:
+					loop-entity is a player or a wolf or a cat
+					apply regeneration 3 to loop-entity for 0.6 second
+				wait for 0.5 seconds
+
+
+		if {ability2::%player%} is "Positive Zone":
+			set {cd2::%player%} to 14
+			sound(player, "entity.splash_potion.throw", 10, 1, 1)
+			apply slowness 2 to player for 0.8 seconds
+			wait for 0.8 seconds
+			sound(player, "entity.splash_potion.break", 10, 1, 1)
+			set {_e} to location of player
+			sound(player, "entity.wither.death", 10, 0.6, 0.5)
+			loop 10 times:
+				loop all blocks in radius 6 of {_e}:
+					block below loop-block is not air
+					show yellow potion swirl at loop-block
+					show yellow dust at loop-block
+				loop all entities in radius 6 of {_e}:
+					loop-entity is player
+					apply strength 2 to loop-entity for 0.51 seconds
+					apply speed 2 to loop-entity for 0.51 seconds
+				wait for 0.5 seconds
+
+		if {ability2::%player%} is "Negative Zone":
+			set {cd2::%player%} to 14
+			sound(player, "entity.splash_potion.throw", 10, 1, 1)
+			apply slowness 2 to player for 0.8 seconds
+			wait for 0.8 seconds
+			sound(player, "entity.splash_potion.break", 10, 1, 1)
+			set {_e} to location of player
+			sound(player, "entity.iron_golem.death", 10, 0.6, 0.5)
+			loop 10 times:
+				loop all blocks in radius 6 of {_e}:
+					block below loop-block is not air
+					show red potion swirl at loop-block
+					show red dust at loop-block
+				loop all entities in radius 6 of {_e}:
+					loop-entity is not player or a wolf or a cat
+					apply weakness 2 to loop-entity for 0.51 seconds
+					apply slowness 2 to loop-entity for 0.51 seconds
+					set loop-entity's hunger to loop-entity's hunger -0.5
+					set {_v} to vector between loop-entity and {_e}
+					push loop-entity {_v} at speed 0.3
+				wait for 0.5 seconds
+
+
+		if {ability2::%player%} is "Sneaky Sneakers":
+			if {sneakyset::%player%} is true:
+				set {cd2::%player%} to 7
+				clear {sneakyset::%player%}
+				teleport player to {sneakylocation::%player%}
+				stop
+			set {cd2::%player%} to 2
+			sound(player, "entity.wither_skeleton.death", 10, 1, 2)
+			show smoke at player
+			set {sneakyset::%player%} to true
+			set {sneakylocation::%player%} to location of player
+			set yaw of {sneakylocation::%player%} to player's yaw
+			set pitch of {sneakylocation::%player%} to player's pitch
+			
+		
+		if {ability2::%player%} is "Big Reveal":
+			set {cd2::%player%} to 10
+			loop all entities in radius 35 of player:
+				loop-entity is not player
+				apply glowing to loop-entity for 5 seconds
+				apply weakness to loop-entity for 5 seconds
+				play sound "entity.player.breath" at volume 1 and pitch 1 for loop-entity
+			play sound "entity.player.breath" at volume 1 and pitch 1 for player
+
+		if {ability2::%player%} is "Gale Blade":
+			set {cd2::%player%} to 8
+			apply slowness 2 to player for 1 second
+			sound(player, "entity.illusioner.prepare_mirror", 10, 1, 2)
+			loop all blocks in radius 3 of player:
+				show white wool breaking at loop-block
+			wait for 1 second
+			loop all entities in radius 6 of player:
+				loop-entity is not player
+				if loop-entity is "falling end stone brick wall" parsed as entity type:
+					push loop-entity in direction of player at speed -1.3
+					push loop-entity downwards at speed 0.09
+					if player's facing is up:
+						push loop-entity downwards at speed 0.5
+				if loop-entity is "falling snow block" parsed as entity type:
+					push loop-entity in direction of player at speed -0.6
+				else:
+					push loop-entity in direction of player at speed 1.6
+			sound(player, "entity.illusioner.mirror_move", 10, 1, 1)
+			loop all blocks in radius 6 of player:
+				show cloud at loop-block
+
+
+		if {ability2::%player%} is "Double Jump":
+			set {cd2::%player%} to 7
+			teleport player to player
+			wait a tick
+			push player upwards at speed 1.5
+			apply slow falling to player for 3 seconds
+			wait for 2 seconds
+			push player downwards at speed 1
+
+		if {ability2::%player%} is "Blink":
+			set {_count} to 1
+			loop all blocks in front of player:
+				add 1 to {_count}
+				{_count} is not greater than 10
+				if loop-block is not air or glass or glass pane or white stained glass or white stained glass pane:
+					show red dust at loop-block
+					sound(player, "entity.illusioner.death", 10, 0.5, 2)
+					stop
+				show purple dust at loop-block
+			set {cd2::%player%} to 7
+			set {_tp} to location of block 10 in front of player
+			set {_tp2} to location of block 5 in front of player
+			show ender signal at block 10 in front of player 
+			teleport player to player
+			apply levitation to player for 0.5 seconds
+			set {_yaw} to player's yaw
+			set {_pitch} to player's pitch
+			set yaw of {_tp} to {_yaw}
+			set pitch of {_tp} to {_pitch}
+			set yaw of {_tp2} to {_yaw}
+			set pitch of {_tp2} to {_pitch}
+			wait a tick
+			teleport player to {_tp2}
+			wait for 0.05 seconds
+			teleport player to {_tp}
+			sound(player, "entity.illusioner.prepare_mirror", 10, 2, 1.5)
+			push player forwards at speed 0.1
+			apply slow falling to player for 1 seconds
+
+
+		
+			
+	else:
+		set {_cd1} to {cd1::%player%}
+		set {_cd2} to {cd2::%player%}
+		if {cd1::%player%} = 0:
+			set {_cd1} to "&a(Ready) &70"
+		if {cd2::%player%} = 0:
+			set {_cd2} to "&a(Ready) &70"
+		send action bar "&f%{ability::%player%}%: &c%{_cd1}%s &8&l| &f%{ability2::%player%}%: &c%{_cd2}%s &8&l| &f%{ability3::%player%}%" to player
+		
+on damage:
+	if {immortal::%victim%} is true:
+		cancel event
+		set {_e} to vector between victim and attacker
+		sound(victim, "entity.wither.hurt", 10, 1, 0.5)
+		push attacker {_e} at speed 1.5
+		push attacker upwards at speed 0.5
+		loop all blocks in radius 4 of victim:
+			show smoke at loop-block
+		sound(victim, "entity.generic.explode", 16, 0.6, 1)
+		damage(victim, 4, 7)
+		clear {immortal::%victim%}
+
+on death of armor stand:
+	if name of victim is "Substitute":
+		clear drops
+		sound(attacker, "entity.elder_guardian.curse", 10, 0.8, 0.5)
+		apply slowness 2 to attacker for 3 seconds
+		apply blindness to attacker for 3 seconds
+
+on right click on armor stand:
+	if name of event-entity is "Substitute":
+		cancel event
+		
+on death of chicken:
+	if name of victim is "Chicken Rider":
+		clear drops
+
+on death of wolf:
+	drop 3 of cooked porkchop named "&fDog Meat"
+
+on damage:
+	{Whirling Steps Attack::%attacker%} is true
+	loop 30 times:
+		show lime wool breaking at victim
+	wait for 0.8 seconds
+	damageloc(location of victim, 4, damage * 0.25, attacker)
+	loop all blocks in radius 2 of victim:
+		show lime dust at loop-block
+	clear {Whirling Steps Attack::%attacker%}
+
+on damage:
+	{Whirling Blades Attack::%attacker%} is true
+	set damage to damage * 1.3
+	sound(attacker, "entity.elder_guardian.hurt", 10, 1, 1)
+	loop all entities in radius 4 of victim:
+		loop-entity is not player
+		push loop-entity in direction of attacker at speed 1
+	apply weakness to victim for 1 second
